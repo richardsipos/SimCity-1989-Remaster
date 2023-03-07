@@ -15,10 +15,12 @@
 - Kilépés
 - (súgó megnyitása)
 - (credits)
+
 ### Játék előtt:
 - Nevet adni a városnak
 - (nehézség választás)
 - Pályaválasztás
+
 ### Játék közben:
 - Zónák kijelölése
 - Épületek építése
@@ -29,3 +31,7 @@
 - Hitelt vesz fel
 - Boldogság szintet megnézi
 - Idő telését modosítja
+
+### Játék végén:
+- Statisztikát megnézi
+- Új játék/kilépés
