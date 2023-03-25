@@ -9,6 +9,7 @@ public class Constructable extends MapItem{
     public Constructable(Coordinates coordinates, boolean hasElectricity, Image currentImg, int cost, int timeToBuild) {
         super(coordinates, hasElectricity, currentImg);
         // Ricsi was here
+        // Bence was here too, but I havent found free cookies
         this.cost = cost;
         this.timeToBuild = timeToBuild;
     }
