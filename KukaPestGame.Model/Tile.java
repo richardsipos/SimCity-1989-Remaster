@@ -1,3 +1,5 @@
+//Bence was here!!
+
 public class Tile {
     private Coordinates coordinates;
     private boolean hasElectricity;
