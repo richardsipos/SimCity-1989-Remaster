@@ -1,8 +1,8 @@
-package Model;
+package Model.Map;
 
 import java.awt.*;
 
-public class Constructable extends MapItem{
+public class Constructable{
 
     private int cost;
     private int timeToBuild;

@@ -820,7 +820,7 @@
 											"top": 919,
 											"width": 174,
 											"height": 13,
-											"text": "Model.MapItem"
+											"text": "Model.Map.MapItem"
 										},
 										{
 											"_type": "LabelView",
@@ -1174,7 +1174,7 @@
 											"top": 740,
 											"width": 206,
 											"height": 13,
-											"text": "-workPlace: Model.MapItem",
+											"text": "-workPlace: Model.Map.MapItem",
 											"horizontalAlignment": 0
 										},
 										{
@@ -1191,7 +1191,7 @@
 											"top": 755,
 											"width": 206,
 											"height": 13,
-											"text": "-home: Model.MapItem",
+											"text": "-home: Model.Map.MapItem",
 											"horizontalAlignment": 0
 										},
 										{
@@ -1646,7 +1646,7 @@
 											"top": 1751,
 											"width": 183,
 											"height": 13,
-											"text": "Model.Road"
+											"text": "Model.Map.Road"
 										},
 										{
 											"_type": "LabelView",
@@ -2610,7 +2610,7 @@
 											"top": 754,
 											"width": 381.18310546875,
 											"height": 13,
-											"text": "-map: Model.MapItem**",
+											"text": "-map: Model.Map.MapItem**",
 											"horizontalAlignment": 0
 										},
 										{
@@ -3479,7 +3479,7 @@
 											"top": 1823,
 											"width": 190,
 											"height": 13,
-											"text": "Model.Pole"
+											"text": "Model.Map.Pole"
 										},
 										{
 											"_type": "LabelView",
@@ -4315,7 +4315,7 @@
 											"top": 1335,
 											"width": 206,
 											"height": 13,
-											"text": "Model.Constructable"
+											"text": "Model.Map.Constructable"
 										},
 										{
 											"_type": "LabelView",
@@ -4562,7 +4562,7 @@
 											"top": 1071,
 											"width": 175,
 											"height": 13,
-											"text": "Model.Environment"
+											"text": "Model.Map.Environment"
 										},
 										{
 											"_type": "LabelView",
@@ -9855,7 +9855,7 @@
 							},
 							"name": "map",
 							"visibility": "private",
-							"type": "Model.MapItem**"
+							"type": "Model.Map.MapItem**"
 						},
 						{
 							"_type": "UMLAttribute",
@@ -10373,7 +10373,7 @@
 					"_parent": {
 						"$ref": "AAAAAAFF+qBWK6M3Z8Y="
 					},
-					"name": "Model.MapItem",
+					"name": "Model.Map.MapItem",
 					"ownedElements": [
 						{
 							"_type": "UMLAssociation",
@@ -10990,7 +10990,7 @@
 					"_parent": {
 						"$ref": "AAAAAAFF+qBWK6M3Z8Y="
 					},
-					"name": "Model.Road",
+					"name": "Model.Map.Road",
 					"ownedElements": [
 						{
 							"_type": "UMLAssociation",
@@ -11062,7 +11062,7 @@
 					"_parent": {
 						"$ref": "AAAAAAFF+qBWK6M3Z8Y="
 					},
-					"name": "Model.Road"
+					"name": "Model.Map.Road"
 				},
 				{
 					"_type": "UMLClass",
@@ -11413,7 +11413,7 @@
 							},
 							"name": "map",
 							"visibility": "private",
-							"type": "Model.MapItem**"
+							"type": "Model.Map.MapItem**"
 						},
 						{
 							"_type": "UMLAttribute",
@@ -12253,7 +12253,7 @@
 					"_parent": {
 						"$ref": "AAAAAAFF+qBWK6M3Z8Y="
 					},
-					"name": "Model.Pole",
+					"name": "Model.Map.Pole",
 					"ownedElements": [
 						{
 							"_type": "UMLAssociation",
@@ -12541,7 +12541,7 @@
 					"_parent": {
 						"$ref": "AAAAAAFF+qBWK6M3Z8Y="
 					},
-					"name": "Model.Constructable",
+					"name": "Model.Map.Constructable",
 					"ownedElements": [
 						{
 							"_type": "UMLAssociation",
@@ -12660,7 +12660,7 @@
 					"_parent": {
 						"$ref": "AAAAAAFF+qBWK6M3Z8Y="
 					},
-					"name": "Model.Environment",
+					"name": "Model.Map.Environment",
 					"ownedElements": [
 						{
 							"_type": "UMLAssociation",
