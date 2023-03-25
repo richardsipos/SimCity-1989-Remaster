@@ -10,6 +10,7 @@ public class Constructable extends MapItem{
         super(coordinates, hasElectricity, currentImg);
         // Ricsi was here
         // Bence was here too, but I havent found free cookies
+        //Niki
         this.cost = cost;
         this.timeToBuild = timeToBuild;
     }
