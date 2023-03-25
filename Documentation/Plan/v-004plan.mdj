@@ -17,7 +17,7 @@
 					"_parent": {
 						"$ref": "AAAAAAFF+qBWK6M3Z8Y="
 					},
-					"name": "Main",
+					"name": "View.Main",
 					"defaultDiagram": true,
 					"ownedViews": [
 						{
@@ -398,7 +398,7 @@
 											"top": 344,
 											"width": 281.455078125,
 											"height": 13,
-											"text": "+setZone(coord: Coordinates, type: String): void",
+											"text": "+setZone(coord: Model.Coordinates, type: String): void",
 											"horizontalAlignment": 0
 										},
 										{
@@ -415,7 +415,7 @@
 											"top": 359,
 											"width": 281.455078125,
 											"height": 13,
-											"text": "+destroy(coord: Coordinates): bool",
+											"text": "+destroy(coord: Model.Coordinates): bool",
 											"horizontalAlignment": 0
 										},
 										{
@@ -432,7 +432,7 @@
 											"top": 374,
 											"width": 281.455078125,
 											"height": 13,
-											"text": "+getZoneDetails(coord: Coordinates): String",
+											"text": "+getZoneDetails(coord: Model.Coordinates): String",
 											"horizontalAlignment": 0
 										},
 										{
@@ -820,7 +820,7 @@
 											"top": 919,
 											"width": 174,
 											"height": 13,
-											"text": "MapItem"
+											"text": "Model.MapItem"
 										},
 										{
 											"_type": "LabelView",
@@ -892,7 +892,7 @@
 											"top": 942,
 											"width": 174,
 											"height": 13,
-											"text": "-coordinates: Coordinates",
+											"text": "-coordinates: Model.Coordinates",
 											"horizontalAlignment": 0
 										},
 										{
@@ -1174,7 +1174,7 @@
 											"top": 740,
 											"width": 206,
 											"height": 13,
-											"text": "-workPlace: MapItem",
+											"text": "-workPlace: Model.MapItem",
 											"horizontalAlignment": 0
 										},
 										{
@@ -1191,7 +1191,7 @@
 											"top": 755,
 											"width": 206,
 											"height": 13,
-											"text": "-home: MapItem",
+											"text": "-home: Model.MapItem",
 											"horizontalAlignment": 0
 										},
 										{
@@ -1646,7 +1646,7 @@
 											"top": 1751,
 											"width": 183,
 											"height": 13,
-											"text": "Road"
+											"text": "Model.Road"
 										},
 										{
 											"_type": "LabelView",
@@ -2610,7 +2610,7 @@
 											"top": 754,
 											"width": 381.18310546875,
 											"height": 13,
-											"text": "-map: MapItem**",
+											"text": "-map: Model.MapItem**",
 											"horizontalAlignment": 0
 										},
 										{
@@ -2905,7 +2905,7 @@
 											"top": 914,
 											"width": 381.18310546875,
 											"height": 13,
-											"text": "+setZone(coord: Coordinates, type: String): void",
+											"text": "+setZone(coord: Model.Coordinates, type: String): void",
 											"horizontalAlignment": 0
 										},
 										{
@@ -2939,7 +2939,7 @@
 											"top": 944,
 											"width": 381.18310546875,
 											"height": 13,
-											"text": "+destroy(coord: Coordinates): bool",
+											"text": "+destroy(coord: Model.Coordinates): bool",
 											"horizontalAlignment": 0
 										},
 										{
@@ -2956,7 +2956,7 @@
 											"top": 959,
 											"width": 381.18310546875,
 											"height": 13,
-											"text": "+getZoneDetails(coord: Coordinates): String",
+											"text": "+getZoneDetails(coord: Model.Coordinates): String",
 											"horizontalAlignment": 0
 										},
 										{
@@ -3233,7 +3233,7 @@
 											"top": 1124,
 											"width": 381.18310546875,
 											"height": 13,
-											"text": "-checkRoadNearby(coord: Coordinates): void",
+											"text": "-checkRoadNearby(coord: Model.Coordinates): void",
 											"horizontalAlignment": 0
 										},
 										{
@@ -3267,7 +3267,7 @@
 											"top": 1154,
 											"width": 381.18310546875,
 											"height": 13,
-											"text": "-canBeDestroyed(coord: Coordinates): bool",
+											"text": "-canBeDestroyed(coord: Model.Coordinates): bool",
 											"horizontalAlignment": 0
 										},
 										{
@@ -3284,7 +3284,7 @@
 											"top": 1169,
 											"width": 381.18310546875,
 											"height": 13,
-											"text": "-destroyZone(coord: Coordinates): bool",
+											"text": "-destroyZone(coord: Model.Coordinates): bool",
 											"horizontalAlignment": 0
 										},
 										{
@@ -3301,7 +3301,7 @@
 											"top": 1184,
 											"width": 381.18310546875,
 											"height": 13,
-											"text": "-destroyBuilding(coord: Coordinates): bool",
+											"text": "-destroyBuilding(coord: Model.Coordinates): bool",
 											"horizontalAlignment": 0
 										},
 										{
@@ -3336,7 +3336,7 @@
 											"top": 1199,
 											"width": 381.18310546875,
 											"height": 13,
-											"text": "+canBeBuilt(cords: Coordinates, type: String): bool",
+											"text": "+canBeBuilt(cords: Model.Coordinates, type: String): bool",
 											"horizontalAlignment": 0
 										},
 										{
@@ -3371,7 +3371,7 @@
 											"top": 1214,
 											"width": 381.18310546875,
 											"height": 13,
-											"text": "+lightUpRecursively(coord: Coordinates): void",
+											"text": "+lightUpRecursively(coord: Model.Coordinates): void",
 											"horizontalAlignment": 0
 										}
 									],
@@ -3479,7 +3479,7 @@
 											"top": 1823,
 											"width": 190,
 											"height": 13,
-											"text": "Pole"
+											"text": "Model.Pole"
 										},
 										{
 											"_type": "LabelView",
@@ -3655,7 +3655,7 @@
 											"top": 911,
 											"width": 174,
 											"height": 13,
-											"text": "Coordinates"
+											"text": "Model.Coordinates"
 										},
 										{
 											"_type": "LabelView",
@@ -4315,7 +4315,7 @@
 											"top": 1335,
 											"width": 206,
 											"height": 13,
-											"text": "Constructable"
+											"text": "Model.Constructable"
 										},
 										{
 											"_type": "LabelView",
@@ -4562,7 +4562,7 @@
 											"top": 1071,
 											"width": 175,
 											"height": 13,
-											"text": "Environment"
+											"text": "Model.Environment"
 										},
 										{
 											"_type": "LabelView",
@@ -9855,7 +9855,7 @@
 							},
 							"name": "map",
 							"visibility": "private",
-							"type": "MapItem**"
+							"type": "Model.MapItem**"
 						},
 						{
 							"_type": "UMLAttribute",
@@ -9901,7 +9901,7 @@
 									"_parent": {
 										"$ref": "AAAAAAGGwp5tZOWm3Ms="
 									},
-									"name": "Coordinates",
+									"name": "Model.Coordinates",
 									"type": ""
 								},
 								{
@@ -10373,7 +10373,7 @@
 					"_parent": {
 						"$ref": "AAAAAAFF+qBWK6M3Z8Y="
 					},
-					"name": "MapItem",
+					"name": "Model.MapItem",
 					"ownedElements": [
 						{
 							"_type": "UMLAssociation",
@@ -10990,7 +10990,7 @@
 					"_parent": {
 						"$ref": "AAAAAAFF+qBWK6M3Z8Y="
 					},
-					"name": "Road",
+					"name": "Model.Road",
 					"ownedElements": [
 						{
 							"_type": "UMLAssociation",
@@ -11062,7 +11062,7 @@
 					"_parent": {
 						"$ref": "AAAAAAFF+qBWK6M3Z8Y="
 					},
-					"name": "Road"
+					"name": "Model.Road"
 				},
 				{
 					"_type": "UMLClass",
@@ -11413,7 +11413,7 @@
 							},
 							"name": "map",
 							"visibility": "private",
-							"type": "MapItem**"
+							"type": "Model.MapItem**"
 						},
 						{
 							"_type": "UMLAttribute",
@@ -12253,7 +12253,7 @@
 					"_parent": {
 						"$ref": "AAAAAAFF+qBWK6M3Z8Y="
 					},
-					"name": "Pole",
+					"name": "Model.Pole",
 					"ownedElements": [
 						{
 							"_type": "UMLAssociation",
@@ -12303,7 +12303,7 @@
 					"_parent": {
 						"$ref": "AAAAAAFF+qBWK6M3Z8Y="
 					},
-					"name": "Coordinates",
+					"name": "Model.Coordinates",
 					"ownedElements": [
 						{
 							"_type": "UMLAssociation",
@@ -12541,7 +12541,7 @@
 					"_parent": {
 						"$ref": "AAAAAAFF+qBWK6M3Z8Y="
 					},
-					"name": "Constructable",
+					"name": "Model.Constructable",
 					"ownedElements": [
 						{
 							"_type": "UMLAssociation",
@@ -12660,7 +12660,7 @@
 					"_parent": {
 						"$ref": "AAAAAAFF+qBWK6M3Z8Y="
 					},
-					"name": "Environment",
+					"name": "Model.Environment",
 					"ownedElements": [
 						{
 							"_type": "UMLAssociation",
@@ -12930,7 +12930,7 @@
 							},
 							"name": "coordinates",
 							"visibility": "private",
-							"type": "Coordinates*"
+							"type": "Model.Coordinates*"
 						},
 						{
 							"_type": "UMLAttribute",
@@ -12987,7 +12987,7 @@
 									"_parent": {
 										"$ref": "AAAAAAGGwp0oiNri3kg="
 									},
-									"name": "Coordinates",
+									"name": "Model.Coordinates",
 									"type": ""
 								},
 								{
@@ -12996,7 +12996,7 @@
 									"_parent": {
 										"$ref": "AAAAAAGGwp0oiNri3kg="
 									},
-									"type": "Coordinates*",
+									"type": "Model.Coordinates*",
 									"direction": "return"
 								}
 							]

@@ -1,4 +1,4 @@
-//Bence was here!!
+package Model;
 
 public class Tile {
     private Coordinates coordinates;
