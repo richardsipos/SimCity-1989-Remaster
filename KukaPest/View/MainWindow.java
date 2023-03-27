@@ -6,6 +6,7 @@ import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 public class MainWindow {
     public JFrame f;
@@ -16,19 +17,19 @@ public class MainWindow {
 
         JMenuBar menuBar = new JMenuBar();
         JMenu menu = new JMenu("Menu");
-        menuBar.add(menu);
+
 
         JMenuItem ngMenuItem = new JMenuItem("New Game");
-        ngMenuItem.addActionListener(new OpenActionListener());
+        //ngMenuItem.addActionListener(new OpenActionListener());
         menu.add(ngMenuItem);
         JMenuItem lgMenuItem = new JMenuItem("Load Game");
-        lgMenuItem.addActionListener(new OpenActionListener());
+        //lgMenuItem.addActionListener(new OpenActionListener());
         menu.add(lgMenuItem);
         JMenuItem sgMenuItem = new JMenuItem("Save Game");
-        sgMenuItem.addActionListener(new SaveActionListener());
+        //sgMenuItem.addActionListener(new SaveActionListener());
         menu.add(sgMenuItem);
         JMenuItem crMenuItem = new JMenuItem("Credits");
-        sgMenuItem.addActionListener(new OpenActionListener());
+        //sgMenuItem.addActionListener(new OpenActionListener());
         menu.add(crMenuItem);
         JMenuItem exitMenuItem = new JMenuItem("Exit");
         menu.add(exitMenuItem);
@@ -39,6 +40,7 @@ public class MainWindow {
             }
         });
 
+        menuBar.add(menu);
         f.setJMenuBar(menuBar);
         f.add(g);
         f.pack();
@@ -48,7 +50,14 @@ public class MainWindow {
         f.setResizable(false);
         f.setLocationRelativeTo(null);
     }
+
+    public static void main(String[] args){
+            new MainWindow();
+    }
+
 }
+
+
 
 class OpenActionListener implements ActionListener {
 

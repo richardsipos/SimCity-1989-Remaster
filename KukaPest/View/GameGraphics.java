@@ -24,6 +24,7 @@ public class GameGraphics extends JPanel {
         game = new Game();
         this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
         this.setFocusable(true);
+        background = new ImageIcon("assets/gatyakukarestart.jpg").getImage();
     }
 
     @Override
@@ -36,7 +37,7 @@ public class GameGraphics extends JPanel {
         //game.start();
 
 
-        timer.start();
+        //timer.start();
     }
 
 }
