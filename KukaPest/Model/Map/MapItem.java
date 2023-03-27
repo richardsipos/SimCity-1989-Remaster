@@ -1,6 +1,7 @@
 package Model.Map;
 
 import java.awt.*;
+import Model.*;
 
 public class MapItem extends Tile{
 

@@ -1,5 +1,7 @@
 package Model.Map;
 
+import Model.*;
+
 public class Tile {
     private Coordinates coordinates;
     private boolean hasElectricity;

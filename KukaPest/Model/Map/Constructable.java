@@ -1,6 +1,7 @@
 package Model.Map;
 
 import java.awt.*;
+import Model.*;
 
 public class Constructable{
 
@@ -9,7 +10,7 @@ public class Constructable{
     private int upKeep = 0;
 
     public Constructable(Coordinates coordinates, boolean hasElectricity, Image currentImg, int cost, int timeToBuild) {
-        super(coordinates, hasElectricity, currentImg);
+        super();
         // Ricsi was here
         // Bence was here too, but I havent found free cookies
         //Niki
