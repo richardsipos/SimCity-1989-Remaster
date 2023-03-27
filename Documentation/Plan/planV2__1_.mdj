@@ -398,7 +398,7 @@
 											"top": 344,
 											"width": 281.455078125,
 											"height": 13,
-											"text": "+setZone(coord: Model.Coordinates, type: String): void",
+											"text": "+setZone(coord: Model.Helper.Coordinates, type: String): void",
 											"horizontalAlignment": 0
 										},
 										{
@@ -415,7 +415,7 @@
 											"top": 359,
 											"width": 281.455078125,
 											"height": 13,
-											"text": "+destroy(coord: Model.Coordinates): bool",
+											"text": "+destroy(coord: Model.Helper.Coordinates): bool",
 											"horizontalAlignment": 0
 										},
 										{
@@ -432,7 +432,7 @@
 											"top": 374,
 											"width": 281.455078125,
 											"height": 13,
-											"text": "+getDetailsZone(coord: Model.Coordinates): String",
+											"text": "+getDetailsZone(coord: Model.Helper.Coordinates): String",
 											"horizontalAlignment": 0
 										},
 										{
@@ -733,7 +733,7 @@
 											"top": 660,
 											"width": 615,
 											"height": 13,
-											"text": "+getZone(Model.Coordinates): Zone",
+											"text": "+getZone(Model.Helper.Coordinates): Zone",
 											"horizontalAlignment": 0
 										},
 										{
@@ -750,7 +750,7 @@
 											"top": 675,
 											"width": 615,
 											"height": 13,
-											"text": "+setZone(coord: Model.Coordinates, type: String): boolean",
+											"text": "+setZone(coord: Model.Helper.Coordinates, type: String): boolean",
 											"horizontalAlignment": 0
 										},
 										{
@@ -818,7 +818,7 @@
 											"top": 735,
 											"width": 615,
 											"height": 13,
-											"text": "+destroy(coord: Model.Coordinates): bool",
+											"text": "+destroy(coord: Model.Helper.Coordinates): bool",
 											"horizontalAlignment": 0
 										},
 										{
@@ -835,7 +835,7 @@
 											"top": 750,
 											"width": 615,
 											"height": 13,
-											"text": "+getDetailsZone(coord: Model.Coordinates): String",
+											"text": "+getDetailsZone(coord: Model.Helper.Coordinates): String",
 											"horizontalAlignment": 0
 										},
 										{
@@ -869,7 +869,7 @@
 											"top": 780,
 											"width": 615,
 											"height": 13,
-											"text": "-checkRoadNearby(coord: Model.Coordinates): void",
+											"text": "-checkRoadNearby(coord: Model.Helper.Coordinates): void",
 											"horizontalAlignment": 0
 										},
 										{
@@ -920,7 +920,7 @@
 											"top": 825,
 											"width": 615,
 											"height": 13,
-											"text": "+destroyZone(coord: Model.Coordinates): bool",
+											"text": "+destroyZone(coord: Model.Helper.Coordinates): bool",
 											"horizontalAlignment": 0
 										},
 										{
@@ -937,7 +937,7 @@
 											"top": 840,
 											"width": 615,
 											"height": 13,
-											"text": "+destroyBuilding(coord: Model.Coordinates): bool",
+											"text": "+destroyBuilding(coord: Model.Helper.Coordinates): bool",
 											"horizontalAlignment": 0
 										}
 									],
@@ -1293,7 +1293,7 @@
 											"top": 1222,
 											"width": 174,
 											"height": 13,
-											"text": "-coordinates: Model.Coordinates",
+											"text": "-coordinates: Model.Helper.Coordinates",
 											"horizontalAlignment": 0
 										},
 										{
@@ -3270,7 +3270,7 @@
 											"top": 929,
 											"width": 318.71240234375,
 											"height": 13,
-											"text": "+setZone(coord: Model.Coordinates, type: String)",
+											"text": "+setZone(coord: Model.Helper.Coordinates, type: String)",
 											"horizontalAlignment": 0
 										},
 										{
@@ -3304,7 +3304,7 @@
 											"top": 959,
 											"width": 318.71240234375,
 											"height": 13,
-											"text": "+destroy(coord: Model.Coordinates): bool",
+											"text": "+destroy(coord: Model.Helper.Coordinates): bool",
 											"horizontalAlignment": 0
 										},
 										{
@@ -3321,7 +3321,7 @@
 											"top": 974,
 											"width": 318.71240234375,
 											"height": 13,
-											"text": "+getDetailsZone(coord: Model.Coordinates): String",
+											"text": "+getDetailsZone(coord: Model.Helper.Coordinates): String",
 											"horizontalAlignment": 0
 										},
 										{
@@ -3831,7 +3831,7 @@
 											"top": 1191,
 											"width": 174,
 											"height": 13,
-											"text": "Model.Coordinates"
+											"text": "Model.Helper.Coordinates"
 										},
 										{
 											"_type": "LabelView",
@@ -10273,7 +10273,7 @@
 									"_parent": {
 										"$ref": "AAAAAAGGwp5tZOWm3Ms="
 									},
-									"name": "Model.Coordinates",
+									"name": "Model.Helper.Coordinates",
 									"type": ""
 								},
 								{
@@ -12267,7 +12267,7 @@
 					"_parent": {
 						"$ref": "AAAAAAFF+qBWK6M3Z8Y="
 					},
-					"name": "Model.Coordinates",
+					"name": "Model.Helper.Coordinates",
 					"ownedElements": [
 						{
 							"_type": "UMLAssociation",
@@ -12894,7 +12894,7 @@
 							},
 							"name": "coordinates",
 							"visibility": "private",
-							"type": "Model.Coordinates*"
+							"type": "Model.Helper.Coordinates*"
 						},
 						{
 							"_type": "UMLAttribute",
@@ -12951,7 +12951,7 @@
 									"_parent": {
 										"$ref": "AAAAAAGGwp0oiNri3kg="
 									},
-									"name": "Model.Coordinates",
+									"name": "Model.Helper.Coordinates",
 									"type": ""
 								},
 								{
@@ -12960,7 +12960,7 @@
 									"_parent": {
 										"$ref": "AAAAAAGGwp0oiNri3kg="
 									},
-									"type": "Model.Coordinates*",
+									"type": "Model.Helper.Coordinates*",
 									"direction": "return"
 								}
 							]
