@@ -1,10 +1,15 @@
 package Model;
 
 
+import Model.Helper.Coordinates;
+import Model.Map.IndustrialZone;
+import Model.Map.MainZone;
+import Model.Map.ResidentialZone;
 import Model.Map.Tile;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class City {
     private ArrayList<Citizen> citizens = new ArrayList<>();
@@ -23,7 +28,7 @@ public class City {
         this.funds=funds;
         this.satisfaction=satisfaction;
         this.map = new Tile[mapSize][mapSize];
-        date=date.now();
+        date = java.time.LocalDateTime.now();
         this.minCitizen=0;
         this.loneDuration=0;
         this.lastBalance=0;
@@ -57,7 +62,7 @@ public class City {
 
     }
 
-    public void setZone(Coordinates coord,String type){
+    public void setZone(Coordinates coord, String type){
 
     }
 
@@ -117,7 +122,7 @@ public class City {
 
     }
 
-    private boolean checkConnection(Mainzone first, Mainzone second){
+    private boolean checkConnection(MainZone first, MainZone second){
 
     }
 
