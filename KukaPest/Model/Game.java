@@ -5,10 +5,18 @@ import Model.Helper.Coordinates;
 import Model.Helper.Zones;
 import Model.Map.Tile;
 
+import java.util.UUID;
+
 public class Game {
-    private int gameID;
+    private UUID gameID;
     private City city;
     private int timeSpeed;
+
+    public Game(){
+        city = new City();
+        timeSpeed = 1;
+        gameID = UUID.randomUUID();
+    }
 
     public void stepGame(){
         // Called very often (eg. every second) from view.
@@ -53,5 +61,4 @@ public class Game {
         // Calls city upgrade()
         return false;
     }
-
 }
