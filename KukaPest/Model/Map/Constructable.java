@@ -1,21 +1,18 @@
 package Model.Map;
 
-import java.awt.*;
+import Model.Coordinates;
 
-public class Constructable{
+public class Constructable extends Tile{
 
     private int cost;
     private int timeToBuild;
     private int upKeep = 0;
 
-    public Constructable(Coordinates coordinates, boolean hasElectricity, Image currentImg, int cost, int timeToBuild) {
-        super(coordinates, hasElectricity, currentImg);
-        // Ricsi was here
-        // Bence was here too, but I havent found free cookies
-        //Niki
+
+    public Constructable(Coordinates coordinates, boolean hasElectricity, int cost, int timeToBuild, int upKeep) {
+        super(coordinates, hasElectricity);
         this.cost = cost;
         this.timeToBuild = timeToBuild;
+        this.upKeep = upKeep;
     }
-
-
 }
