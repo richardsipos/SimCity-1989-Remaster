@@ -1,4 +1,4 @@
-package Model;
+package Model.Helper;
 
 public class Coordinates {
     private int x;
