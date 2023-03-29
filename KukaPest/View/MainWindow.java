@@ -6,7 +6,6 @@ import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 
 public class MainWindow {
     public JFrame f;
@@ -48,11 +47,11 @@ public class MainWindow {
         f.setTitle("KukaPest");
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setResizable(false);
-        f.setLocationRelativeTo(null);
+        f.setLocationRelativeTo(f);
     }
 
     public static void main(String[] args){
-            new MainWindow();
+            MainWindow main = new MainWindow();
     }
 
 }
