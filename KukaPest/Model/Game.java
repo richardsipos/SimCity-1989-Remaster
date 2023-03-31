@@ -4,7 +4,6 @@ import Model.Helper.Building;
 import Model.Helper.Coordinates;
 import Model.Map.Tile;
 
-import java.util.ArrayList;
 import java.util.UUID;
 
 public class Game {
