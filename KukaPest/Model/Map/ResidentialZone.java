@@ -1,11 +1,7 @@
 package Model.Map;
 
 public class ResidentialZone extends MainZone{
-    private int level;
-
-    public ResidentialZone(int level) {
-        this.level = level;
+    public ResidentialZone() {
+        super(2,2);
     }
-
-    public void addResident(){}
 }
