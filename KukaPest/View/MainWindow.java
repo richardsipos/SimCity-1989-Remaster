@@ -1,6 +1,8 @@
 package View;
 
 import Model.Game;
+
+import javax.swing.*;
 import javax.swing.*;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
@@ -9,21 +11,19 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class MainWindow {
-    private static final int INITIAL_BOARD_SIZE = 10;
+    private static final int INITIAL_BOARD_X = 32;
+    private static final int INITIAL_BOARD_Y = 18;
     JFrame frame;
-    JLabel gameStatLabel;
-    JLabel winnerLabel;
 
 
     private BoardGUI BoardPanel;
 
 
-    MainWindow(){
-        BoardPanel = new BoardGUI(INITIAL_BOARD_SIZE);
+    public MainWindow(){
+        BoardPanel = new BoardGUI(INITIAL_BOARD_X, INITIAL_BOARD_Y);
 
         frame = new JFrame("KukaPest");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
 
         Container buttons = frame.getContentPane();
         buttons.setLayout(new BorderLayout());
@@ -49,18 +49,20 @@ public class MainWindow {
         frame.setJMenuBar(menuBar);
         JMenu gameMenu = new JMenu("Game");
         menuBar.add(gameMenu,BorderLayout.SOUTH);
-        JMenu newMenu = new JMenu("New");
-        gameMenu.add(newMenu);
-        int[] boardSizes = new int[]{3, 5, 7};
-        frame.setSize(INITIAL_BOARD_SIZE * 60 + 125,INITIAL_BOARD_SIZE * 60 + 150);
-        frame.setVisible(true);
 
-        for (int boardSize : boardSizes) {
-            JMenuItem sizeMenuItem = new JMenuItem(boardSize + "x" + boardSize);
-            newMenu.add(sizeMenuItem);
 
-        }
-
+        JMenuItem ngMenuItem = new JMenuItem("New Game");
+        //ngMenuItem.addActionListener(new OpenActionListener());
+        gameMenu.add(ngMenuItem);
+        JMenuItem lgMenuItem = new JMenuItem("Load Game");
+        //lgMenuItem.addActionListener(new OpenActionListener());
+        gameMenu.add(lgMenuItem);
+        JMenuItem sgMenuItem = new JMenuItem("Save Game");
+        //sgMenuItem.addActionListener(new SaveActionListener());
+        gameMenu.add(sgMenuItem);
+        JMenuItem crMenuItem = new JMenuItem("Credits");
+        //sgMenuItem.addActionListener(new OpenActionListener());
+        gameMenu.add(crMenuItem);
         JMenuItem exitMenuItem = new JMenuItem("Exit");
         gameMenu.add(exitMenuItem);
         exitMenuItem.addActionListener(new ActionListener() {
@@ -71,17 +73,7 @@ public class MainWindow {
         });
 
 
-
-
+        frame.setSize(INITIAL_BOARD_X* 40+ 125,INITIAL_BOARD_Y * 40 + 150);
+        frame.setVisible(true);
     }
-
-
-
-
-
-
-
-
-
-
 }

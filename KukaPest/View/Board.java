@@ -1,22 +1,22 @@
 package View;
 
 public class Board {
-    private int boardSize;
+    private int boardX;
+    private int boardY;
     private int originalX = 50;
     private int originalY = 50;
-    private int cellSide = 60;
+    private int cellSide = 40;
 
-    public Board(int boardSize){
-        this.boardSize = boardSize;
-
+    public Board(int boardX, int boardY){
+        this.boardX = boardX;
+        this.boardY = boardY;
     }
 
-    public int getBoardSize() {
-        return boardSize;
+    public int getBoardX() {
+        return boardX;
     }
-
-    public void setBoardSize(int boardSize) {
-        this.boardSize = boardSize;
+    public int getBoardY() {
+        return boardY;
     }
 
     public int getOriginalX() {
