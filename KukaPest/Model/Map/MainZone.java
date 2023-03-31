@@ -9,4 +9,12 @@ abstract public class MainZone extends Constructable {
         this.width = width;
         this.height = height;
     }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
 }
