@@ -7,7 +7,8 @@ import java.util.ArrayList;
 
 public class City {
     private String name;
-    private ArrayList<Citizen> citizens = new ArrayList<>();
+    private ArrayList<Citizen> citizens;
+
     private Tile[][] map;// = new Tile[][];
 
     public City(String cityName) {
@@ -23,4 +24,13 @@ public class City {
         //TODO: implement method
         return false;
     }
+
+    //Getters
+    public Tile[][] getMap() {
+        return map;
+    }
+    public String getName() {
+        return name;
+    }
+
 }
