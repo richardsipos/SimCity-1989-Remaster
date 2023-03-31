@@ -10,7 +10,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
+import java.util.Random;
 
 
 public class BoardGUI extends JPanel implements MouseListener {
@@ -81,33 +81,66 @@ public class BoardGUI extends JPanel implements MouseListener {
             g2.setColor(Color.black);
             for(int j = 0; j < board.getBoardX(); j++){
                 g2.drawRect(board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),board.getCellSide(),board.getCellSide());
-
-                    if(map[i][j] == 1)
-                        g2.drawImage(grass, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),board.getCellSide(),board.getCellSide(), null);
-
-                    else if (map[i][j] == 2)
-                        g2.drawImage(dirt, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),board.getCellSide(),board.getCellSide(), null);
-
-                    else
-                        g2.drawImage(water, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),board.getCellSide(),board.getCellSide(), null);
             }
         }
 
+        for(int i = 0; i < board.getBoardY(); i++){
+            g2.setColor(Color.black);
+            for(int j = 0; j < board.getBoardX(); j++){
+                if(map[i][j] == 1)
+                    g2.drawImage(grass, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),board.getCellSide(),board.getCellSide(), null);
+                else if (map[i][j] == 2)
+                    g2.drawImage(dirt, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),board.getCellSide(),board.getCellSide(), null);
+                else if (map[i][j] == 3)
+                    g2.drawImage(water, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),board.getCellSide(),board.getCellSide(), null);
+                else if (map[i][j] == 4)
+                    g2.drawImage(road, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),40,40, null);
+                else if (map[i][j] == 5)
+                    g2.drawImage(police, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),80,160, null);
+                else if (map[i][j] == 6)
+                    g2.drawImage(stadium, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),160,160, null);
+                else if (map[i][j] == 7)
+                    g2.drawImage(uni, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),160,160, null);
+                else if (map[i][j] == 8)
+                    g2.drawImage(res_zone, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),80,80, null);
+                else if (map[i][j] == 9)
+                    g2.drawImage(pp, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),160,160, null);
+                else if (map[i][j] == 10)
+                    g2.drawImage(school, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),80,160, null);
+            }
+        }
     }
 /*
     @Override
     protected void paintComponent(Graphics g){
-        for(int i = 0; i < board.getBoardY(); i++){
-            for(int j = 0; j < board.getBoardX(); j++){
+        super.paintComponent(g);
+        Graphics2D g2 = (Graphics2D)g;
 
-                if(map[i][j] == 0)
-                    g.drawImage(grass, board.getOriginalY(), board.getOriginalX(), null);
+        for(int i = 0; i < board.getBoardY(); i++) {
+            for (int j = 0; j < board.getBoardX(); j++) {
 
-                else if (map[i][j] == 1)
-                    g.drawImage(water, board.getOriginalY(), board.getOriginalX(), null);
+                if(map[i][j] == 1)
+                    g2.drawImage(grass, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),board.getCellSide(),board.getCellSide(), null);
 
-                else
-                    g.drawImage(dirt, board.getOriginalY(), board.getOriginalX(), null);
+                else if (map[i][j] == 2)
+                    g2.drawImage(dirt, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),board.getCellSide(),board.getCellSide(), null);
+
+                else if (map[i][j] == 3)
+                    g2.drawImage(water, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),board.getCellSide(),board.getCellSide(), null);
+                else if (map[i][j] == 4)
+                    g2.drawImage(road, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),40,40, null);
+                else if (map[i][j] == 5)
+                    g2.drawImage(police, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),80,160, null);
+                else if (map[i][j] == 6)
+                    g2.drawImage(stadium, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),160,160, null);
+                else if (map[i][j] == 7)
+                    g2.drawImage(uni, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),160,160, null);
+                else if (map[i][j] == 8)
+                    g2.drawImage(res_zone, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),80,80, null);
+                else if (map[i][j] == 9)
+                    g2.drawImage(pp, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),160,160, null);
+                else if (map[i][j] == 10)
+                    g2.drawImage(school, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),80,160, null);
             }
         }
     }*/
@@ -120,8 +153,77 @@ public class BoardGUI extends JPanel implements MouseListener {
         int row = (y - board.getOriginalY()) / board.getCellSide();
         fromRow = row;
         System.out.println("from (col,row): " + fromCol + ", " + fromRow);
-
-
+        Random r = new Random();
+        int max=10;
+        int min=4;
+        int a = r.nextInt(max-min + 1)+ min;
+        System.out.println(a);
+        switch(a) {
+            case 4: //road
+                map[row][col] =4;
+                break;
+            case 5: //police
+                for (int i = 0; i < 4; ++i) {
+                    for (int j = 0; j < 2; ++j){
+                        if (row+i < 18 && col + j < 32){
+                            if(i == 0 && j == 0) map[row][col] = 5;
+                            else map[row+i][col+j] = 11;
+                        }
+                    }
+                }
+                break;
+            case 6: //stadium
+                for (int i = 0; i < 4; ++i) {
+                    for (int j = 0; j < 4; ++j){
+                        if (row+i < 18 && col + j < 32){
+                            if(i == 0 && j == 0) map[row][col] = 6;
+                            else map[row+i][col+j] = 11;
+                        }
+                    }
+                }
+                break;
+            case 7: //uni
+                for (int i = 0; i < 4; ++i) {
+                    for (int j = 0; j < 4; ++j){
+                        if (row+i < 18 && col + j < 32){
+                            if(i == 0 && j == 0) map[row][col] = 7;
+                            else map[row+i][col+j] = 11;
+                        }
+                    }
+                }
+                break;
+            case 8: //res
+                for (int i = 0; i < 2; ++i) {
+                    for (int j = 0; j < 2; ++j){
+                        if (row+i < 18 && col + j < 32){
+                            if(i == 0 && j == 0) map[row][col] = 8;
+                            else map[row+i][col+j] = 11;
+                        }
+                    }
+                }
+                break;
+            case 9: //pp
+                for (int i = 0; i < 4; ++i) {
+                    for (int j = 0; j < 4; ++j){
+                        if (row+i < 18 && col + j < 32){
+                            if(i == 0 && j == 0) map[row][col] = 9;
+                            else map[row+i][col+j] = 11;
+                        }
+                    }
+                }
+                break;
+            case 10: //school
+                for (int i = 0; i < 4; ++i) {
+                    for (int j = 0; j < 2; ++j){
+                        if (row+i < 18 && col + j < 32){
+                            if(i == 0 && j == 0) map[row][col] = 10;
+                            else map[row+i][col+j] = 11;
+                        }
+                    }
+                }
+                break;
+        }
+        repaint();
     }
 
     @Override
