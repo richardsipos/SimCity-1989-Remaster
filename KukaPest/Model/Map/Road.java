@@ -3,6 +3,7 @@ package Model.Map;
 import Model.Coordinates;
 
 import java.awt.*;
+import Model.*;
 
 public class Road extends Constructable{
 

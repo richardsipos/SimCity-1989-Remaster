@@ -1,6 +1,6 @@
 package Model.Map;
 
-import Model.Coordinates;
+import Model.*;
 
 public class Tile {
     private Coordinates coordinates;
