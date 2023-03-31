@@ -1,33 +1,12 @@
 package Model.Map;
 
-import Model.Citizen;
+abstract public class MainZone extends Constructable {
+    private final int width;
+    private final int height;
 
-import java.awt.*;
-import java.util.ArrayList;
-
-public class MainZone {
-    private ArrayList<ZonePart> parts;
-    private boolean moveln = false;
-    private boolean isFree = false;
-    private int capacity = 0;
-    private int satisfaction = 0;
-    private boolean hasPoliceNearby = false;
-    private ArrayList<Citizen> citizens;
-    private int level;
-    private ArrayList<Image> possibleImages;
-
-
-
-
-
-    private int electricity(){
-        return 1;
+    public MainZone(int width, int height) {
+        super();
+        this.width = width;
+        this.height = height;
     }
-
-    public void upgrade(){}
-    public int getSatisfaction(){
-        return 1;
-    }
-
-
 }
