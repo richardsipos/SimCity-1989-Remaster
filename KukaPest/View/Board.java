@@ -7,6 +7,7 @@ public class Board {
     private int originalY = 50;
     private int cellSide = 40;
 
+
     public Board(int boardX, int boardY){
         this.boardX = boardX;
         this.boardY = boardY;

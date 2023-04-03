@@ -1,6 +1,11 @@
 package View;
 
 
+import Model.Game;
+import Model.Helper.Building;
+import Model.Helper.Coordinates;
+import Model.Map.*;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -21,13 +26,15 @@ public class BoardGUI extends JPanel implements MouseListener {
     private int toRow = -1;
     Image background, grass, dirt, water, road, uni, res_zone, pp, school, police, stadium;
     Board board;
-
-    String buildingname = "";
     boolean build = false;
 
-    int[][] map;
+    Building selectedBuilding;
+
+    Tile[][] map;
+    private Game game;
 
     public BoardGUI(int fieldX, int fieldY){
+        game = new Game("Nuke city");
         //inicializálás
         this.board = new Board(fieldX,fieldY);
         //egér mozgatását figyelő eseménykezelő
@@ -45,32 +52,7 @@ public class BoardGUI extends JPanel implements MouseListener {
         police = new ImageIcon("KukaPest/Assets/police.png").getImage();
         stadium = new ImageIcon("KukaPest/Assets/stadium.png").getImage();
 
-        /*int count = 0;
-        this.map = new int[18][32];
-        for (int i = 0; i < 18; ++i) {
-            for (int j = 0; j < 32; ++j) {
-                map[i][j] = count % 3;
-                ++count;
-            }
-        }*/
-        this.map = new int[][]{{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 3, 3, 3, 2, 1, 1, 1, 1, 1, 1, 1, 1,1,1},
-                                {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 3, 3, 3, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1,1,1},
-                                {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 3, 3, 3, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,1,1},
-                                {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 3, 3, 3, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,1,1},
-                                {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 3, 3, 3, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,1,1},
-                                {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 3, 3, 3, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,1,1},
-                                {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 3, 3, 3, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,1,1},
-                                {1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 3, 3, 3, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,1,1},
-                                {1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 3, 3, 3, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,1,1},
-                                {1, 1, 1, 1, 1, 1, 1, 2, 3, 3, 3, 3, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,1,1},
-                                {1, 1, 1, 1, 1, 1, 2, 3, 3, 3, 3, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,1,1},
-                                {1, 1, 1, 1, 1, 2, 3, 3, 3, 3, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,1,1},
-                                {1, 1, 1, 1, 2, 3, 3, 3, 3, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,1,1},
-                                {1, 1, 1, 2, 3, 3, 3, 3, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 3, 3,3,3},
-                                {1, 1, 2, 3, 3, 3, 3, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 1, 3, 3, 3, 3,3,3},
-                                {1, 1, 2, 3, 3, 3, 3, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 3, 3, 3, 3,3,3},
-                                {1, 1, 2, 3, 3, 3, 3, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 3, 3, 3, 3,3,3},
-                                {1, 2, 3, 3, 3, 3, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 3, 3, 3, 3, 3,3,3}};
+        map = game.getMap();
     }
 
 
@@ -90,63 +72,29 @@ public class BoardGUI extends JPanel implements MouseListener {
         for(int i = 0; i < board.getBoardY(); i++){
             g2.setColor(Color.black);
             for(int j = 0; j < board.getBoardX(); j++){
-                if(map[i][j] == 1)
+                if(map[i][j] instanceof Grass)
                     g2.drawImage(grass, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),board.getCellSide(),board.getCellSide(), null);
-                else if (map[i][j] == 2)
+                else if (map[i][j] instanceof Dirt)
                     g2.drawImage(dirt, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),board.getCellSide(),board.getCellSide(), null);
-                else if (map[i][j] == 3)
+                else if (map[i][j] instanceof Water)
                     g2.drawImage(water, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),board.getCellSide(),board.getCellSide(), null);
-                else if (map[i][j] == 4)
+                else if (map[i][j] instanceof Road)
                     g2.drawImage(road, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),40,40, null);
-                else if (map[i][j] == 5)
+                else if (map[i][j] instanceof Police)
                     g2.drawImage(police, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),80,160, null);
-                else if (map[i][j] == 6)
+                else if (map[i][j] instanceof Stadium)
                     g2.drawImage(stadium, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),160,160, null);
-                else if (map[i][j] == 7)
+                else if (map[i][j] instanceof University)
                     g2.drawImage(uni, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),160,160, null);
-                else if (map[i][j] == 8)
+                else if (map[i][j] instanceof ResidentialZone)
                     g2.drawImage(res_zone, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),80,80, null);
-                else if (map[i][j] == 9)
+                else if (map[i][j] instanceof PowerPlant)
                     g2.drawImage(pp, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),160,160, null);
-                else if (map[i][j] == 10)
+                else if (map[i][j] instanceof School)
                     g2.drawImage(school, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),80,160, null);
             }
         }
     }
-/*
-    @Override
-    protected void paintComponent(Graphics g){
-        super.paintComponent(g);
-        Graphics2D g2 = (Graphics2D)g;
-
-        for(int i = 0; i < board.getBoardY(); i++) {
-            for (int j = 0; j < board.getBoardX(); j++) {
-
-                if(map[i][j] == 1)
-                    g2.drawImage(grass, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),board.getCellSide(),board.getCellSide(), null);
-
-                else if (map[i][j] == 2)
-                    g2.drawImage(dirt, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),board.getCellSide(),board.getCellSide(), null);
-
-                else if (map[i][j] == 3)
-                    g2.drawImage(water, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),board.getCellSide(),board.getCellSide(), null);
-                else if (map[i][j] == 4)
-                    g2.drawImage(road, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),40,40, null);
-                else if (map[i][j] == 5)
-                    g2.drawImage(police, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),80,160, null);
-                else if (map[i][j] == 6)
-                    g2.drawImage(stadium, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),160,160, null);
-                else if (map[i][j] == 7)
-                    g2.drawImage(uni, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),160,160, null);
-                else if (map[i][j] == 8)
-                    g2.drawImage(res_zone, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),80,80, null);
-                else if (map[i][j] == 9)
-                    g2.drawImage(pp, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),160,160, null);
-                else if (map[i][j] == 10)
-                    g2.drawImage(school, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),80,160, null);
-            }
-        }
-    }*/
     @Override
     public void mouseClicked(MouseEvent e) {
         int x = e.getPoint().x;
@@ -156,81 +104,9 @@ public class BoardGUI extends JPanel implements MouseListener {
         int row = (y - board.getOriginalY()) / board.getCellSide();
         fromRow = row;
         System.out.println("from (col,row): " + fromCol + ", " + fromRow);
-        /*Random r = new Random();
-        int max=10;
-        int min=4;
-        int a = r.nextInt(max-min + 1)+ min;
-        System.out.println(a);*/
-        if(build == true) {
-            switch (buildingname) {
-                case "road": //road
-                    map[row][col] = 4;
-                    break;
-                case "police": //police
-                    for (int i = 0; i < 4; ++i) {
-                        for (int j = 0; j < 2; ++j) {
-                            if (row + i < 18 && col + j < 32) {
-                                if (i == 0 && j == 0) map[row][col] = 5;
-                                else map[row + i][col + j] = 11;
-                            }
-                        }
-                    }
-                    break;
-                case "stadium": //stadium
-                    for (int i = 0; i < 4; ++i) {
-                        for (int j = 0; j < 4; ++j) {
-                            if (row + i < 18 && col + j < 32) {
-                                if (i == 0 && j == 0) map[row][col] = 6;
-                                else map[row + i][col + j] = 11;
-                            }
-                        }
-                    }
-                    break;
-                case "university": //uni
-                    for (int i = 0; i < 4; ++i) {
-                        for (int j = 0; j < 4; ++j) {
-                            if (row + i < 18 && col + j < 32) {
-                                if (i == 0 && j == 0) map[row][col] = 7;
-                                else map[row + i][col + j] = 11;
-                            }
-                        }
-                    }
-                    break;
-                case "house": //res
-                    for (int i = 0; i < 2; ++i) {
-                        for (int j = 0; j < 2; ++j) {
-                            if (row + i < 18 && col + j < 32) {
-                                if (i == 0 && j == 0) map[row][col] = 8;
-                                else map[row + i][col + j] = 11;
-                            }
-                        }
-                    }
-                    break;
-                case "pp": //pp
-                    for (int i = 0; i < 4; ++i) {
-                        for (int j = 0; j < 4; ++j) {
-                            if (row + i < 18 && col + j < 32) {
-                                if (i == 0 && j == 0) map[row][col] = 9;
-                                else map[row + i][col + j] = 11;
-                            }
-                        }
-                    }
-                    break;
-                case "school": //school
-                    for (int i = 0; i < 4; ++i) {
-                        for (int j = 0; j < 2; ++j) {
-                            if (row + i < 18 && col + j < 32) {
-                                if (i == 0 && j == 0) map[row][col] = 10;
-                                else map[row + i][col + j] = 11;
-                            }
-                        }
-                    }
-                    break;
 
-                case"":
-                    break;
-            }
-        }
+        game.build(selectedBuilding, new Coordinates(row, col));
+
         repaint();
     }
 

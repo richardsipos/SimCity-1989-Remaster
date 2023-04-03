@@ -1,6 +1,7 @@
 package View;
 
 import Model.Game;
+import Model.Helper.Building;
 
 import javax.swing.*;
 import javax.swing.*;
@@ -20,6 +21,7 @@ public class MainWindow {
 
 
     public MainWindow(){
+
         BoardPanel = new BoardGUI(INITIAL_BOARD_X, INITIAL_BOARD_Y);
 
         frame = new JFrame("KukaPest");
@@ -136,56 +138,56 @@ public class MainWindow {
 
                 buildBar.setVisible(false);
                 BoardPanel.build = false;
-                BoardPanel.buildingname = "";
+                BoardPanel.selectedBuilding = null;
             }
         });
         buildHouse.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
 
-                BoardPanel.buildingname = "house";
+                BoardPanel.selectedBuilding = Building.RESIDENTIAL;
             }
         });
         buildSchool.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
 
-                BoardPanel.buildingname = "school";
+                BoardPanel.selectedBuilding = Building.SCHOOL;
             }
         });
         buildPolice.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
 
-                BoardPanel.buildingname = "police";
+                BoardPanel.selectedBuilding = Building.POLICE;
             }
         });
         buildStadium.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
 
-                BoardPanel.buildingname = "stadium";
+                BoardPanel.selectedBuilding = Building.STADIUM;
             }
         });
         buildRoad.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
 
-                BoardPanel.buildingname = "road";
+                BoardPanel.selectedBuilding = Building.ROAD;
             }
         });
         buildUniversity.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
 
-                BoardPanel.buildingname = "university";
+                BoardPanel.selectedBuilding = Building.UNIVERSITY;
             }
         });
         buildpp.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
 
-                BoardPanel.buildingname = "pp";
+                BoardPanel.selectedBuilding = Building.POWER_PLANT;
             }
         });
 
