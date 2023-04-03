@@ -22,6 +22,9 @@ public class BoardGUI extends JPanel implements MouseListener {
     Image background, grass, dirt, water, road, uni, res_zone, pp, school, police, stadium;
     Board board;
 
+    String buildingname = "";
+    boolean build = false;
+
     int[][] map;
 
     public BoardGUI(int fieldX, int fieldY){
@@ -153,75 +156,80 @@ public class BoardGUI extends JPanel implements MouseListener {
         int row = (y - board.getOriginalY()) / board.getCellSide();
         fromRow = row;
         System.out.println("from (col,row): " + fromCol + ", " + fromRow);
-        Random r = new Random();
+        /*Random r = new Random();
         int max=10;
         int min=4;
         int a = r.nextInt(max-min + 1)+ min;
-        System.out.println(a);
-        switch(a) {
-            case 4: //road
-                map[row][col] =4;
-                break;
-            case 5: //police
-                for (int i = 0; i < 4; ++i) {
-                    for (int j = 0; j < 2; ++j){
-                        if (row+i < 18 && col + j < 32){
-                            if(i == 0 && j == 0) map[row][col] = 5;
-                            else map[row+i][col+j] = 11;
+        System.out.println(a);*/
+        if(build == true) {
+            switch (buildingname) {
+                case "road": //road
+                    map[row][col] = 4;
+                    break;
+                case "police": //police
+                    for (int i = 0; i < 4; ++i) {
+                        for (int j = 0; j < 2; ++j) {
+                            if (row + i < 18 && col + j < 32) {
+                                if (i == 0 && j == 0) map[row][col] = 5;
+                                else map[row + i][col + j] = 11;
+                            }
                         }
                     }
-                }
-                break;
-            case 6: //stadium
-                for (int i = 0; i < 4; ++i) {
-                    for (int j = 0; j < 4; ++j){
-                        if (row+i < 18 && col + j < 32){
-                            if(i == 0 && j == 0) map[row][col] = 6;
-                            else map[row+i][col+j] = 11;
+                    break;
+                case "stadium": //stadium
+                    for (int i = 0; i < 4; ++i) {
+                        for (int j = 0; j < 4; ++j) {
+                            if (row + i < 18 && col + j < 32) {
+                                if (i == 0 && j == 0) map[row][col] = 6;
+                                else map[row + i][col + j] = 11;
+                            }
                         }
                     }
-                }
-                break;
-            case 7: //uni
-                for (int i = 0; i < 4; ++i) {
-                    for (int j = 0; j < 4; ++j){
-                        if (row+i < 18 && col + j < 32){
-                            if(i == 0 && j == 0) map[row][col] = 7;
-                            else map[row+i][col+j] = 11;
+                    break;
+                case "university": //uni
+                    for (int i = 0; i < 4; ++i) {
+                        for (int j = 0; j < 4; ++j) {
+                            if (row + i < 18 && col + j < 32) {
+                                if (i == 0 && j == 0) map[row][col] = 7;
+                                else map[row + i][col + j] = 11;
+                            }
                         }
                     }
-                }
-                break;
-            case 8: //res
-                for (int i = 0; i < 2; ++i) {
-                    for (int j = 0; j < 2; ++j){
-                        if (row+i < 18 && col + j < 32){
-                            if(i == 0 && j == 0) map[row][col] = 8;
-                            else map[row+i][col+j] = 11;
+                    break;
+                case "house": //res
+                    for (int i = 0; i < 2; ++i) {
+                        for (int j = 0; j < 2; ++j) {
+                            if (row + i < 18 && col + j < 32) {
+                                if (i == 0 && j == 0) map[row][col] = 8;
+                                else map[row + i][col + j] = 11;
+                            }
                         }
                     }
-                }
-                break;
-            case 9: //pp
-                for (int i = 0; i < 4; ++i) {
-                    for (int j = 0; j < 4; ++j){
-                        if (row+i < 18 && col + j < 32){
-                            if(i == 0 && j == 0) map[row][col] = 9;
-                            else map[row+i][col+j] = 11;
+                    break;
+                case "pp": //pp
+                    for (int i = 0; i < 4; ++i) {
+                        for (int j = 0; j < 4; ++j) {
+                            if (row + i < 18 && col + j < 32) {
+                                if (i == 0 && j == 0) map[row][col] = 9;
+                                else map[row + i][col + j] = 11;
+                            }
                         }
                     }
-                }
-                break;
-            case 10: //school
-                for (int i = 0; i < 4; ++i) {
-                    for (int j = 0; j < 2; ++j){
-                        if (row+i < 18 && col + j < 32){
-                            if(i == 0 && j == 0) map[row][col] = 10;
-                            else map[row+i][col+j] = 11;
+                    break;
+                case "school": //school
+                    for (int i = 0; i < 4; ++i) {
+                        for (int j = 0; j < 2; ++j) {
+                            if (row + i < 18 && col + j < 32) {
+                                if (i == 0 && j == 0) map[row][col] = 10;
+                                else map[row + i][col + j] = 11;
+                            }
                         }
                     }
-                }
-                break;
+                    break;
+
+                case"":
+                    break;
+            }
         }
         repaint();
     }
