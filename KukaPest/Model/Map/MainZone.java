@@ -6,8 +6,8 @@ abstract public class MainZone extends Constructable {
 
     public MainZone(int width, int height) {
         super();
-        this.width = width;
-        this.height = height;
+        this.width = height;
+        this.height = width;
     }
 
     public int getWidth() {

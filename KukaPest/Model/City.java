@@ -3,6 +3,7 @@ package Model;
 import Model.Helper.Building;
 import Model.Helper.Coordinates;
 import Model.Map.*;
+import com.sun.tools.javac.Main;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -14,7 +15,7 @@ public class City {
     private String name;
     private ArrayList<Citizen> citizens;
 
-    private Tile[][] map;// = new Tile[][];
+    private Tile[][] map;
 
     public City(String cityName) {
         this.name = cityName;
@@ -43,10 +44,8 @@ public class City {
     }
 
     boolean build(Building toBuild, Coordinates coords){
-        //TODO: implement method
-        //printMap();
-        Constructable toBeBuilt;
-        toBeBuilt = switch(toBuild){
+        //printMap
+        Constructable toBeBuilt = switch(toBuild){
             case STADIUM -> new Stadium();
             case ROAD -> new Road();
             case POLICE -> new Police();
@@ -56,31 +55,28 @@ public class City {
             case POWER_PLANT -> new PowerPlant();
             case RESIDENTIAL -> new ResidentialZone();
             case INDUSTRY -> new IndustrialZone();
-            default -> throw new InvalidParameterException();
         };
 
         if(toBeBuilt instanceof MainZone ){
-            if(canBeBuilt(toBuild,coords)){
-                for(int i=coords.getY();i<coords.getY()+((MainZone) toBeBuilt).getHeight();i++){
-                    for(int j=coords.getX();j<coords.getX()+((MainZone) toBeBuilt).getWidth();j++){
+            if(canBeBuilt(toBeBuilt,coords)){
+                for(int i=coords.getX();i<coords.getX()+((MainZone) toBeBuilt).getWidth();i++){
+                    for(int j=coords.getY();j<coords.getY()+((MainZone) toBeBuilt).getHeight();j++){
                         this.map[i][j] = new ZonePart((MainZone)toBeBuilt);
                     }
                 }
-                this.map[coords.getY()][coords.getX()] = new MainZone(((MainZone) toBeBuilt).getHeight(),((MainZone) toBeBuilt).getWidth()) {
-            };
+                this.map[coords.getX()][coords.getY()] = toBeBuilt;
             printMap();
             return true;
             }
 
         }else if(toBeBuilt instanceof Road){
-            if(canBeBuilt(toBuild,coords)){
+            if(canBeBuilt(toBeBuilt,coords)){
                 this.map[coords.getY()][coords.getX()] = new Road();
                 return true;
             }
 
         }else if(toBeBuilt instanceof Pole) {
-            if(canBeBuilt(toBuild,coords)) {
-
+            if(canBeBuilt(toBeBuilt,coords)) {
                 this.map[coords.getY()][coords.getX()] = new Pole();
                 return true;
             }
@@ -89,49 +85,25 @@ public class City {
 
         return false;
     }
-    boolean canBeBuilt(Building toBuild, Coordinates coords){
+    boolean canBeBuilt(Constructable toBuild, Coordinates coords){
         //TODO: implement method
-
-        int widthNeeded;
-        widthNeeded = switch(toBuild){
-            case STADIUM -> 4;
-            case ROAD -> 1;
-            case POLICE -> 2;
-            case UNIVERSITY -> 4;
-            case SCHOOL -> 2;
-            case POLE -> 1;
-            case POWER_PLANT -> 4;
-            case RESIDENTIAL -> 2;
-            case INDUSTRY -> 2;
-            default -> throw new InvalidParameterException();
-        };
-
-        int heigthNeeded;
-        heigthNeeded = switch(toBuild){
-            case STADIUM -> 4;
-            case ROAD -> 1;
-            case POLICE -> 4;
-            case UNIVERSITY -> 4;
-            case SCHOOL -> 4;
-            case POLE -> 1;
-            case POWER_PLANT -> 4;
-            case RESIDENTIAL -> 2;
-            case INDUSTRY -> 2;
-            default -> throw new InvalidParameterException();
-        };
-
-        for(int i=coords.getY();i< coords.getY()+heigthNeeded;i++){
-            for(int j=coords.getX();j< coords.getX()+widthNeeded;j++){
-                if(this.map[i][j] instanceof ZonePart
-                    || this.map[i][j] instanceof MainZone
-                    || this.map[i][j] instanceof Road
-                    || this.map[i][j] instanceof Pole){
+        if(toBuild instanceof Pole || toBuild instanceof Road){
+            if(!(map[coords.getX()][coords.getY()] instanceof Environment)) return false;
+        }
+        else{
+            MainZone mz = ((MainZone)toBuild);
+            for(int i=coords.getX();i< coords.getX()+mz.getWidth();i++){
+                for(int j=coords.getY();j< coords.getY()+ mz.getHeight();j++){
+                    if(this.map[i][j] instanceof ZonePart
+                            || this.map[i][j] instanceof MainZone
+                            || this.map[i][j] instanceof Road
+                            || this.map[i][j] instanceof Pole){
                         System.out.println("Foglalt terulet sorry");
                         return false;
+                    }
                 }
             }
         }
-
         return true;
     }
 
@@ -152,7 +124,6 @@ public class City {
         System.out.println("");
     }
 
-    //Getters
     public Tile[][] getMap() {
         return map;
     }
