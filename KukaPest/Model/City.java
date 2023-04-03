@@ -1,167 +1,134 @@
 package Model;
 
-
+import Model.Helper.Building;
 import Model.Helper.Coordinates;
-import Model.Map.IndustrialZone;
-import Model.Map.MainZone;
-import Model.Map.ResidentialZone;
-import Model.Map.Tile;
+import Model.Map.*;
+import com.sun.tools.javac.Main;
 
-import java.time.LocalDateTime;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Scanner;
 
 public class City {
-    private ArrayList<Citizen> citizens = new ArrayList<>();
-    private Tile[][] map;// = new Tile[][];
-    private int funds;
-    private int satisfaction;
-    private LocalDateTime date;
-    private int minCitizen;
-    private int loneDuration;
-    private int lastBalance;
-    private int lastIncome;
-    private int lastExpense;
+    private String name;
+    private ArrayList<Citizen> citizens;
 
-    //without DB ctor
-    public void City(int funds, int satisfaction, int mapSize){
-        this.funds=funds;
-        this.satisfaction=satisfaction;
-        this.map = new Tile[mapSize][mapSize];
-        date = java.time.LocalDateTime.now();
-        this.minCitizen=0;
-        this.loneDuration=0;
-        this.lastBalance=0;
-        this.lastIncome=0;
-        this.lastExpense=0;
+    private Tile[][] map;
 
+    public City(String cityName) {
+        this.name = cityName;
+        this.citizens = new ArrayList<>();
 
+        // Read the default map
+        this.map = new Tile[18][32];
+        try {
+            Scanner sc = new Scanner(new File("KukaPest/Assets/testMap.txt"));
+            for (int i = 0; i < 18; i++) {
+                String line = sc.nextLine();
+                for (int j = 0; j < 32; j++) {
+                    int mapNum = Character.getNumericValue(line.charAt(j));
+                    this.map[i][j] = switch (mapNum) {
+                        case 1 -> new Grass();
+                        case 2 -> new Dirt();
+                        case 3 -> new Water();
+                        default -> throw new InvalidParameterException();
+                    };
+                }
+            }
+            sc.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("An error occurred." + e);
+        }
     }
 
-    // with DB ctor
-    public City(ArrayList<Citizen> citizens, Tile[][] map, int funds, int satisfaction, LocalDateTime date, int minCitizen, int loneDuration, int lastBalance, int lastIncome, int lastExpense) {
-        this.citizens = citizens;
-        this.map = map;
-        this.funds = funds;
-        this.satisfaction = satisfaction;
-        this.date = date;
-        this.minCitizen = minCitizen;
-        this.loneDuration = loneDuration;
-        this.lastBalance = lastBalance;
-        this.lastIncome = lastIncome;
-        this.lastExpense = lastExpense;
+    boolean build(Building toBuild, Coordinates coords){
+        //printMap
+        Constructable toBeBuilt = switch(toBuild){
+            case STADIUM -> new Stadium();
+            case ROAD -> new Road();
+            case POLICE -> new Police();
+            case UNIVERSITY -> new University();
+            case SCHOOL -> new School();
+            case POLE -> new Pole();
+            case POWER_PLANT -> new PowerPlant();
+            case RESIDENTIAL -> new ResidentialZone();
+            case INDUSTRY -> new IndustrialZone();
+        };
+
+        if(toBeBuilt instanceof MainZone ){
+            if(canBeBuilt(toBeBuilt,coords)){
+                for(int i=coords.getX();i<coords.getX()+((MainZone) toBeBuilt).getWidth();i++){
+                    for(int j=coords.getY();j<coords.getY()+((MainZone) toBeBuilt).getHeight();j++){
+                        this.map[i][j] = new ZonePart((MainZone)toBeBuilt);
+                    }
+                }
+                this.map[coords.getX()][coords.getY()] = toBeBuilt;
+            printMap();
+            return true;
+            }
+
+        }else if(toBeBuilt instanceof Road){
+            if(canBeBuilt(toBeBuilt,coords)){
+                this.map[coords.getY()][coords.getX()] = new Road();
+                return true;
+            }
+
+        }else if(toBeBuilt instanceof Pole) {
+            if(canBeBuilt(toBeBuilt,coords)) {
+                this.map[coords.getY()][coords.getX()] = new Pole();
+                return true;
+            }
+        }
+
+
+        return false;
+    }
+    boolean canBeBuilt(Constructable toBuild, Coordinates coords){
+        //TODO: implement method
+        if(toBuild instanceof Pole || toBuild instanceof Road){
+            if(!(map[coords.getX()][coords.getY()] instanceof Environment)) return false;
+        }
+        else{
+            MainZone mz = ((MainZone)toBuild);
+            for(int i=coords.getX();i< coords.getX()+mz.getWidth();i++){
+                for(int j=coords.getY();j< coords.getY()+ mz.getHeight();j++){
+                    if(this.map[i][j] instanceof ZonePart
+                            || this.map[i][j] instanceof MainZone
+                            || this.map[i][j] instanceof Road
+                            || this.map[i][j] instanceof Pole){
+                        System.out.println("Foglalt terulet sorry");
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
     }
 
-
-
-    public void timePassed(int days){
-
+    //forTesting
+    public void printMap() {
+        for (int i = 0; i < 18; i++) {
+            for (int j = 0; j < 32; j++) {
+                if(this.map[i][j] instanceof MainZone || this.map[i][j] instanceof ZonePart
+                    || this.map[i][j] instanceof Road || this.map[i][j] instanceof Pole){
+                    System.out.print("1");
+                }else{
+                    System.out.print("0");
+                }
+                System.out.print(" ");
+            }
+            System.out.println("");
+        }
+        System.out.println("");
     }
 
-    public void checkEducatedNumber(){
-
+    public Tile[][] getMap() {
+        return map;
     }
-
-    public void setZone(Coordinates coord, String type){
-
+    public String getName() {
+        return name;
     }
-
-    public void handleMoveIn(){
-
-    }
-
-    public void destroy(Coordinates coord){
-
-    }
-
-    public String getZoneDetails(Coordinates coord){
-
-    }
-
-    public void build(){
-
-    }
-
-    public boolean hasLoans(){
-
-    }
-
-    public int industryAndServiceBalance(){
-
-    }
-
-    public int satisfaction(){
-
-    }
-
-    public void checkCitizen(){
-
-    }
-
-    public boolean isGameOver(){
-
-    }
-
-    public void collectTax(){
-
-    }
-
-    public void payUpKeeps(){
-
-    }
-
-    private ResidentialZone hasFreeResidential(){
-
-    }
-
-    private IndustrialZone hasFreeWorkingSpace(ResidentialZone res){
-
-    }
-
-    private void checkRoadNearby(Coordinates coord){
-
-    }
-
-    private boolean checkConnection(MainZone first, MainZone second){
-
-    }
-
-    private boolean canBeDestroyed(Coordinates coord){
-
-    }
-
-    private boolean destroyZone(Coordinates coord){
-
-    }
-
-    private boolean destroyBuilding(Coordinates coord){
-
-    }
-
-    public boolean canBeBuilt(Coordinates coord,String type){
-
-    }
-
-    public void handleLightUp(Coordinates coord){
-
-    }
-
-    public void roadDestruction(){
-
-    }
-
-    public boolean upgrade(Coordinates coord){
-
-    }
-
-
-
-
-
-
-
-
-
-
 
 }

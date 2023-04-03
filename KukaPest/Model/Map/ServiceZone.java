@@ -1,6 +1,7 @@
 package Model.Map;
 
-public class ServiceZone extends MainZone{
-    public int moralBoost;
-    public int radius;
+abstract public class ServiceZone extends MainZone{
+    public ServiceZone(int width, int height) {
+        super(width, height);
+    }
 }

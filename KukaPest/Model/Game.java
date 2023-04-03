@@ -1,8 +1,7 @@
 package Model;
 
-import Model.Helper.Buildings;
+import Model.Helper.Building;
 import Model.Helper.Coordinates;
-import Model.Helper.Zones;
 import Model.Map.Tile;
 
 import java.util.UUID;
@@ -12,53 +11,19 @@ public class Game {
     private City city;
     private int timeSpeed;
 
-    public Game(){
-        city = new City();
-        timeSpeed = 1;
+    public Game(String cityName){
         gameID = UUID.randomUUID();
+        city = new City(cityName);
     }
 
-    public void stepGame(){
-        // Called very often (eg. every second) from view.
-        // Calls city
+    public boolean build(Building toBuild, Coordinates coords){
+        return city.build(toBuild, coords);
     }
+
     public Tile[][] getMap(){
-        // Calls city getMap()
-        return null;
+        return city.getMap();
     }
-
-    public void setZone(Coordinates coords, Zones type){
-        // Calls city setZone();
-    }
-
-    public boolean destroy(Coordinates coords){
-        // Calls city destroy
-        return false;
-    }
-
-    public String getZoneDetails(Coordinates coords){
-        // returns City getZoneDetails() method
-        return null;
-    }
-
-    public void build(Coordinates coords, Buildings type){
-
-    }
-
-    public void modifyTax(int level){
-        // Calls city setTax() method
-    }
-
-    public void saveGame(){
-        // Calls Database saveGame() method
-    }
-
-    public void loadGame(){
-        // Calls Database loadGame() method
-    }
-
-    public boolean upgrade(Coordinates coords){
-        // Calls city upgrade()
-        return false;
+    public String getCityName(){
+        return city.getName();
     }
 }
