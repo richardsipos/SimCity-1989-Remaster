@@ -5,7 +5,7 @@ public class Board {
     private int boardY;
     private int originalX = 50;
     private int originalY = 50;
-    private int cellSide = 40;
+    private int cellSide = 20;
 
 
     public Board(int boardX, int boardY){

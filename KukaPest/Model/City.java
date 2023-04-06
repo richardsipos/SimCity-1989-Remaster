@@ -22,12 +22,12 @@ public class City {
         this.citizens = new ArrayList<>();
 
         // Read the default map
-        this.map = new Tile[18][32];
+        this.map = new Tile[31][59];
         try {
-            Scanner sc = new Scanner(new File("KukaPest/Assets/testMap.txt"));
-            for (int i = 0; i < 18; i++) {
+            Scanner sc = new Scanner(new File("KukaPest/Assets/map.txt"));
+            for (int i = 0; i < 31; i++) {
                 String line = sc.nextLine();
-                for (int j = 0; j < 32; j++) {
+                for (int j = 0; j < 59; j++) {
                     int mapNum = Character.getNumericValue(line.charAt(j));
                     this.map[i][j] = switch (mapNum) {
                         case 1 -> new Grass();
@@ -55,6 +55,7 @@ public class City {
             case POWER_PLANT -> new PowerPlant();
             case RESIDENTIAL -> new ResidentialZone();
             case INDUSTRY -> new IndustrialZone();
+
         };
 
         if(toBeBuilt instanceof MainZone ){
@@ -109,8 +110,8 @@ public class City {
 
     //forTesting
     public void printMap() {
-        for (int i = 0; i < 18; i++) {
-            for (int j = 0; j < 32; j++) {
+        for (int i = 0; i < 31; i++) {
+            for (int j = 0; j < 59; j++) {
                 if(this.map[i][j] instanceof MainZone || this.map[i][j] instanceof ZonePart
                     || this.map[i][j] instanceof Road || this.map[i][j] instanceof Pole){
                     System.out.print("1");

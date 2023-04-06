@@ -24,7 +24,7 @@ public class BoardGUI extends JPanel implements MouseListener {
     private int fromRow = -1;
     private int toCol = -1;
     private int toRow = -1;
-    Image background, grass, dirt, water, road, uni, res_zone, pp, school, police, stadium;
+    Image background, grass, dirt, water, road, uni, res_zone, pp, school, police, stadium,industrial, power_pole;
     Board board;
     boolean build = false;
 
@@ -41,16 +41,18 @@ public class BoardGUI extends JPanel implements MouseListener {
         addMouseListener(this);
 
         background = new ImageIcon("KukaPest/Assets/gatyakukarestart.jpg").getImage();
-        grass = new ImageIcon("KukaPest/Assets/grass.png").getImage();
-        dirt = new ImageIcon("KukaPest/Assets/dirt3.png").getImage();
-        water = new ImageIcon("KukaPest/Assets/water3.png").getImage();
+        grass = new ImageIcon("KukaPest/Assets/grass2.png").getImage();
+        dirt = new ImageIcon("KukaPest/Assets/dirt2.png").getImage();
+        water = new ImageIcon("KukaPest/Assets/water_2.png").getImage();
         road = new ImageIcon("KukaPest/Assets/road.png").getImage();
-        uni = new ImageIcon("KukaPest/Assets/univ.png").getImage();
+        uni = new ImageIcon("KukaPest/Assets/university_2.png").getImage();
         res_zone = new ImageIcon("KukaPest/Assets/house.png").getImage();
         pp = new ImageIcon("KukaPest/Assets/pp.png").getImage();
         school = new ImageIcon("KukaPest/Assets/school.png").getImage();
         police = new ImageIcon("KukaPest/Assets/police.png").getImage();
         stadium = new ImageIcon("KukaPest/Assets/stadium.png").getImage();
+        industrial = new ImageIcon("KukaPest/Assets/industrial.png").getImage();
+        power_pole = new ImageIcon("KukaPest/Assets/power_pole.png").getImage();
 
         map = game.getMap();
     }
@@ -79,19 +81,22 @@ public class BoardGUI extends JPanel implements MouseListener {
                 else if (map[i][j] instanceof Water)
                     g2.drawImage(water, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),board.getCellSide(),board.getCellSide(), null);
                 else if (map[i][j] instanceof Road)
-                    g2.drawImage(road, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),40,40, null);
+                    g2.drawImage(road, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),20,20, null);
                 else if (map[i][j] instanceof Police)
-                    g2.drawImage(police, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),80,160, null);
+                    g2.drawImage(police, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),40,80, null);
                 else if (map[i][j] instanceof Stadium)
-                    g2.drawImage(stadium, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),160,160, null);
+                    g2.drawImage(stadium, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),80,80, null);
                 else if (map[i][j] instanceof University)
-                    g2.drawImage(uni, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),160,160, null);
+                    g2.drawImage(uni, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),80,80, null);
                 else if (map[i][j] instanceof ResidentialZone)
-                    g2.drawImage(res_zone, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),80,80, null);
+                    g2.drawImage(res_zone, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),40,40, null);
                 else if (map[i][j] instanceof PowerPlant)
-                    g2.drawImage(pp, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),160,160, null);
+                    g2.drawImage(pp, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),80,80, null);
                 else if (map[i][j] instanceof School)
-                    g2.drawImage(school, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),80,160, null);
+                    g2.drawImage(school, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),40,80, null);
+                else if (map[i][j] instanceof IndustrialZone)
+                    g2.drawImage(industrial, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),40,40, null);
+
             }
         }
     }
