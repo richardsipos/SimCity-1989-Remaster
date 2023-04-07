@@ -106,6 +106,9 @@ public class City {
                             || this.map[i][j] instanceof Pole){
                         System.out.println("Foglalt terulet sorry");
                         return false;
+                    }else if(!(toBuild instanceof Road) && this.map[i][j] instanceof Water){
+                        System.out.println("Vizre csak utat lehet építeni!");
+                        return false;
                     }
                 }
             }
