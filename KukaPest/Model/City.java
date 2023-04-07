@@ -93,6 +93,7 @@ public class City {
     }
     boolean canBeBuilt(Constructable toBuild, Coordinates coords){
         //TODO: implement method
+
         if(toBuild instanceof Pole || toBuild instanceof Road){
             if(!(map[coords.getX()][coords.getY()] instanceof Environment)) return false;
         }
@@ -100,24 +101,77 @@ public class City {
             MainZone mz = ((MainZone)toBuild);
             for(int i=coords.getX();i< coords.getX()+mz.getWidth();i++){
                 for(int j=coords.getY();j< coords.getY()+ mz.getHeight();j++){
-                    if(this.map[i][j] instanceof ZonePart
+                    if(this.map[i][j] instanceof ZonePart   //Nem epíthetsz mert foglalt terület.
                             || this.map[i][j] instanceof MainZone
                             || this.map[i][j] instanceof Road
                             || this.map[i][j] instanceof Pole){
                         System.out.println("Foglalt terulet sorry");
                         return false;
-                    }else if(!(toBuild instanceof Road) && this.map[i][j] instanceof Water){
+                    }else if(!(toBuild instanceof Road) && this.map[i][j] instanceof Water){  // Csak utat építhetsz vízre
                         System.out.println("Vizre csak utat lehet építeni!");
                         return false;
                     }
                 }
             }
         }
-        //nem checkelem le ha a this.funds nagyobb mint az epulet koltsege, mivel negativba is mehetunk!
-        this.funds=this.funds-(toBuild.getPrice());
-        System.out.println(this.funds);
 
-        return true;
+        //Csak út mellé szabad rakni épületeket.
+
+        if(toBuild instanceof MainZone){
+            boolean nearbyRoadExists = false;
+            MainZone mz = ((MainZone)toBuild);
+
+
+            //ha nem vagyunk a legfelső sorban.
+            for(int k=coords.getY();k<coords.getY()+ mz.getHeight();k++){
+                if( this.map[coords.getX()-1][k] instanceof Road){
+                    nearbyRoadExists=true;
+                }
+            }
+
+            //ha nem vagyunk a legalso sorban.
+            for(int k=coords.getY();k<coords.getY()+ mz.getHeight();k++){
+                if( this.map[coords.getX()+mz.getWidth()][k] instanceof Road){
+                    nearbyRoadExists=true;
+                }
+            }
+
+            //ha nem vagyunk baloldali oszlopban.
+            for(int k=coords.getX();k<coords.getX()+ mz.getWidth();k++){
+                if( this.map[k][coords.getY()-1] instanceof Road){
+                    nearbyRoadExists=true;
+                }
+            }
+
+            //ha nem vagyunk baloldali oszlopban.
+            for(int k=coords.getX();k<coords.getX()+ mz.getWidth();k++){
+                if( this.map[k][coords.getY()+mz.getHeight()] instanceof Road){
+                    nearbyRoadExists=true;
+                }
+            }
+
+            //bal felso sarok, jobb also sarok, jobb felso sarok,
+            if(this.map[coords.getX()-1][coords.getY()-1] instanceof  Road ||
+                    this.map[coords.getX()+mz.getWidth()][coords.getY()+ mz.getHeight()] instanceof Road ||
+                    this.map[coords.getX()-1][coords.getY()+ mz.getHeight()] instanceof Road ||
+                    this.map[coords.getX()+mz.getWidth()][coords.getY()-1] instanceof Road ){
+                nearbyRoadExists=true;
+            }
+
+            //van Út mellete
+            if(nearbyRoadExists){
+                //nem checkelem le ha a this.funds nagyobb mint az epulet koltsege, mivel negativba is mehetunk!
+                this.funds=this.funds-(toBuild.getPrice());
+                return true;
+            }
+
+        }else {
+            //nem checkelem le ha a this.funds nagyobb mint az epulet koltsege, mivel negativba is mehetunk!
+            this.funds = this.funds - (toBuild.getPrice());
+            return true;
+        }
+        return false;
+
     }
 
 //    ezt hivja majd a TimePassed es intezzi majd a Citizenet bekoltozeset.
