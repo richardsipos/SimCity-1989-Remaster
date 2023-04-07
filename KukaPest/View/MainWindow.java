@@ -20,7 +20,7 @@ public class MainWindow {
     private BoardGUI BoardPanel;
 
 
-    public MainWindow(){
+    public MainWindow(String cityName){
 
         BoardPanel = new BoardGUI(INITIAL_BOARD_X, INITIAL_BOARD_Y);
 
