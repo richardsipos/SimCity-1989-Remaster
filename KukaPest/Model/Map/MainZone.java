@@ -7,8 +7,8 @@ abstract public class MainZone extends Constructable {
     private int currentCapacity;
 
 
-    public MainZone(int width, int height,int maxCapacity) {
-        super();
+    public MainZone(int width, int height,int maxCapacity,int priceOfBuilding) {
+        super(priceOfBuilding);
         this.width = height;
         this.height = width;
         this.maxCapacity = maxCapacity;
@@ -21,5 +21,17 @@ abstract public class MainZone extends Constructable {
 
     public int getHeight() {
         return height;
+    }
+
+    public int getMaxCapacity() {
+        return maxCapacity;
+    }
+
+    public int getCurrentCapacity() {
+        return currentCapacity;
+    }
+
+    public void setCurrentCapacity(int currentCapacity) {
+        this.currentCapacity = currentCapacity;
     }
 }
