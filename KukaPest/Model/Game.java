@@ -14,10 +14,15 @@ public class Game {
     public Game(String cityName){
         gameID = UUID.randomUUID();
         city = new City(cityName);
+        timeSpeed = 1;
     }
 
     public boolean build(Building toBuild, Coordinates coords){
         return city.build(toBuild, coords);
+    }
+
+    public void stepGame(){
+        city.timePassed(timeSpeed);
     }
 
     public Tile[][] getMap(){
