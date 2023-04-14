@@ -1,12 +1,8 @@
 package View;
 
-import Model.Game;
 import Model.Helper.Building;
 
 import javax.swing.*;
-import javax.swing.*;
-import javax.swing.event.MenuEvent;
-import javax.swing.event.MenuListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -255,11 +251,6 @@ public class MainWindow {
                 //CustomCursor("KukaPest/Assets/Pole.png");
             }
         });
-
-
-
-
-
 
         frame.add(BoardPanel,BorderLayout.CENTER);
 

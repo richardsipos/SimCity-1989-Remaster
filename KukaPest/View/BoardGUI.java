@@ -5,18 +5,14 @@ import Model.Game;
 import Model.Helper.Building;
 import Model.Helper.Coordinates;
 import Model.Map.*;
+import org.w3c.dom.ls.LSOutput;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-
 
 public class BoardGUI extends JPanel implements MouseListener {
 
@@ -24,12 +20,11 @@ public class BoardGUI extends JPanel implements MouseListener {
     private int fromRow = -1;
     private int toCol = -1;
     private int toRow = -1;
+    static final int DELAY = 1000;
     Image background, grass, dirt, water, road, uni, res_zone, pp, school, police, stadium,industrial, power_pole;
     Board board;
     boolean build = false;
-
     Building selectedBuilding;
-
     Tile[][] map;
     private Game game;
 
@@ -55,6 +50,9 @@ public class BoardGUI extends JPanel implements MouseListener {
         power_pole = new ImageIcon("KukaPest/Assets/power_pole.png").getImage();
 
         map = game.getMap();
+
+        Timer timer = new Timer(DELAY, stepGame);
+        timer.start();
     }
 
 
@@ -147,4 +145,11 @@ public class BoardGUI extends JPanel implements MouseListener {
     public void mouseExited(MouseEvent e) {
 
     }
+
+    ActionListener stepGame = new ActionListener() {
+        public void actionPerformed(ActionEvent evt) {
+            game.stepGame();
+            System.out.println("Lakók: " + game.getPopulation() + "\nPézz: " + game.getFunds()+ "\n\n");
+        }
+    };
 }

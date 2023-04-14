@@ -1,7 +1,14 @@
 package Model.Map;
 
 abstract public class Constructable extends Tile{ //abstract
-    public Constructable() {
+    private int price;
+
+    public Constructable(int price) {
         super();
+        this.price=price;
+    }
+
+    public int getPrice() {
+        return price;
     }
 }
