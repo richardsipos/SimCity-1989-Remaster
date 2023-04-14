@@ -166,7 +166,7 @@ public class MainWindow {
             @Override
             public void actionPerformed(ActionEvent ae) {
 
-                frame.setSize(INITIAL_BOARD_X* 20,INITIAL_BOARD_Y * 20+100);
+                frame.setSize(INITIAL_BOARD_X* 20,INITIAL_BOARD_Y * 20+120);
                 buildBar.setVisible(false);
                 BoardPanel.build = false;
                 BoardPanel.selectedBuilding = null;

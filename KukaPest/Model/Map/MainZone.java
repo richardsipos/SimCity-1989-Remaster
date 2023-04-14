@@ -1,18 +1,22 @@
 package Model.Map;
 
+import Model.Citizen;
+
+import java.util.ArrayList;
+
 abstract public class MainZone extends Constructable {
     private final int width;
     private final int height;
-    private final int maxCapacity;
-    private int currentCapacity;
+    private int capacity;
+    private ArrayList<Citizen> citizens;
 
 
     public MainZone(int width, int height,int maxCapacity,int priceOfBuilding) {
         super(priceOfBuilding);
         this.width = height;
         this.height = width;
-        this.maxCapacity = maxCapacity;
-        this.currentCapacity=0;
+        this.capacity = maxCapacity;
+        this.citizens = new ArrayList<>();
     }
 
     public int getWidth() {
@@ -24,14 +28,13 @@ abstract public class MainZone extends Constructable {
     }
 
     public int getMaxCapacity() {
-        return maxCapacity;
+        return capacity;
     }
 
     public int getCurrentCapacity() {
-        return currentCapacity;
+        return citizens.size();
     }
-
-    public void setCurrentCapacity(int currentCapacity) {
-        this.currentCapacity = currentCapacity;
+    public void addCitizen(Citizen c){
+        this.citizens.add(c);
     }
 }

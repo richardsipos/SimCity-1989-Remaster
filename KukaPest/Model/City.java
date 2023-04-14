@@ -11,15 +11,15 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class City {
-    private String name;
-    private ArrayList<Citizen> citizens;
+    private final String name;
+    private final ArrayList<Citizen> citizens;
     private int funds=10000;
 
     //map meretei:
-    int mapHeight=18;
-    int mapWidth=32;
+    int mapHeight=31;
+    int mapWidth=59;
 
-    private Tile[][] map;
+    private final Tile[][] map;
 
     public int getPopulation() {
         return citizens.size();
@@ -130,29 +130,33 @@ public class City {
 
             //ha nem vagyunk a legfelső sorban.
             for(int k=coords.getY();k<coords.getY()+ mz.getHeight();k++){
-                if( this.map[coords.getX()-1][k] instanceof Road){
-                    nearbyRoadExists=true;
+                if (this.map[coords.getX() - 1][k] instanceof Road) {
+                    nearbyRoadExists = true;
+                    break;
                 }
             }
 
             //ha nem vagyunk a legalso sorban.
             for(int k=coords.getY();k<coords.getY()+ mz.getHeight();k++){
-                if( this.map[coords.getX()+mz.getWidth()][k] instanceof Road){
-                    nearbyRoadExists=true;
+                if (this.map[coords.getX() + mz.getWidth()][k] instanceof Road) {
+                    nearbyRoadExists = true;
+                    break;
                 }
             }
 
             //ha nem vagyunk baloldali oszlopban.
             for(int k=coords.getX();k<coords.getX()+ mz.getWidth();k++){
-                if( this.map[k][coords.getY()-1] instanceof Road){
-                    nearbyRoadExists=true;
+                if (this.map[k][coords.getY() - 1] instanceof Road) {
+                    nearbyRoadExists = true;
+                    break;
                 }
             }
 
             //ha nem vagyunk baloldali oszlopban.
             for(int k=coords.getX();k<coords.getX()+ mz.getWidth();k++){
-                if( this.map[k][coords.getY()+mz.getHeight()] instanceof Road){
-                    nearbyRoadExists=true;
+                if (this.map[k][coords.getY() + mz.getHeight()] instanceof Road) {
+                    nearbyRoadExists = true;
+                    break;
                 }
             }
 
@@ -187,9 +191,10 @@ public class City {
 
         //ha van free residential zone es van industrial zone is akkor letre kell hozzni egy citizent.
         if(Rzone!=null && Izone!=null){
-
             Citizen citizen = new Citizen(Rzone,Izone);
             citizens.add(citizen);
+            Rzone.addCitizen(citizen);
+            Izone.addCitizen(citizen);
         }
         //amugy meg nem tortenik semmi.
     }
@@ -204,6 +209,7 @@ public class City {
                 }
             }
         }
+        System.out.println("residential");
         return null;
     }
 
@@ -217,6 +223,7 @@ public class City {
                 }
             }
         }
+        System.out.println("industrial");
         return null;
     }
 
@@ -240,9 +247,9 @@ public class City {
                 }
                 System.out.print(" ");
             }
-            System.out.println("");
+            System.out.println();
         }
-        System.out.println("");
+        System.out.println();
     }
 
     public Tile[][] getMap() {
