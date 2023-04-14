@@ -3,8 +3,8 @@ package View;
 public class Board {
     private int boardX;
     private int boardY;
-    private int originalX = 50;
-    private int originalY = 50;
+    private int originalX = 0;
+    private int originalY = 0;
     private int cellSide = 20;
 
 

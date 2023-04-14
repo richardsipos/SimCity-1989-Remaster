@@ -63,16 +63,20 @@ public class BoardGUI extends JPanel implements MouseListener {
         super.paintChildren(g);
         Graphics2D g2 = (Graphics2D)g;
 
+
+        /*
         //a tábla felrajzolása
         for(int i = 0; i < board.getBoardY(); i++){
             g2.setColor(Color.black);
             for(int j = 0; j < board.getBoardX(); j++){
                 g2.drawRect(board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),board.getCellSide(),board.getCellSide());
             }
-        }
+        }*/
+
 
         for(int i = 0; i < board.getBoardY(); i++){
             g2.setColor(Color.black);
+
             for(int j = 0; j < board.getBoardX(); j++){
                 if(map[i][j] instanceof Grass)
                     g2.drawImage(grass, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),board.getCellSide(),board.getCellSide(), null);
@@ -96,9 +100,18 @@ public class BoardGUI extends JPanel implements MouseListener {
                     g2.drawImage(school, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),40,80, null);
                 else if (map[i][j] instanceof IndustrialZone)
                     g2.drawImage(industrial, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),40,40, null);
+                else if (map[i][j] instanceof Pole)
+                    g2.drawImage(power_pole, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),20,20, null);
 
             }
         }
+    }
+
+    protected void draw(Graphics g){
+        int col = 0;
+        int row = 0;
+
+
     }
     @Override
     public void mouseClicked(MouseEvent e) {

@@ -78,7 +78,7 @@ public class City {
 
         }else if(toBeBuilt instanceof Pole) {
             if(canBeBuilt(toBeBuilt,coords)) {
-                this.map[coords.getY()][coords.getX()] = new Pole();
+                this.map[coords.getX()][coords.getY()]= new Pole();
                 return true;
             }
         }

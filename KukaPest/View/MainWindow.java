@@ -76,6 +76,8 @@ public class MainWindow {
         Icon iconpp = new ImageIcon("KukaPest/Assets/pp_button.png");
         Icon iconresidental = new ImageIcon("KukaPest/Assets/residental_button2.png");
         Icon iconindustrial = new ImageIcon("KukaPest/Assets/industrial_button.png");
+        Icon iconpowerPole = new ImageIcon("KukaPest/Assets/power_pole_button.png");
+        Icon iconServiceZone = new ImageIcon("KukaPest/Assets/service_button.png");
 
 
         //a gombok létrehozása és vertikálisan középre igazítása
@@ -109,6 +111,11 @@ public class MainWindow {
         buildResidentalZone.setBackground(Color.WHITE);
         JButton buildIndustrialZone = new JButton(iconindustrial);
         buildIndustrialZone.setBackground(Color.WHITE);
+        JButton powerpolebutton = new JButton(iconpowerPole);
+        powerpolebutton.setBackground(Color.WHITE);
+        //JButton serviceZone = new JButton(iconServiceZone);
+        //serviceZone.setBackground(Color.WHITE);
+
 
         // hozzáadjuk a gombokat a box-hoz
         box.add(buildExit);
@@ -121,6 +128,8 @@ public class MainWindow {
         box.add(buildpp);
         box.add(buildResidentalZone);
         box.add(buildIndustrialZone);
+        box.add(powerpolebutton);
+        //box.add(serviceZone);
 
 
         //scroll felvétele, amit a box-hoz veszünk fel és azt adjuk át a toolbarnak
@@ -135,6 +144,13 @@ public class MainWindow {
         frame.add(buildBar,BorderLayout.EAST);
         frame.setTitle("Build Items");
 
+        Toolkit toolkit = Toolkit.getDefaultToolkit();
+        Image imageHouse = toolkit.getImage("KukaPest/Assets/stadium.png");
+        Cursor c = toolkit.createCustomCursor(imageHouse , new Point(frame.getX(),
+                frame.getY()), "img");
+
+
+
         // figyeli, hogy a Build menübe kattintottunk-e
         build.addActionListener(new ActionListener() {
             @Override
@@ -142,6 +158,7 @@ public class MainWindow {
 
                 buildBar.setVisible(true);
                 BoardPanel.build = true;
+                frame.setSize(INITIAL_BOARD_X* 20+300,INITIAL_BOARD_Y * 20+100);
             }
         });
 
@@ -153,9 +170,16 @@ public class MainWindow {
             @Override
             public void actionPerformed(ActionEvent ae) {
 
+                frame.setSize(INITIAL_BOARD_X* 20,INITIAL_BOARD_Y * 20+100);
                 buildBar.setVisible(false);
                 BoardPanel.build = false;
                 BoardPanel.selectedBuilding = null;
+                Toolkit toolkit= Toolkit.getDefaultToolkit();
+                //frame.setCursor();
+                //Cursor.getDefaultCursor();
+                System.out.println("valami");
+
+
             }
         });
 
@@ -164,6 +188,7 @@ public class MainWindow {
             public void actionPerformed(ActionEvent ae) {
 
                 BoardPanel.selectedBuilding = Building.SCHOOL;
+                //CustomCursor("KukaPest/Assets/School.png");
             }
         });
         buildPolice.addActionListener(new ActionListener() {
@@ -171,6 +196,7 @@ public class MainWindow {
             public void actionPerformed(ActionEvent ae) {
 
                 BoardPanel.selectedBuilding = Building.POLICE;
+                //CustomCursor("KukaPest/Assets/Police.png");
             }
         });
         buildStadium.addActionListener(new ActionListener() {
@@ -178,6 +204,7 @@ public class MainWindow {
             public void actionPerformed(ActionEvent ae) {
 
                 BoardPanel.selectedBuilding = Building.STADIUM;
+                //CustomCursor("KukaPest/Assets/Stadium.png");
             }
         });
         buildRoad.addActionListener(new ActionListener() {
@@ -185,6 +212,7 @@ public class MainWindow {
             public void actionPerformed(ActionEvent ae) {
 
                 BoardPanel.selectedBuilding = Building.ROAD;
+                //CustomCursor("KukaPest/Assets/Road");
             }
         });
         buildUniversity.addActionListener(new ActionListener() {
@@ -192,6 +220,7 @@ public class MainWindow {
             public void actionPerformed(ActionEvent ae) {
 
                 BoardPanel.selectedBuilding = Building.UNIVERSITY;
+                //CustomCursor("KukaPest/Assets/University.png");
             }
         });
         buildpp.addActionListener(new ActionListener() {
@@ -199,6 +228,7 @@ public class MainWindow {
             public void actionPerformed(ActionEvent ae) {
 
                 BoardPanel.selectedBuilding = Building.POWER_PLANT;
+                //CustomCursor("KukaPest/Assets/PowerPlant.png");
             }
         });
         buildResidentalZone.addActionListener(new ActionListener() {
@@ -206,6 +236,7 @@ public class MainWindow {
             public void actionPerformed(ActionEvent ae) {
 
                 BoardPanel.selectedBuilding = Building.RESIDENTIAL;
+                //CustomCursor("KukaPest/Assets/ResidentialZone.png");
             }
         });
         buildIndustrialZone.addActionListener(new ActionListener() {
@@ -213,8 +244,18 @@ public class MainWindow {
             public void actionPerformed(ActionEvent ae) {
 
                 BoardPanel.selectedBuilding = Building.INDUSTRY;
+                //CustomCursor("KukaPest/Assets/IndustrialZone.png");
             }
         });
+        powerpolebutton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+
+                BoardPanel.selectedBuilding = Building.POLE;
+                //CustomCursor("KukaPest/Assets/Pole.png");
+            }
+        });
+
 
 
 
@@ -250,7 +291,16 @@ public class MainWindow {
         });
 
 
-        frame.setSize(INITIAL_BOARD_X* 20+ 125,INITIAL_BOARD_Y * 20 + 150);
+        frame.setSize(INITIAL_BOARD_X* 20,INITIAL_BOARD_Y * 20+100);
         frame.setVisible(true);
+    }
+
+    public void CustomCursor(String name){
+        Toolkit toolkit= Toolkit.getDefaultToolkit();
+        Dimension aBestSize = Toolkit.getDefaultToolkit().getBestCursorSize(0, 0);
+        Image imageHouse = toolkit.getImage(name);
+        Point point = new Point(0,0);
+        Cursor c = toolkit.createCustomCursor(imageHouse,point,"c");
+        frame.setCursor(c);
     }
 }
