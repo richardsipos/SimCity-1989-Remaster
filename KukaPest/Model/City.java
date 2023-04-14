@@ -86,7 +86,6 @@ public class City {
         return false;
     }
     boolean canBeBuilt(Constructable toBuild, Coordinates coords){
-        //TODO: implement method
         if(toBuild instanceof Pole || toBuild instanceof Road){
             if(!(map[coords.getX()][coords.getY()] instanceof Environment)) return false;
         }
@@ -105,6 +104,13 @@ public class City {
             }
         }
         return true;
+    }
+
+    public void timePassed(int days){
+        for (int i = 0; i < days; i++) {
+            // One day
+            // handleMoveIn();
+        }
     }
 
     //forTesting
