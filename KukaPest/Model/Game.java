@@ -20,6 +20,7 @@ public class Game {
         return city.build(toBuild, coords);
     }
 
+
     public Tile[][] getMap(){
         return city.getMap();
     }

@@ -50,7 +50,7 @@ public class City {
 
     boolean build(Building toBuild, Coordinates coords){
         //printMap
-        printMap();
+        //printMap();
         Constructable toBeBuilt = switch(toBuild){
             case STADIUM -> new Stadium();
             case ROAD -> new Road();
