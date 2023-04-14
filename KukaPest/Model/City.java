@@ -21,6 +21,14 @@ public class City {
 
     private Tile[][] map;
 
+    public int getPopulation() {
+        return citizens.size();
+    }
+
+    public int getFunds() {
+        return funds;
+    }
+
     public City(String cityName) {
         this.name = cityName;
         this.citizens = new ArrayList<>();
@@ -105,7 +113,7 @@ public class City {
                             || this.map[i][j] instanceof Pole){
                         System.out.println("Foglalt terulet sorry");
                         return false;
-                    }else if(!(toBuild instanceof Road) && this.map[i][j] instanceof Water){  // Csak utat építhetsz vízre
+                    }else if(this.map[i][j] instanceof Water){  // Csak utat építhetsz vízre // !(toBuild instanceof Road) &&
                         System.out.println("Vizre csak utat lehet építeni!");
                         return false;
                     }
@@ -115,9 +123,8 @@ public class City {
 
         //Csak út mellé szabad rakni épületeket.
 
-        if(toBuild instanceof MainZone){
+        if(toBuild instanceof MainZone mz){
             boolean nearbyRoadExists = false;
-            MainZone mz = ((MainZone)toBuild);
 
 
             //ha nem vagyunk a legfelső sorban.
@@ -215,7 +222,7 @@ public class City {
     public void timePassed(int days){
         for (int i = 0; i < days; i++) {
             // One day
-            // handleMoveIn();
+            handleMoveIn();
         }
     }
 

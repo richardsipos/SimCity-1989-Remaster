@@ -5,6 +5,7 @@ import Model.Game;
 import Model.Helper.Building;
 import Model.Helper.Coordinates;
 import Model.Map.*;
+import org.w3c.dom.ls.LSOutput;
 
 import javax.swing.*;
 import java.awt.*;
@@ -130,6 +131,7 @@ public class BoardGUI extends JPanel implements MouseListener {
     ActionListener stepGame = new ActionListener() {
         public void actionPerformed(ActionEvent evt) {
             game.stepGame();
+            System.out.println("Lakók: " + game.getPopulation() + "\nPézz: " + game.getFunds()+ "\n\n");
         }
     };
 }

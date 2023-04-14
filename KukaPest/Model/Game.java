@@ -31,4 +31,10 @@ public class Game {
     public String getCityName(){
         return city.getName();
     }
+    public int getPopulation(){
+        return city.getPopulation();
+    }
+    public int getFunds(){
+        return city.getFunds();
+    }
 }
