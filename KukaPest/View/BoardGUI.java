@@ -34,6 +34,7 @@ public class BoardGUI extends JPanel implements MouseListener {
 
     public BoardGUI(int fieldX, int fieldY){
         game = new Game("Nuke city");
+        //
         //inicializálás
         this.board = new Board(fieldX,fieldY);
         //egér mozgatását figyelő eseménykezelő
