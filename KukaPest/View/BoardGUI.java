@@ -28,8 +28,13 @@ public class BoardGUI extends JPanel implements MouseListener {
     Tile[][] map;
     private Game game;
 
+    public Game getGame() {
+        return game;
+    }
+
     public BoardGUI(int fieldX, int fieldY){
         game = new Game("Nuke city");
+        //
         //inicializálás
         this.board = new Board(fieldX,fieldY);
         //egér mozgatását figyelő eseménykezelő
@@ -53,11 +58,16 @@ public class BoardGUI extends JPanel implements MouseListener {
 
         Timer timer = new Timer(DELAY, stepGame);
         timer.start();
+
+        Dimension dim = new Dimension(59 * 20, 31 * 20);
+        setPreferredSize(dim);
+        setMaximumSize(dim);
+        setSize(dim);
     }
 
 
     @Override
-    protected void paintChildren(Graphics g){
+    protected void  paintComponent(Graphics g){
         super.paintChildren(g);
         Graphics2D g2 = (Graphics2D)g;
 
@@ -77,40 +87,35 @@ public class BoardGUI extends JPanel implements MouseListener {
 
             for(int j = 0; j < board.getBoardX(); j++){
                 if(map[i][j] instanceof Grass)
-                    g2.drawImage(grass, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),board.getCellSide(),board.getCellSide(), null);
+                    g2.drawImage(grass, j * 20,i * 20,20,20, null);
                 else if (map[i][j] instanceof Dirt)
-                    g2.drawImage(dirt, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),board.getCellSide(),board.getCellSide(), null);
+                    g2.drawImage(dirt, j * 20,i * 20,20,20, null);
                 else if (map[i][j] instanceof Water)
-                    g2.drawImage(water, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),board.getCellSide(),board.getCellSide(), null);
+                    g2.drawImage(water, j * 20,i * 20,20,20, null);
                 else if (map[i][j] instanceof Road)
-                    g2.drawImage(road, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),20,20, null);
+                    g2.drawImage(road, j * board.getCellSide(), i * board.getCellSide(),20,20, null);
                 else if (map[i][j] instanceof Police)
-                    g2.drawImage(police, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),40,80, null);
+                    g2.drawImage(police, j * board.getCellSide(), i * board.getCellSide(),40,80, null);
                 else if (map[i][j] instanceof Stadium)
-                    g2.drawImage(stadium, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),80,80, null);
+                    g2.drawImage(stadium, j * board.getCellSide(), i * board.getCellSide(),80,80, null);
                 else if (map[i][j] instanceof University)
-                    g2.drawImage(uni, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),80,80, null);
+                    g2.drawImage(uni, j * board.getCellSide(),i * board.getCellSide(),80,80, null);
                 else if (map[i][j] instanceof ResidentialZone)
-                    g2.drawImage(res_zone, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),40,40, null);
+                    g2.drawImage(res_zone, j * board.getCellSide(),i * board.getCellSide(),40,40, null);
                 else if (map[i][j] instanceof PowerPlant)
-                    g2.drawImage(pp, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),80,80, null);
+                    g2.drawImage(pp, j * board.getCellSide(), i * board.getCellSide(),80,80, null);
                 else if (map[i][j] instanceof School)
-                    g2.drawImage(school, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),40,80, null);
+                    g2.drawImage(school, j * board.getCellSide(), i * board.getCellSide(),40,80, null);
                 else if (map[i][j] instanceof IndustrialZone)
-                    g2.drawImage(industrial, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),40,40, null);
+                    g2.drawImage(industrial, j * board.getCellSide(), i * board.getCellSide(),40,40, null);
                 else if (map[i][j] instanceof Pole)
-                    g2.drawImage(power_pole, board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),20,20, null);
+                    g2.drawImage(power_pole, j * board.getCellSide(), i * board.getCellSide(),20,20, null);
 
             }
         }
     }
 
-    protected void draw(Graphics g){
-        int col = 0;
-        int row = 0;
 
-
-    }
     @Override
     public void mouseClicked(MouseEvent e) {
         int x = e.getPoint().x;
