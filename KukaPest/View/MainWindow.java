@@ -6,21 +6,27 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
+import javax.swing.border.EtchedBorder;
 
 public class MainWindow extends JFrame{
     private static final int INITIAL_BOARD_X = 59;
     private static final int INITIAL_BOARD_Y = 31;
     private BoardGUI BoardPanel;
+    JLabel populationlabel = new JLabel();
+    JLabel fundslabel = new JLabel();
 
+    Timer gameTime;
+
+    private String cityname;
+
+    public String getCityname() {
+        return cityname;
+    }
 
     public MainWindow(String cityName){
 
+        cityname = cityName;
         BoardPanel = new BoardGUI(INITIAL_BOARD_X, INITIAL_BOARD_Y);
 
         setTitle("KukaPest");
@@ -79,26 +85,36 @@ public class MainWindow extends JFrame{
 
         //a gombok létrehozása és vertikálisan középre igazítása
 
-        JButton buildExit = new JButton("Exit from Build Menu");
+        JButton buildExit = new JButton("<html>Exit from <br/>Build Menu</html>");
         buildExit.setBackground(Color.WHITE);
+        buildExit.setPreferredSize(new Dimension(125,122));
         JButton buildSchool = new JButton(iconSchool);
         buildSchool.setBackground(Color.WHITE);
+        buildSchool.setPreferredSize(new Dimension(125,122));
         JButton buildPolice = new JButton(iconPolice);
         buildPolice.setBackground(Color.WHITE);
+        buildPolice.setPreferredSize(new Dimension(125,122));
         JButton buildStadium = new JButton(iconStadium);
         buildStadium.setBackground(Color.WHITE);
+        buildStadium.setPreferredSize(new Dimension(125,122));
         JButton buildRoad = new JButton(iconRoad);
         buildRoad.setBackground(Color.WHITE);
+        buildRoad.setPreferredSize(new Dimension(125,122));
         JButton buildUniversity = new JButton(iconUniversity);
         buildUniversity.setBackground(Color.WHITE);
+        buildUniversity.setPreferredSize(new Dimension(125,122));
         JButton buildpp = new JButton(iconpp);
         buildpp.setBackground(Color.WHITE);
+        buildpp.setPreferredSize(new Dimension(125,122));
         JButton buildResidentalZone = new JButton(iconresidental);
         buildResidentalZone.setBackground(Color.WHITE);
+        buildResidentalZone.setPreferredSize(new Dimension(125,122));
         JButton buildIndustrialZone = new JButton(iconindustrial);
         buildIndustrialZone.setBackground(Color.WHITE);
+        buildIndustrialZone.setPreferredSize(new Dimension(125,122));
         JButton powerpolebutton = new JButton(iconpowerPole);
         powerpolebutton.setBackground(Color.WHITE);
+        powerpolebutton.setPreferredSize(new Dimension(125,122));
 
 
 
@@ -118,7 +134,7 @@ public class MainWindow extends JFrame{
         //scroll felvétele, amit a box-hoz veszünk fel és azt adjuk át a toolbarnak
 
         JScrollPane scrollBar=new JScrollPane(box);
-        scrollBar.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        //scrollBar.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
         buildBar.add(scrollBar);
         buildBar.setFloatable(false);
@@ -135,8 +151,6 @@ public class MainWindow extends JFrame{
         label.setFont(new Font("Cooper Black", Font.BOLD, 30));
 
 
-
-
         JLabel picLabel = new JLabel(new ImageIcon("KukaPest/Assets/city_gif_2.gif"));
 
 
@@ -148,23 +162,94 @@ public class MainWindow extends JFrame{
         startBar.setOrientation(SwingConstants.VERTICAL);
         startBar.setVisible(true);
 
+
+        //StatusBar létrehozása
+
         JToolBar statBar = new JToolBar();
 
-        JLabel statlabel = new JLabel("<html>Stats: <br/></html>",SwingConstants.CENTER);
-        statlabel.setVerticalAlignment(SwingConstants.CENTER);
+
+        JPanel helper3 = new JPanel();
+        helper3.setPreferredSize(new Dimension(250,50));
+        helper3.setMinimumSize(new Dimension(250,50));
+
+        JLabel statlabel = new JLabel("Stats:");
+        //statlabel.setVerticalAlignment(SwingConstants.CENTER);
+        //statlabel.setHorizontalAlignment(SwingConstants.CENTER);
         statlabel.setFont(new Font("Cooper Black", Font.BOLD, 30));
+        //statlabel.setPreferredSize(new Dimension(250,50));
+        //statlabel.setMinimumSize(new Dimension(250,50));
 
-        JLabel populationlabel = new JLabel("<html>population: " + BoardPanel.getGame().getPopulation() + " <br/></html>",SwingConstants.CENTER);
-        populationlabel.setVerticalAlignment(SwingConstants.CENTER);
+        helper3.add(statlabel);
+
+        /*populationlabel.setBorder(
+                BorderFactory.createTitledBorder(
+                        BorderFactory.createEtchedBorder(
+                                EtchedBorder.RAISED, Color.GRAY
+                                , Color.DARK_GRAY), "Population"));*/
+
+
+
+
+
+
+
+
+        JPanel helper = new JPanel();
+        helper.setPreferredSize(new Dimension(250,50));
+        helper.setMinimumSize(new Dimension(250,50));
+
+
+        populationlabel.setBackground(Color.WHITE);
+        populationlabel.setBorder(
+                BorderFactory.createTitledBorder(
+                        BorderFactory.createEtchedBorder(
+                                EtchedBorder.RAISED, Color.GRAY
+                                , Color.DARK_GRAY), "Population"));
+        //populationlabel.setBorder(BorderFactory.createEmptyBorder(0,10,10,10));
+        populationlabel.setText("" + BoardPanel.getGame().getPopulation() + " people");
+        //populationlabel.setVerticalAlignment(SwingConstants.CENTER);
         populationlabel.setFont(new Font("Cooper Black", Font.BOLD, 15));
+        populationlabel.setPreferredSize(new Dimension(250,50));
+        populationlabel.setMinimumSize(new Dimension(250,50));
 
-        JLabel fundslabel = new JLabel("<html>fundslabel: " + BoardPanel.getGame().getFunds()+ " <br/></html>",SwingConstants.CENTER);
-        fundslabel.setVerticalAlignment(SwingConstants.CENTER);
+        helper.add(populationlabel);
+
+        JPanel helper2 = new JPanel();
+        helper2.setPreferredSize(new Dimension(250,50));
+        helper2.setMinimumSize(new Dimension(250,50));
+
+        fundslabel.setBackground(Color.WHITE);
+        fundslabel.setBorder(
+                BorderFactory.createTitledBorder(
+                        BorderFactory.createEtchedBorder(
+                                EtchedBorder.RAISED, Color.GRAY
+                                , Color.DARK_GRAY), "Funds"));
+        fundslabel.setText(BoardPanel.getGame().getFunds()+ " $");
+        //fundslabel.setVerticalAlignment(SwingConstants.CENTER);
         fundslabel.setFont(new Font("Cooper Black", Font.BOLD, 15));
+        //fundslabel.setBorder(BorderFactory.createEmptyBorder(0,10,10,10));
+        fundslabel.setPreferredSize(new Dimension(250,50));
+        fundslabel.setMinimumSize(new Dimension(250,50));
 
-        statBar.add(statlabel);
-        statBar.add(populationlabel);
-        statBar.add(fundslabel);
+        helper2.add(fundslabel);
+
+
+
+        gameTime = new Timer(1000,new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e){
+                refreshGameStatLabel();
+
+            }
+        });
+        gameTime.start();
+
+        statBar.add(helper3);
+        statBar.add(helper);
+        statBar.add(helper);
+        statBar.add(helper);
+        statBar.add(helper);
+        statBar.add(helper2);
 
         statBar.setFloatable(false);
 
@@ -197,14 +282,6 @@ public class MainWindow extends JFrame{
         gameMenu.add(crMenuItem);
         JMenuItem exitMenuItem = new JMenuItem("Exit");
         gameMenu.add(exitMenuItem);
-        exitMenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                System.exit(0);
-            }
-        });
-
-
 
 
         pack();
@@ -213,6 +290,13 @@ public class MainWindow extends JFrame{
         setVisible(true);
 
 
+
+        exitMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                System.exit(0);
+            }
+        });
 
 
         // figyeli, hogy a Build menübe kattintottunk-e
@@ -224,7 +308,7 @@ public class MainWindow extends JFrame{
 
                 remove(startBar);
                 remove(statBar);
-                repaint();
+                //repaint();
                 add(buildBar,BorderLayout.EAST);
                 pack();
 
@@ -232,17 +316,19 @@ public class MainWindow extends JFrame{
             }
         });
         // figyeli, hogy a Stats menübe kattintottunk-e
-        /*stats.addActionListener(new ActionListener() {
+        stats.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
 
                 remove(startBar);
                 remove(buildBar);
-                repaint();
+                //repaint();
                 add(statBar,BorderLayout.EAST);
+
                 pack();
+                BoardPanel.build = false;
             }
-        });*/
+        });
 
         //a build menüben lévő gombok figyelése, a megfelelő épületre való kattintáskor áttadja a BoardGUI-nak
         // az épület nevét, ami ennek segítségével kirajzolja a megfelelő képet, az exit-re való kattintáskor beállítjuk
@@ -253,7 +339,7 @@ public class MainWindow extends JFrame{
             public void actionPerformed(ActionEvent ae) {
 
                 remove(buildBar);
-                repaint();
+                //repaint();
                 add(startBar,BorderLayout.EAST);
                 pack();
 
@@ -337,6 +423,16 @@ public class MainWindow extends JFrame{
                 //CustomCursor("KukaPest/Assets/Pole.png");
             }
         });
+    }
+
+    private void refreshGameStatLabel(){
+
+        populationlabel.setText(BoardPanel.getGame().getPopulation() + " people");
+        fundslabel.setText(BoardPanel.getGame().getFunds()+ " $");
+        System.out.println("population:" +  BoardPanel.getGame().getPopulation());
+        System.out.println("funds:" +  BoardPanel.getGame().getFunds());
+
+
     }
 
     public void CustomCursor(String name){

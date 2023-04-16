@@ -114,12 +114,7 @@ public class BoardGUI extends JPanel implements MouseListener {
         }
     }
 
-    protected void draw(Graphics g){
-        int col = 0;
-        int row = 0;
 
-
-    }
     @Override
     public void mouseClicked(MouseEvent e) {
         int x = e.getPoint().x;
