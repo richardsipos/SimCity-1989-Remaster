@@ -308,7 +308,6 @@ public class MainWindow extends JFrame{
 
                 remove(startBar);
                 remove(statBar);
-                //repaint();
                 add(buildBar,BorderLayout.EAST);
                 pack();
 
