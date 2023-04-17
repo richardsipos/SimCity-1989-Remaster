@@ -106,7 +106,7 @@ public class City {
             return map[coords.getX()][coords.getY()] instanceof Environment
                     && (coords.getX() + 1 < mapHeight && (map[coords.getX() + 1][coords.getY()] instanceof Road)
                     || (coords.getX() - 1 > 0 && map[coords.getX() - 1][coords.getY()] instanceof Road)
-                    || (coords.getY() + 1 < mapHeight && map[coords.getX()][coords.getY() + 1] instanceof Road)
+                    || (coords.getY() + 1 < mapWidth && map[coords.getX()][coords.getY() + 1] instanceof Road)
                     || (coords.getY() - 1 > 0 && map[coords.getX()][coords.getY() - 1] instanceof Road));
         } else if (toBuild instanceof Pole) {
             if(!(map[coords.getX()][coords.getY()] instanceof Environment)) return false;
