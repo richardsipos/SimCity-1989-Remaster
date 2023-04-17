@@ -3,11 +3,10 @@ package View;
 import Model.Helper.Building;
 
 import javax.swing.*;
+import javax.swing.border.EtchedBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.ImageIcon;
-import javax.swing.border.EtchedBorder;
 
 public class MainWindow extends JFrame{
     private static final int INITIAL_BOARD_X = 59;
@@ -285,7 +284,7 @@ public class MainWindow extends JFrame{
 
 
         pack();
-        setResizable(true);
+        setResizable(false);
         //setLocationRelativeTo(null);
         setVisible(true);
 

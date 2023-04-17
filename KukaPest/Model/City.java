@@ -185,7 +185,6 @@ public class City {
             System.out.println(coords.getX());
             if(coords.getX()+mz.getWidth()<mapHeight && coords.getY()>0){
                 if(this.map[coords.getX()+mz.getWidth()][coords.getY()-1] instanceof Road){
-                    System.out.println("bal lenti sarok");
                     nearbyRoadExists=true;
                 }
             }
