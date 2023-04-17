@@ -200,7 +200,7 @@ public class City {
                     nearbyRoadExists=true;
                 }
             }
-            if(coords.getX()+mz.getWidth()<mapWidth && coords.getY()+ mz.getHeight()<mapHeight){
+            if(coords.getX()+mz.getHeight()<mapHeight && coords.getY()+mz.getWidth() <mapWidth){
                 if(this.map[coords.getX()+mz.getWidth()][coords.getY()+ mz.getHeight()] instanceof Road){
                     nearbyRoadExists=true;
                 }
