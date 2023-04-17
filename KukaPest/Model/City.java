@@ -128,44 +128,74 @@ public class City {
             boolean nearbyRoadExists = false;
 
 
+
             //ha nem vagyunk a legfelső sorban.
-            for(int k=coords.getY();k<coords.getY()+ mz.getHeight();k++){
-                if (this.map[coords.getX() - 1][k] instanceof Road) {
-                    nearbyRoadExists = true;
-                    break;
+            if(coords.getX()>0){
+                for (int k = coords.getY(); k < coords.getY() + mz.getHeight(); k++) {
+                    if (this.map[coords.getX() - 1][k] instanceof Road) {
+                        nearbyRoadExists = true;
+//                        System.out.println("Legfelso sorban");
+                        break;
+                    }
                 }
             }
+
+
 
             //ha nem vagyunk a legalso sorban.
-            for(int k=coords.getY();k<coords.getY()+ mz.getHeight();k++){
-                if (this.map[coords.getX() + mz.getWidth()][k] instanceof Road) {
-                    nearbyRoadExists = true;
-                    break;
+            if(coords.getX() + mz.getWidth()<mapHeight) {
+                for (int k = coords.getY(); k < coords.getY() + mz.getHeight(); k++) {
+                    if (this.map[coords.getX() + mz.getWidth()][k] instanceof Road) {
+                        nearbyRoadExists = true;
+                        //System.out.println("Legalso sorban");
+                        break;
+                    }
+                }
+            }
+
+
+
+            //ha nem vagyunk baloldali oszlopban.
+            if(coords.getY() >0) {
+                for (int k = coords.getX(); k < coords.getX() + mz.getWidth(); k++) {
+                    if (this.map[k][coords.getY() - 1] instanceof Road) {
+                        nearbyRoadExists = true;
+                        //System.out.println("Bal oszlop");
+                        break;
+                    }
                 }
             }
 
             //ha nem vagyunk baloldali oszlopban.
-            for(int k=coords.getX();k<coords.getX()+ mz.getWidth();k++){
-                if (this.map[k][coords.getY() - 1] instanceof Road) {
-                    nearbyRoadExists = true;
-                    break;
+            if(coords.getY() + mz.getHeight()<mapWidth) {
+                for (int k = coords.getX(); k < coords.getX() + mz.getWidth(); k++) {
+                    if (this.map[k][coords.getY() + mz.getHeight()] instanceof Road) {
+                        nearbyRoadExists = true;
+                        //System.out.println("Jobb oszlop");
+                        break;
+                    }
                 }
             }
-
-            //ha nem vagyunk baloldali oszlopban.
-            for(int k=coords.getX();k<coords.getX()+ mz.getWidth();k++){
-                if (this.map[k][coords.getY() + mz.getHeight()] instanceof Road) {
-                    nearbyRoadExists = true;
-                    break;
+            //bal felso sarok, jobb felso sarok, bal also sarok, jobb also sarok
+            if(coords.getX()>0 && coords.getY()>0){
+                if(this.map[coords.getX()-1][coords.getY()-1] instanceof  Road){
+                    nearbyRoadExists=true;
                 }
             }
-
-            //bal felso sarok, jobb also sarok, jobb felso sarok,
-            if(this.map[coords.getX()-1][coords.getY()-1] instanceof  Road ||
-                    this.map[coords.getX()+mz.getWidth()][coords.getY()+ mz.getHeight()] instanceof Road ||
-                    this.map[coords.getX()-1][coords.getY()+ mz.getHeight()] instanceof Road ||
-                    this.map[coords.getX()+mz.getWidth()][coords.getY()-1] instanceof Road ){
-                nearbyRoadExists=true;
+            if(coords.getX()+mz.getWidth()<mapWidth && coords.getY()>0){
+                if(this.map[coords.getX()+mz.getWidth()][coords.getY()-1] instanceof Road){
+                    nearbyRoadExists=true;
+                }
+            }
+            if(coords.getX()>0 && coords.getY()+ mz.getHeight()<mapHeight){
+                if(this.map[coords.getX()-1][coords.getY()+ mz.getHeight()] instanceof Road){
+                    nearbyRoadExists=true;
+                }
+            }
+            if(coords.getX()+mz.getWidth()<mapWidth && coords.getY()+ mz.getHeight()<mapHeight){
+                if(this.map[coords.getX()+mz.getWidth()][coords.getY()+ mz.getHeight()] instanceof Road){
+                    nearbyRoadExists=true;
+                }
             }
 
             //van Út mellete
