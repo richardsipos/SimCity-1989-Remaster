@@ -8,11 +8,11 @@ public class Coordinates {
         this.y = y;
     }
 
-    public int getX() {
+    public int getHeight() {
         return x;
     }
 
-    public int getY() {
+    public int getWidth() {
         return y;
     }
 }

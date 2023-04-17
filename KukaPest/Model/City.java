@@ -58,8 +58,6 @@ public class City {
     }
 
     boolean build(Building toBuild, Coordinates coords){
-        //printMap
-        //printMap();
         Constructable toBeBuilt = switch(toBuild){
             case STADIUM -> new Stadium();
             case ROAD -> new Road();
@@ -73,49 +71,40 @@ public class City {
 
         };
 
-        if(toBeBuilt instanceof MainZone ){
-            if(canBeBuilt(toBeBuilt,coords)){
-                for(int i=coords.getX();i<coords.getX()+((MainZone) toBeBuilt).getWidth();i++){
-                    for(int j=coords.getY();j<coords.getY()+((MainZone) toBeBuilt).getHeight();j++){
-                        this.map[i][j] = new ZonePart((MainZone)toBeBuilt);
-                    }
+        if(toBeBuilt instanceof MainZone && canBeBuilt(toBeBuilt,coords)){
+            for(int i = coords.getHeight(); i<coords.getHeight()+((MainZone) toBeBuilt).getWidth(); i++){
+                for(int j = coords.getWidth(); j<coords.getWidth()+((MainZone) toBeBuilt).getHeight(); j++){
+                    this.map[i][j] = new ZonePart((MainZone)toBeBuilt);
                 }
-                this.map[coords.getX()][coords.getY()] = toBeBuilt;
-//            printMap();
+            }
+            this.map[coords.getHeight()][coords.getWidth()] = toBeBuilt;
+            this.funds -= (toBeBuilt.getPrice());
             return true;
-            }
-
-        }else if(toBeBuilt instanceof Road){
-            if(canBeBuilt(toBeBuilt,coords)){
-                this.map[coords.getX()][coords.getY()] = new Road();
-                this.funds=this.funds-10;
-                return true;
-            }
-
-        }else if(toBeBuilt instanceof Pole) {
-            if(canBeBuilt(toBeBuilt,coords)) {
-                this.map[coords.getX()][coords.getY()]= new Pole();
-                return true;
-            }
+        }else if(toBeBuilt instanceof Road && canBeBuilt(toBeBuilt,coords)){
+            this.map[coords.getHeight()][coords.getWidth()] = new Road();
+            this.funds -= (toBeBuilt.getPrice());
+            return true;
+        }else if(toBeBuilt instanceof Pole && canBeBuilt(toBeBuilt,coords)) {
+            this.map[coords.getHeight()][coords.getWidth()]= new Pole();
+            this.funds -= (toBeBuilt.getPrice());
+            return true;
         }
-
-
         return false;
     }
     boolean canBeBuilt(Constructable toBuild, Coordinates coords){
         if(toBuild instanceof Road){
-            return map[coords.getX()][coords.getY()] instanceof Environment
-                    && (coords.getX() + 1 < mapHeight && (map[coords.getX() + 1][coords.getY()] instanceof Road)
-                    || (coords.getX() - 1 > 0 && map[coords.getX() - 1][coords.getY()] instanceof Road)
-                    || (coords.getY() + 1 < mapWidth && map[coords.getX()][coords.getY() + 1] instanceof Road)
-                    || (coords.getY() - 1 > 0 && map[coords.getX()][coords.getY() - 1] instanceof Road));
+            return (map[coords.getHeight()][coords.getWidth()] instanceof Environment
+                    && (coords.getHeight() + 1 < mapHeight && (map[coords.getHeight() + 1][coords.getWidth()] instanceof Road)
+                    || (coords.getHeight() - 1 > 0 && map[coords.getHeight() - 1][coords.getWidth()] instanceof Road)
+                    || (coords.getWidth() + 1 < mapWidth && map[coords.getHeight()][coords.getWidth() + 1] instanceof Road)
+                    || (coords.getWidth() - 1 > 0 && map[coords.getHeight()][coords.getWidth() - 1] instanceof Road)));
         } else if (toBuild instanceof Pole) {
-            if(!(map[coords.getX()][coords.getY()] instanceof Environment)) return false;
+            if(!(map[coords.getHeight()][coords.getWidth()] instanceof Environment)) return false;
         } else{
             MainZone mz = ((MainZone)toBuild);
-            for(int i=coords.getX();i< coords.getX()+mz.getWidth();i++){
-                for(int j=coords.getY();j< coords.getY()+ mz.getHeight();j++){
-                    if(this.map[i][j] instanceof ZonePart   //Nem epíthetsz mert foglalt terület.
+            for(int i = coords.getHeight(); i< coords.getHeight()+mz.getWidth(); i++){
+                for(int j = coords.getWidth(); j< coords.getWidth()+ mz.getHeight(); j++){
+                    if(this.map[i][j] instanceof ZonePart   //Nem építhetsz mert foglalt terület.
                             || this.map[i][j] instanceof MainZone
                             || this.map[i][j] instanceof Road
                             || this.map[i][j] instanceof Pole){
@@ -130,16 +119,13 @@ public class City {
         }
 
         //Csak út mellé szabad rakni épületeket.
-
         if(toBuild instanceof MainZone mz){
             boolean nearbyRoadExists = false;
 
-
-
             //ha nem vagyunk a legfelső sorban.
-            if(coords.getX()>0){
-                for (int k = coords.getY(); k < coords.getY() + mz.getHeight(); k++) {
-                    if (this.map[coords.getX() - 1][k] instanceof Road) {
+            if(coords.getHeight()>0){
+                for (int k = coords.getWidth(); k < coords.getWidth() + mz.getHeight(); k++) {
+                    if (this.map[coords.getHeight() - 1][k] instanceof Road) {
                         nearbyRoadExists = true;
 //                        System.out.println("Legfelso sorban");
                         break;
@@ -150,9 +136,9 @@ public class City {
 
 
             //ha nem vagyunk a legalso sorban.
-            if(coords.getX() + mz.getWidth()<mapHeight) {
-                for (int k = coords.getY(); k < coords.getY() + mz.getHeight(); k++) {
-                    if (this.map[coords.getX() + mz.getWidth()][k] instanceof Road) {
+            if(coords.getHeight() + mz.getWidth()<mapHeight) {
+                for (int k = coords.getWidth(); k < coords.getWidth() + mz.getHeight(); k++) {
+                    if (this.map[coords.getHeight() + mz.getWidth()][k] instanceof Road) {
                         nearbyRoadExists = true;
                         //System.out.println("Legalso sorban");
                         break;
@@ -163,9 +149,9 @@ public class City {
 
 
             //ha nem vagyunk baloldali oszlopban.
-            if(coords.getY() >0) {
-                for (int k = coords.getX(); k < coords.getX() + mz.getWidth(); k++) {
-                    if (this.map[k][coords.getY() - 1] instanceof Road) {
+            if(coords.getWidth() >0) {
+                for (int k = coords.getHeight(); k < coords.getHeight() + mz.getWidth(); k++) {
+                    if (this.map[k][coords.getWidth() - 1] instanceof Road) {
                         nearbyRoadExists = true;
                         //System.out.println("Bal oszlop");
                         break;
@@ -174,9 +160,9 @@ public class City {
             }
 
             //ha nem vagyunk baloldali oszlopban.
-            if(coords.getY() + mz.getHeight()<mapWidth) {
-                for (int k = coords.getX(); k < coords.getX() + mz.getWidth(); k++) {
-                    if (this.map[k][coords.getY() + mz.getHeight()] instanceof Road) {
+            if(coords.getWidth() + mz.getHeight()<mapWidth) {
+                for (int k = coords.getHeight(); k < coords.getHeight() + mz.getWidth(); k++) {
+                    if (this.map[k][coords.getWidth() + mz.getHeight()] instanceof Road) {
                         nearbyRoadExists = true;
                         //System.out.println("Jobb oszlop");
                         break;
@@ -184,41 +170,35 @@ public class City {
                 }
             }
             //bal felso sarok, jobb felso sarok, bal also sarok, jobb also sarok
-            if(coords.getX()>0 && coords.getY()>0){
-                if(this.map[coords.getX()-1][coords.getY()-1] instanceof  Road){
+            if(coords.getHeight()>0 && coords.getWidth()>0){
+                if(this.map[coords.getHeight()-1][coords.getWidth()-1] instanceof  Road){
                     nearbyRoadExists=true;
                 }
             }
-            System.out.println(coords.getX());
-            if(coords.getX()+mz.getWidth()<mapHeight && coords.getY()>0){
-                if(this.map[coords.getX()+mz.getWidth()][coords.getY()-1] instanceof Road){
+            System.out.println(coords.getHeight());
+            if(coords.getHeight()+mz.getWidth()<mapHeight && coords.getWidth()>0){
+                if(this.map[coords.getHeight()+mz.getWidth()][coords.getWidth()-1] instanceof Road){
                     nearbyRoadExists=true;
                 }
             }
-            if(coords.getX()>0 && coords.getY()+ mz.getHeight()<mapWidth){
-                if(this.map[coords.getX()-1][coords.getY()+ mz.getHeight()] instanceof Road){
+            if(coords.getHeight()>0 && coords.getWidth()+ mz.getHeight()<mapWidth){
+                if(this.map[coords.getHeight()-1][coords.getWidth()+ mz.getHeight()] instanceof Road){
                     nearbyRoadExists=true;
                 }
             }
-            if(coords.getX()+mz.getHeight()<mapHeight && coords.getY()+mz.getWidth() <mapWidth){
-                if(this.map[coords.getX()+mz.getWidth()][coords.getY()+ mz.getHeight()] instanceof Road){
+            if(coords.getHeight()+mz.getHeight()<mapHeight && coords.getWidth()+mz.getWidth() <mapWidth){
+                if(this.map[coords.getHeight()+mz.getWidth()][coords.getWidth()+ mz.getHeight()] instanceof Road){
                     nearbyRoadExists=true;
                 }
             }
 
             //van Út mellete
-            if(nearbyRoadExists){
-                //nem checkelem le ha a this.funds nagyobb mint az epulet koltsege, mivel negativba is mehetunk!
-                this.funds=this.funds-(toBuild.getPrice());
-                return true;
-            }
+            return nearbyRoadExists;
 
         }else {
             //nem checkelem le ha a this.funds nagyobb mint az epulet koltsege, mivel negativba is mehetunk!
-            this.funds = this.funds - (toBuild.getPrice());
             return true;
         }
-        return false;
 
     }
 
