@@ -182,12 +182,14 @@ public class City {
                     nearbyRoadExists=true;
                 }
             }
-            if(coords.getX()+mz.getWidth()<mapWidth && coords.getY()>0){
+            System.out.println(coords.getX());
+            if(coords.getX()+mz.getWidth()<mapHeight && coords.getY()>0){
                 if(this.map[coords.getX()+mz.getWidth()][coords.getY()-1] instanceof Road){
+                    System.out.println("bal lenti sarok");
                     nearbyRoadExists=true;
                 }
             }
-            if(coords.getX()>0 && coords.getY()+ mz.getHeight()<mapHeight){
+            if(coords.getX()>0 && coords.getY()+ mz.getHeight()<mapWidth){
                 if(this.map[coords.getX()-1][coords.getY()+ mz.getHeight()] instanceof Road){
                     nearbyRoadExists=true;
                 }
