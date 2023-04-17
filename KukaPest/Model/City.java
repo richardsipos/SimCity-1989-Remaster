@@ -88,6 +88,7 @@ public class City {
         }else if(toBeBuilt instanceof Road){
             if(canBeBuilt(toBeBuilt,coords)){
                 this.map[coords.getX()][coords.getY()] = new Road();
+                this.funds=this.funds-10;
                 return true;
             }
 
