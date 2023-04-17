@@ -56,6 +56,7 @@ public class BoardGUI extends JPanel implements MouseListener {
 
         map = game.getMap();
 
+        // Idő léptetése
         Timer timer = new Timer(DELAY, stepGame);
         timer.start();
 

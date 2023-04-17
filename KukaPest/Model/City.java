@@ -46,6 +46,7 @@ public class City {
                         case 1 -> new Grass();
                         case 2 -> new Dirt();
                         case 3 -> new Water();
+                        case 4 -> new Road();
                         default -> throw new InvalidParameterException();
                     };
                 }
@@ -101,10 +102,15 @@ public class City {
         return false;
     }
     boolean canBeBuilt(Constructable toBuild, Coordinates coords){
-        if(toBuild instanceof Pole || toBuild instanceof Road){
+        if(toBuild instanceof Road){
+            return map[coords.getX()][coords.getY()] instanceof Environment
+                    && (coords.getX() + 1 < mapHeight && (map[coords.getX() + 1][coords.getY()] instanceof Road)
+                    || (coords.getX() - 1 > 0 && map[coords.getX() - 1][coords.getY()] instanceof Road)
+                    || (coords.getY() + 1 < mapHeight && map[coords.getX()][coords.getY() + 1] instanceof Road)
+                    || (coords.getY() - 1 > 0 && map[coords.getX()][coords.getY() - 1] instanceof Road));
+        } else if (toBuild instanceof Pole) {
             if(!(map[coords.getX()][coords.getY()] instanceof Environment)) return false;
-        }
-        else{
+        } else{
             MainZone mz = ((MainZone)toBuild);
             for(int i=coords.getX();i< coords.getX()+mz.getWidth();i++){
                 for(int j=coords.getY();j< coords.getY()+ mz.getHeight();j++){
