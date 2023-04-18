@@ -11,6 +11,13 @@ public class MenuWindow extends JPanel {
     Image background;
     ImageIcon bg, ng, ngactive, load, loadactive, exit, exitactive;
 
+    String name = "";
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
     public MenuWindow(){
         frame = new JFrame("KukaPest");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -32,7 +39,7 @@ public class MenuWindow extends JPanel {
         JPanel buttons = new JPanel();
         buttons.setLayout(new GridBagLayout());
         buttons.setOpaque(false);
-
+/*
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -52,7 +59,7 @@ public class MenuWindow extends JPanel {
         gbc3.gridy = 2;
         gbc3.weightx = 1;
         gbc3.weighty = 1;
-        gbc3.fill = GridBagConstraints.HORIZONTAL;
+        gbc3.fill = GridBagConstraints.HORIZONTAL;*/
 
         JButton ngame = new JButton();
         ngame.setIcon(ng);
@@ -65,7 +72,7 @@ public class MenuWindow extends JPanel {
         ngame.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                String name = "";
+
                 while (name.equals("")) {
                     name = JOptionPane.showInputDialog(null, "Your city's name:");
                 }
@@ -99,18 +106,18 @@ public class MenuWindow extends JPanel {
             }
         });
 
-        buttons.add(ngame, gbc);
-        buttons.add(lgame, gbc2);
-        buttons.add(egame, gbc3);/*
+        //buttons.add(ngame, gbc);
+        //buttons.add(lgame, gbc2);
+        //buttons.add(egame, gbc3);
         buttons.add(ngame); //setting vertical or horizontal arrangement
         buttons.add(lgame);
-        buttons.add(egame);*/
+        buttons.add(egame);
         frame.add(buttons);
 
 
         frame.setSize(1280,720);
         frame.setResizable(false);
-        //frame.setUndecorated(true); //hiding the title bar
+        frame.setUndecorated(true); //hiding the title bar
         frame.pack();
         frame.setVisible(true);
         frame.setLocationRelativeTo(null);

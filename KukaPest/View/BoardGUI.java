@@ -16,10 +16,6 @@ import java.awt.event.MouseListener;
 
 public class BoardGUI extends JPanel implements MouseListener {
 
-    private int fromCol = -1;
-    private int fromRow = -1;
-    private int toCol = -1;
-    private int toRow = -1;
     static final int DELAY = 1000;
     Image background, grass, dirt, water, road, uni, res_zone, pp, school, police, stadium,industrial, power_pole;
     Board board;
@@ -27,18 +23,23 @@ public class BoardGUI extends JPanel implements MouseListener {
     Building selectedBuilding;
     Tile[][] map;
     private Game game;
+    private MenuWindow menuWindow = new MenuWindow();
 
-    public Game getGame() {
-        return game;
-    }
 
+
+    /**
+     *Constructor for the BoardGUI class, here we add the images for the game and here the time starts
+     * @param fieldX map width
+     * @param fieldY height
+     */
     public BoardGUI(int fieldX, int fieldY){
-        game = new Game("Nuke city");
-        //
-        //inicializálás
+        game = new Game(menuWindow.getName());
+
         this.board = new Board(fieldX,fieldY);
-        //egér mozgatását figyelő eseménykezelő
+
         addMouseListener(this);
+
+        //szükséges képek felvétele a kirajzoláshoz
 
         background = new ImageIcon("KukaPest/Assets/gatyakukarestart.jpg").getImage();
         grass = new ImageIcon("KukaPest/Assets/grass2.png").getImage();
@@ -56,10 +57,6 @@ public class BoardGUI extends JPanel implements MouseListener {
 
         map = game.getMap();
 
-        // Idő léptetése
-        Timer timer = new Timer(DELAY, stepGame);
-        timer.start();
-
         Dimension dim = new Dimension(59 * 20, 31 * 20);
         setPreferredSize(dim);
         setMaximumSize(dim);
@@ -67,20 +64,14 @@ public class BoardGUI extends JPanel implements MouseListener {
     }
 
 
+    /**
+     *Drawing the map
+     * @param g
+     */
     @Override
     protected void  paintComponent(Graphics g){
         super.paintChildren(g);
         Graphics2D g2 = (Graphics2D)g;
-
-
-        /*
-        //a tábla felrajzolása
-        for(int i = 0; i < board.getBoardY(); i++){
-            g2.setColor(Color.black);
-            for(int j = 0; j < board.getBoardX(); j++){
-                g2.drawRect(board.getOriginalX() + (j * board.getCellSide()), board.getOriginalY() + i * board.getCellSide(),board.getCellSide(),board.getCellSide());
-            }
-        }*/
 
 
         for(int i = 0; i < board.getBoardY(); i++){
@@ -117,15 +108,16 @@ public class BoardGUI extends JPanel implements MouseListener {
     }
 
 
+    /**
+     *Click monitoring and coordinate determination
+     * @param e
+     */
     @Override
     public void mouseClicked(MouseEvent e) {
         int x = e.getPoint().x;
-        int col = (x - board.getOriginalX()) / board.getCellSide();
-        fromCol = col;
+        int col = (x  / board.getCellSide());
         int y = e.getPoint().y;
-        int row = (y - board.getOriginalY()) / board.getCellSide();
-        fromRow = row;
-        System.out.println("from (col,row): " + fromCol + ", " + fromRow);
+        int row = (y  / board.getCellSide());
 
         game.build(selectedBuilding, new Coordinates(row, col));
 
@@ -152,10 +144,12 @@ public class BoardGUI extends JPanel implements MouseListener {
 
     }
 
-    ActionListener stepGame = new ActionListener() {
-        public void actionPerformed(ActionEvent evt) {
-            game.stepGame();
-            System.out.println("Lakók: " + game.getPopulation() + "\nPézz: " + game.getFunds()+ "\n\n");
-        }
-    };
+
+
+    /**
+     *Getter for the game
+     */
+    public Game getGame() {
+        return game;
+    }
 }

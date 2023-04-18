@@ -14,25 +14,31 @@ public class MainWindow extends JFrame{
     private BoardGUI BoardPanel;
     JLabel populationlabel = new JLabel();
     JLabel fundslabel = new JLabel();
-
     Timer gameTime;
+    String cityname;
 
-    private String cityname;
-
-    public String getCityname() {
-        return cityname;
-    }
 
     public MainWindow(String cityName){
 
         cityname = cityName;
         BoardPanel = new BoardGUI(INITIAL_BOARD_X, INITIAL_BOARD_Y);
 
+        gameTime = new Timer(1000,new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e){
+                BoardPanel.getGame().stepGame();
+                System.out.println("Lakók: " + BoardPanel.getGame().getPopulation() + "\nPézz: " + BoardPanel.getGame().getFunds()+ "\n\n");
+                refreshGameStatLabel();
+
+            }
+        });
+        gameTime.start();
+
         setTitle("KukaPest");
         setSize(1500, 1500);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-
+        //alsó menü gombok létrehozása
 
         JButton build = new JButton("Build");
         JButton destroy = new JButton("Destroy");
@@ -49,6 +55,9 @@ public class MainWindow extends JFrame{
         upgrade.setBackground(Color.WHITE);
         stats.setFont(new Font("Arial", Font.BOLD, 15));
         stats.setBackground(Color.WHITE);
+
+
+        //alsó menü létrehozás
 
         JToolBar tbClip = new JToolBar();
         JPanel panel = new JPanel();
@@ -116,8 +125,8 @@ public class MainWindow extends JFrame{
         powerpolebutton.setPreferredSize(new Dimension(125,122));
 
 
-
         // hozzáadjuk a gombokat a box-hoz
+
         box.add(buildExit);
         box.add(buildSchool);
         box.add(buildPolice);
@@ -133,7 +142,7 @@ public class MainWindow extends JFrame{
         //scroll felvétele, amit a box-hoz veszünk fel és azt adjuk át a toolbarnak
 
         JScrollPane scrollBar=new JScrollPane(box);
-        //scrollBar.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        scrollBar.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
         buildBar.add(scrollBar);
         buildBar.setFloatable(false);
@@ -166,36 +175,9 @@ public class MainWindow extends JFrame{
 
         JToolBar statBar = new JToolBar();
 
-
-        JPanel helper3 = new JPanel();
-        helper3.setPreferredSize(new Dimension(250,50));
-        helper3.setMinimumSize(new Dimension(250,50));
-
-        JLabel statlabel = new JLabel("Stats:");
-        //statlabel.setVerticalAlignment(SwingConstants.CENTER);
-        //statlabel.setHorizontalAlignment(SwingConstants.CENTER);
+        JLabel statlabel = new JLabel("<html>Stats:<br/><br/></html>");
         statlabel.setFont(new Font("Cooper Black", Font.BOLD, 30));
-        //statlabel.setPreferredSize(new Dimension(250,50));
-        //statlabel.setMinimumSize(new Dimension(250,50));
 
-        helper3.add(statlabel);
-
-        /*populationlabel.setBorder(
-                BorderFactory.createTitledBorder(
-                        BorderFactory.createEtchedBorder(
-                                EtchedBorder.RAISED, Color.GRAY
-                                , Color.DARK_GRAY), "Population"));*/
-
-
-
-
-
-
-
-
-        JPanel helper = new JPanel();
-        helper.setPreferredSize(new Dimension(250,50));
-        helper.setMinimumSize(new Dimension(250,50));
 
 
         populationlabel.setBackground(Color.WHITE);
@@ -204,18 +186,13 @@ public class MainWindow extends JFrame{
                         BorderFactory.createEtchedBorder(
                                 EtchedBorder.RAISED, Color.GRAY
                                 , Color.DARK_GRAY), "Population"));
-        //populationlabel.setBorder(BorderFactory.createEmptyBorder(0,10,10,10));
+
         populationlabel.setText("" + BoardPanel.getGame().getPopulation() + " people");
-        //populationlabel.setVerticalAlignment(SwingConstants.CENTER);
+
         populationlabel.setFont(new Font("Cooper Black", Font.BOLD, 15));
         populationlabel.setPreferredSize(new Dimension(250,50));
         populationlabel.setMinimumSize(new Dimension(250,50));
-
-        helper.add(populationlabel);
-
-        JPanel helper2 = new JPanel();
-        helper2.setPreferredSize(new Dimension(250,50));
-        helper2.setMinimumSize(new Dimension(250,50));
+        populationlabel.setMaximumSize(new Dimension(250,50));
 
         fundslabel.setBackground(Color.WHITE);
         fundslabel.setBorder(
@@ -224,31 +201,17 @@ public class MainWindow extends JFrame{
                                 EtchedBorder.RAISED, Color.GRAY
                                 , Color.DARK_GRAY), "Funds"));
         fundslabel.setText(BoardPanel.getGame().getFunds()+ " $");
-        //fundslabel.setVerticalAlignment(SwingConstants.CENTER);
+
         fundslabel.setFont(new Font("Cooper Black", Font.BOLD, 15));
-        //fundslabel.setBorder(BorderFactory.createEmptyBorder(0,10,10,10));
+
         fundslabel.setPreferredSize(new Dimension(250,50));
         fundslabel.setMinimumSize(new Dimension(250,50));
-
-        helper2.add(fundslabel);
-
+        fundslabel.setMaximumSize(new Dimension(250,50));
 
 
-        gameTime = new Timer(1000,new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent e){
-                refreshGameStatLabel();
-
-            }
-        });
-        gameTime.start();
-
-        statBar.add(helper3);
-        statBar.add(helper);
-        statBar.add(helper);
-        statBar.add(helper);
-        statBar.add(helper);
-        statBar.add(helper2);
+        statBar.add(statlabel);
+        statBar.add(populationlabel);
+        statBar.add(fundslabel);
 
         statBar.setFloatable(false);
 
@@ -257,7 +220,6 @@ public class MainWindow extends JFrame{
         statBar.setVisible(true);
 
         add(startBar,BorderLayout.EAST);
-        //add(buildBar,BorderLayout.EAST);
 
         add(BoardPanel,BorderLayout.CENTER);
 
@@ -268,16 +230,12 @@ public class MainWindow extends JFrame{
 
 
         JMenuItem ngMenuItem = new JMenuItem("New Game");
-        //ngMenuItem.addActionListener(new OpenActionListener());
         gameMenu.add(ngMenuItem);
         JMenuItem lgMenuItem = new JMenuItem("Load Game");
-        //lgMenuItem.addActionListener(new OpenActionListener());
         gameMenu.add(lgMenuItem);
         JMenuItem sgMenuItem = new JMenuItem("Save Game");
-        //sgMenuItem.addActionListener(new SaveActionListener());
         gameMenu.add(sgMenuItem);
         JMenuItem crMenuItem = new JMenuItem("Credits");
-        //sgMenuItem.addActionListener(new OpenActionListener());
         gameMenu.add(crMenuItem);
         JMenuItem exitMenuItem = new JMenuItem("Exit");
         gameMenu.add(exitMenuItem);
@@ -285,7 +243,6 @@ public class MainWindow extends JFrame{
 
         pack();
         setResizable(false);
-        //setLocationRelativeTo(null);
         setVisible(true);
 
 
@@ -320,7 +277,6 @@ public class MainWindow extends JFrame{
 
                 remove(startBar);
                 remove(buildBar);
-                //repaint();
                 add(statBar,BorderLayout.EAST);
 
                 pack();
@@ -337,13 +293,11 @@ public class MainWindow extends JFrame{
             public void actionPerformed(ActionEvent ae) {
 
                 remove(buildBar);
-                //repaint();
                 add(startBar,BorderLayout.EAST);
                 pack();
 
                 BoardPanel.build = false;
                 BoardPanel.selectedBuilding = null;
-                Toolkit toolkit= Toolkit.getDefaultToolkit();
 
 
             }
@@ -354,7 +308,6 @@ public class MainWindow extends JFrame{
             public void actionPerformed(ActionEvent ae) {
 
                 BoardPanel.selectedBuilding = Building.SCHOOL;
-                //CustomCursor("KukaPest/Assets/School.png");
             }
         });
         buildPolice.addActionListener(new ActionListener() {
@@ -362,7 +315,6 @@ public class MainWindow extends JFrame{
             public void actionPerformed(ActionEvent ae) {
 
                 BoardPanel.selectedBuilding = Building.POLICE;
-                //CustomCursor("KukaPest/Assets/Police.png");
             }
         });
         buildStadium.addActionListener(new ActionListener() {
@@ -370,7 +322,6 @@ public class MainWindow extends JFrame{
             public void actionPerformed(ActionEvent ae) {
 
                 BoardPanel.selectedBuilding = Building.STADIUM;
-                //CustomCursor("KukaPest/Assets/Stadium.png");
             }
         });
         buildRoad.addActionListener(new ActionListener() {
@@ -378,7 +329,6 @@ public class MainWindow extends JFrame{
             public void actionPerformed(ActionEvent ae) {
 
                 BoardPanel.selectedBuilding = Building.ROAD;
-                //CustomCursor("KukaPest/Assets/Road");
             }
         });
         buildUniversity.addActionListener(new ActionListener() {
@@ -386,7 +336,6 @@ public class MainWindow extends JFrame{
             public void actionPerformed(ActionEvent ae) {
 
                 BoardPanel.selectedBuilding = Building.UNIVERSITY;
-                //CustomCursor("KukaPest/Assets/University.png");
             }
         });
         buildpp.addActionListener(new ActionListener() {
@@ -394,7 +343,6 @@ public class MainWindow extends JFrame{
             public void actionPerformed(ActionEvent ae) {
 
                 BoardPanel.selectedBuilding = Building.POWER_PLANT;
-                //CustomCursor("KukaPest/Assets/PowerPlant.png");
             }
         });
         buildResidentalZone.addActionListener(new ActionListener() {
@@ -402,7 +350,6 @@ public class MainWindow extends JFrame{
             public void actionPerformed(ActionEvent ae) {
 
                 BoardPanel.selectedBuilding = Building.RESIDENTIAL;
-                //CustomCursor("KukaPest/Assets/ResidentialZone.png");
             }
         });
         buildIndustrialZone.addActionListener(new ActionListener() {
@@ -410,7 +357,6 @@ public class MainWindow extends JFrame{
             public void actionPerformed(ActionEvent ae) {
 
                 BoardPanel.selectedBuilding = Building.INDUSTRY;
-                //CustomCursor("KukaPest/Assets/IndustrialZone.png");
             }
         });
         powerpolebutton.addActionListener(new ActionListener() {
@@ -418,27 +364,18 @@ public class MainWindow extends JFrame{
             public void actionPerformed(ActionEvent ae) {
 
                 BoardPanel.selectedBuilding = Building.POLE;
-                //CustomCursor("KukaPest/Assets/Pole.png");
             }
         });
     }
 
+    /**
+     *Refresh Stats Label
+     */
     private void refreshGameStatLabel(){
 
         populationlabel.setText(BoardPanel.getGame().getPopulation() + " people");
         fundslabel.setText(BoardPanel.getGame().getFunds()+ " $");
-        System.out.println("population:" +  BoardPanel.getGame().getPopulation());
-        System.out.println("funds:" +  BoardPanel.getGame().getFunds());
-
 
     }
 
-    public void CustomCursor(String name){
-        Toolkit toolkit= Toolkit.getDefaultToolkit();
-        Dimension aBestSize = Toolkit.getDefaultToolkit().getBestCursorSize(0, 0);
-        Image imageHouse = toolkit.getImage(name);
-        Point point = new Point(0,0);
-        Cursor c = toolkit.createCustomCursor(imageHouse,point,"c");
-        setCursor(c);
-    }
 }
