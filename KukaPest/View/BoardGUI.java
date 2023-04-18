@@ -17,7 +17,7 @@ import java.awt.event.MouseListener;
 public class BoardGUI extends JPanel implements MouseListener {
 
     static final int DELAY = 1000;
-    Image background, grass, dirt, water, road, uni, res_zone, pp, school, police, stadium,industrial, power_pole;
+    Image background, grass, dirt, water, road, uni, res_zone,res_zone_1,res_zone_2,res_zone_3,res_zone_max, pp, school, police, stadium,industrial, power_pole;
     Board board;
     boolean build = false;
     Building selectedBuilding;
@@ -47,7 +47,11 @@ public class BoardGUI extends JPanel implements MouseListener {
         water = new ImageIcon("KukaPest/Assets/water_2.png").getImage();
         road = new ImageIcon("KukaPest/Assets/road.png").getImage();
         uni = new ImageIcon("KukaPest/Assets/university_2.png").getImage();
-        res_zone = new ImageIcon("KukaPest/Assets/house.png").getImage();
+        res_zone = new ImageIcon("KukaPest/Assets/residental.png").getImage();
+        res_zone_1 = new ImageIcon("KukaPest/Assets/residental_1.png").getImage();
+        res_zone_2 = new ImageIcon("KukaPest/Assets/residental_2.png").getImage();
+        res_zone_3 = new ImageIcon("KukaPest/Assets/residental_3.png").getImage();
+        res_zone_max = new ImageIcon("KukaPest/Assets/residental_max.png").getImage();
         pp = new ImageIcon("KukaPest/Assets/pp.png").getImage();
         school = new ImageIcon("KukaPest/Assets/school.png").getImage();
         police = new ImageIcon("KukaPest/Assets/police.png").getImage();
@@ -92,8 +96,24 @@ public class BoardGUI extends JPanel implements MouseListener {
                     g2.drawImage(stadium, j * board.getCellSide(), i * board.getCellSide(),80,80, null);
                 else if (map[i][j] instanceof University)
                     g2.drawImage(uni, j * board.getCellSide(),i * board.getCellSide(),80,80, null);
-                else if (map[i][j] instanceof ResidentialZone)
-                    g2.drawImage(res_zone, j * board.getCellSide(),i * board.getCellSide(),40,40, null);
+                else if (map[i][j] instanceof ResidentialZone) {
+                    System.out.println(((ResidentialZone) map[i][j]).getCurrentCapacity());
+                    if (((ResidentialZone) map[i][j]).getCurrentCapacity() == 0) {
+                        g2.drawImage(res_zone, j * board.getCellSide(), i * board.getCellSide(), 40, 40, null);
+                    }
+                    if (((ResidentialZone) map[i][j]).getCurrentCapacity() <= 2 && ((ResidentialZone) map[i][j]).getCurrentCapacity() >0 ) {
+                        g2.drawImage(res_zone_1, j * board.getCellSide(), i * board.getCellSide(), 40, 40, null);
+                    }
+                    if (((ResidentialZone) map[i][j]).getCurrentCapacity() <= 4 && ((ResidentialZone) map[i][j]).getCurrentCapacity() > 2) {
+                        g2.drawImage(res_zone_2, j * board.getCellSide(), i * board.getCellSide(), 40, 40, null);
+                    }
+                    if (((ResidentialZone) map[i][j]).getCurrentCapacity() <= 6 && ((ResidentialZone) map[i][j]).getCurrentCapacity() > 4) {
+                        g2.drawImage(res_zone_3, j * board.getCellSide(), i * board.getCellSide(), 40, 40, null);
+                    }
+                    if (((ResidentialZone) map[i][j]).getCurrentCapacity() <= 10 && ((ResidentialZone) map[i][j]).getCurrentCapacity() > 6) {
+                        g2.drawImage(res_zone_max, j * board.getCellSide(), i * board.getCellSide(), 40, 40, null);
+                    }
+                }
                 else if (map[i][j] instanceof PowerPlant)
                     g2.drawImage(pp, j * board.getCellSide(), i * board.getCellSide(),80,80, null);
                 else if (map[i][j] instanceof School)
