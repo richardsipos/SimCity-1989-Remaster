@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Scanner;
 
 public class City {
@@ -224,9 +225,13 @@ public class City {
     }
 
     public void timePassed(int days){
+        // int dateChange = Date.daychenges(as)
         for (int i = 0; i < days; i++) {
             // One day
             handleMoveIn();
+//            if(datechange > 0){
+//                // Eltelt egy hónap
+//            }
         }
     }
 
