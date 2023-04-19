@@ -21,7 +21,7 @@ public class MainWindow extends JFrame{
     public MainWindow(String cityName){
 
         cityname = cityName;
-        BoardPanel = new BoardGUI(INITIAL_BOARD_X, INITIAL_BOARD_Y);
+        BoardPanel = new BoardGUI(INITIAL_BOARD_X, INITIAL_BOARD_Y, cityName);
 
         gameTime = new Timer(1000,new ActionListener(){
             @Override
@@ -170,6 +170,28 @@ public class MainWindow extends JFrame{
         startBar.setOrientation(SwingConstants.VERTICAL);
         startBar.setVisible(true);
 
+        //DestroBar létrehozása
+
+        JToolBar destroyBar = new JToolBar();
+
+        JLabel destroy_l = new JLabel();
+
+        JLabel destroylabel = new JLabel("<html>  Destroy! <br><br>  </html>",SwingConstants.CENTER);
+        destroylabel.setVerticalAlignment(SwingConstants.CENTER);
+        destroylabel.setFont(new Font("Cooper Black", Font.BOLD, 35));
+
+
+        JLabel destroypic = new JLabel(new ImageIcon("KukaPest/Assets/destroy_.png"));
+
+
+        destroyBar.add(destroylabel);
+        destroyBar.add(destroypic,BorderLayout.CENTER);
+        destroyBar.setFloatable(false);
+
+
+        destroyBar.setOrientation(SwingConstants.VERTICAL);
+        destroyBar.setVisible(true);
+
 
         //StatusBar létrehozása
 
@@ -254,6 +276,20 @@ public class MainWindow extends JFrame{
             }
         });
 
+        destroy.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+
+                remove(startBar);
+                remove(statBar);
+                remove(buildBar);
+                add(destroyBar,BorderLayout.EAST);
+                pack();
+
+                BoardPanel.build = false;
+                BoardPanel.destroy = true;
+            }
+        });
 
         // figyeli, hogy a Build menübe kattintottunk-e
         build.addActionListener(new ActionListener() {
@@ -263,6 +299,7 @@ public class MainWindow extends JFrame{
 
 
                 remove(startBar);
+                remove(destroyBar);
                 remove(statBar);
                 add(buildBar,BorderLayout.EAST);
                 pack();
@@ -276,6 +313,7 @@ public class MainWindow extends JFrame{
             public void actionPerformed(ActionEvent ae) {
 
                 remove(startBar);
+                remove(destroyBar);
                 remove(buildBar);
                 add(statBar,BorderLayout.EAST);
 
