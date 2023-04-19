@@ -195,6 +195,13 @@ public class City {
         }
         //amugy meg nem tortenik semmi.
     }
+    void updateBalance(){
+        for (int i = 0; i < mapHeight; i++) {
+            for (int j = 0; j < mapWidth; j++) {
+                if(map[i][j] instanceof Constructable) this.funds -= ((Constructable) map[i][j]).getUpKeep();
+            }
+        }
+    }
 
     ResidentialZone hasFreeResidential(){
         for (int i = 0; i < mapHeight; i++) {
@@ -229,9 +236,7 @@ public class City {
         for (int i = 0; i < days; i++) {
             // One day
             handleMoveIn();
-//            if(datechange > 0){
-//                // Eltelt egy hónap
-//            }
+            updateBalance();
         }
     }
 
