@@ -13,4 +13,12 @@ public class Citizen {
         this.workPlace = workPlace;
     }
 
+    public int satisfaction() {
+        int total = 50;
+        total += home.getSatisfactionBoost();
+        total += workPlace.getSatisfactionBoost();
+        if (total < 0) total = 0;
+        if (total > 100) total = 100;
+        return total;
+    }
 }

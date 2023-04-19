@@ -22,6 +22,14 @@ public class City {
 
     private final Tile[][] map;
 
+    public int satisfaction(){
+        int total = 0;
+        for (Citizen c : this.citizens) {
+            total += c.satisfaction();
+        }
+        return total;
+    }
+
     public int getPopulation() {
         return citizens.size();
     }
@@ -82,6 +90,12 @@ public class City {
             }
             this.map[coords.getHeight()][coords.getWidth()] = toBeBuilt;
             this.funds -= (toBeBuilt.getPrice());
+            /*if (toBeBuilt instanceof Police) {
+                modifySatisfactionBoost(coords, 4, 10, toBeBuilt);
+            } else if (toBeBuilt instanceof Stadium) {
+                modifySatisfactionBoost(coords, 6, 15, toBeBuilt);
+            }*/
+            calculateSatisfaction();
             return true;
         }
         return false;
@@ -233,6 +247,67 @@ public class City {
 //                // Eltelt egy hónap
 //            }
         }
+        System.out.println("Elégedettség: " + satisfaction()); //debug
+    }
+
+    public void modifySatisfactionBoost(Coordinates coords, int radius, int value, Constructable b){
+        MainZone mz = (MainZone)b;
+        int left, right, top, bottom;
+/*
+        if (coords.getWidth() - radius < 0) { // check if radius is too big for the left side
+            left = 0;
+        } else left = coords.getWidth() - radius;
+        if (mapHeight - (coords.getWidth()+mz.getWidth()) < radius) { // check if radius is too big for the right side
+            right = mapHeight;
+        } else right = coords.getHeight()+mz.getWidth() + radius;
+        if (coords.getHeight() - radius < 0) { // check if radius is too big for top
+            top = 0;
+        } else top = coords.getHeight() - radius;
+        if (mapWidth - (coords.getHeight()+mz.getHeight()) < radius) { // check if radius is too big for bottom
+            bottom = mapWidth;
+        } else bottom = (coords.getHeight()+mz.getHeight()) + radius;
+*/
+
+        if (coords.getHeight() - radius < 0) { // check if radius is too big for the left side
+            left = 0;
+        } else left = coords.getHeight() - radius;
+        if ((coords.getHeight()+mz.getWidth()+radius) > mapWidth) { // check if radius is too big for the right side
+            right = mapWidth-1;
+        } else right = coords.getWidth()+mz.getWidth() + radius;
+        if (coords.getWidth() - radius < 0) { // check if radius is too big for top
+            top = 0;
+        } else top = coords.getWidth() - radius;
+        if ((coords.getWidth()+mz.getHeight()+radius) > mapHeight) { // check if radius is too big for bottom
+            bottom = mapHeight-1;
+        } else bottom = (coords.getWidth()+mz.getHeight()) + radius;
+        for (int i = top; i < bottom; ++i) {
+            for (int j = left; j < right; ++j) {
+                if(this.map[i][j] instanceof ResidentialZone || this.map[i][j] instanceof IndustrialZone){
+                    ((MainZone) this.map[i][j]).setSatisfactionBoost(value);
+                } else if (this.map[i][j] instanceof ZonePart){
+                    if (((ZonePart) this.map[i][j]).mainBuilding instanceof ResidentialZone
+                            || ((ZonePart) this.map[i][j]).mainBuilding instanceof IndustrialZone){
+                        ((ZonePart) this.map[i][j]).mainBuilding.setSatisfactionBoost(value);
+                    }
+                }
+            }
+        }
+    }
+
+    public void calculateSatisfaction(){
+        for (Tile x[] : this.map) {
+            for (Tile z : x) {
+                if (z instanceof MainZone) ((MainZone) z).resetSatisfactionBoost();
+            }
+        }
+
+        for (int i = 0; i < mapHeight; i++) {
+            for (int j = 0; j < mapWidth; j++) {
+                if (this.map[i][j] instanceof Stadium) modifySatisfactionBoost(new Coordinates(i,j), 6, 15, (Constructable) this.map[i][j]);
+                else if (this.map[i][j] instanceof Police) modifySatisfactionBoost(new Coordinates(i,j), 4, 10, (Constructable) this.map[i][j]);
+            }
+        }
+
     }
 
     //forTesting
