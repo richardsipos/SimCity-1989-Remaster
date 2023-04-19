@@ -15,6 +15,7 @@ public class City {
     private final String name;
     private final ArrayList<Citizen> citizens;
     private int funds = 10000;
+    private int lastBalance[] = {0 , 0};
 
     //Map dimensions:
     private final int mapHeight = 31;
@@ -28,6 +29,9 @@ public class City {
 
     public int getFunds() {
         return funds;
+    }
+    public int[] getLastBalance(){
+        return lastBalance;
     }
 
     public City(String cityName) {
@@ -196,11 +200,19 @@ public class City {
         //amugy meg nem tortenik semmi.
     }
     void updateBalance(){
+        int balance[] = {0 , 0};
         for (int i = 0; i < mapHeight; i++) {
             for (int j = 0; j < mapWidth; j++) {
-                if(map[i][j] instanceof Constructable) this.funds -= ((Constructable) map[i][j]).getUpKeep();
+                if(map[i][j] instanceof Constructable) balance[0] -= ((Constructable) map[i][j]).getUpKeep();
             }
         }
+
+        for (Citizen c : citizens) {
+            balance[1] += c.payTax();
+        }
+
+        this.funds += balance[1] + balance[0];
+        lastBalance = balance;
     }
 
     ResidentialZone hasFreeResidential(){

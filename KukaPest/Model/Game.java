@@ -37,4 +37,7 @@ public class Game {
     public int getFunds(){
         return city.getFunds();
     }
+    public int[] getLastBalance(){
+        return city.getLastBalance();
+    }
 }

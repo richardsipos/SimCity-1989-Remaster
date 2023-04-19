@@ -13,4 +13,8 @@ public class Citizen {
         this.workPlace = workPlace;
     }
 
+    public int payTax(){
+        return workPlace == null ? 2 : 5;
+    }
+
 }
