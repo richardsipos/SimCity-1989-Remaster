@@ -60,15 +60,15 @@ public class City {
 
     boolean build(Building toBuild, Coordinates coords){
         Constructable toBeBuilt = switch(toBuild){
-            case STADIUM -> new Stadium();
+            case STADIUM -> new Stadium(coords);
             case ROAD -> new Road();
-            case POLICE -> new Police();
-            case UNIVERSITY -> new University();
-            case SCHOOL -> new School();
+            case POLICE -> new Police(coords);
+            case UNIVERSITY -> new University(coords);
+            case SCHOOL -> new School(coords);
             case POLE -> new Pole();
-            case POWER_PLANT -> new PowerPlant();
-            case RESIDENTIAL -> new ResidentialZone();
-            case INDUSTRY -> new IndustrialZone();
+            case POWER_PLANT -> new PowerPlant(coords);
+            case RESIDENTIAL -> new ResidentialZone(coords);
+            case INDUSTRY -> new IndustrialZone(coords);
 
         };
 
@@ -233,6 +233,71 @@ public class City {
 //                // Eltelt egy hónap
 //            }
         }
+    }
+
+    public boolean destroy(Coordinates coords) {
+        if (this.map[coords.getHeight()][coords.getWidth()] instanceof Road) {
+            //későbbi ellenőrzés
+            return false;
+        }
+        else if (this.map[coords.getHeight()][coords.getWidth()] instanceof Pole) {
+            //későbbi ellenőrzés
+            return false;
+        }
+        else if (this.map[coords.getHeight()][coords.getWidth()] instanceof MainZone || this.map[coords.getHeight()][coords.getWidth()] instanceof ZonePart) {
+            MainZone mainZone;
+            if(this.map[coords.getHeight()][coords.getWidth()] instanceof MainZone){
+                mainZone = (MainZone) this.map[coords.getHeight()][coords.getWidth()];
+            }
+            else{
+                mainZone = ((ZonePart) this.map[coords.getHeight()][coords.getWidth()]).mainBuilding;
+            }
+
+            if (mainZone instanceof ResidentialZone) {
+                if (mainZone.getCurrentCapacity() != 0) {
+                    return false;
+                } else {
+                    int width = mainZone.getWidth();
+                    int heigth = mainZone.getHeight();
+                    for (int i = mainZone.getCoordinates().getHeight(); i < mainZone.getCoordinates().getHeight() + heigth; i++) {
+                        for (int j = mainZone.getCoordinates().getWidth(); j < mainZone.getCoordinates().getWidth() + width; j++) {
+                            this.map[i][j] = null;
+                            this.map[i][j] = new Grass();
+                        }
+                    }
+                    return true;
+                }
+            }
+            if (mainZone instanceof IndustrialZone) {
+                if (mainZone.getCurrentCapacity() != 0) {
+                    return false;
+                } else {
+                    int width = mainZone.getWidth();
+                    int heigth = mainZone.getHeight();
+                    for (int i = mainZone.getCoordinates().getHeight(); i < mainZone.getCoordinates().getHeight() + heigth; i++) {
+                        for (int j = mainZone.getCoordinates().getWidth(); j < mainZone.getCoordinates().getWidth() + width; j++) {
+                            this.map[i][j] = null;
+                            this.map[i][j] = new Grass();
+                        }
+                    }
+                    return true;
+                }
+            }
+            if (mainZone instanceof ServiceZone) {
+                int width = mainZone.getWidth();
+                int heigth = mainZone.getHeight();
+                for (int i = mainZone.getCoordinates().getHeight(); i < mainZone.getCoordinates().getHeight() + heigth; i++) {
+                    for (int j = mainZone.getCoordinates().getWidth(); j < mainZone.getCoordinates().getWidth() + width; j++) {
+                        this.map[i][j] = null;
+                        this.map[i][j] = new Grass();
+                    }
+                }
+                return true;
+            }
+
+
+        }
+        return true;
     }
 
     //forTesting

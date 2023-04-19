@@ -21,6 +21,10 @@ public class Game {
         return city.build(toBuild, coords);
     }
 
+    public boolean destroy(Coordinates coords){
+        return city.destroy(coords);
+    }
+
     public void stepGame(){
         city.timePassed(timeSpeed);
     }
