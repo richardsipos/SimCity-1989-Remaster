@@ -40,6 +40,7 @@ public class Graph {
         edges.add(new Edge(node1,node2));
         edges.add(new Edge(node2,node1));
         adj[node1].add(node2);
+        adj[node2].add(node1);
     }
 
     public int getNodeID(Coordinates coordinates){
@@ -51,24 +52,38 @@ public class Graph {
         return -1;
     }
 
-    public void BFS(int s, int numberBuilding) {
-        // Mark all the vertices as not visited(By default
-        // set as false)
+    public boolean getNodeRoad(int id){
+        for(Node node_1: nodes_array){
+            if(node_1.getID() == id){
+                return node_1.isIsroad();
+            }
+        }
+        return false;
+
+    }
+
+    public boolean BFS(int s, int numberBuilding) {
+
+        // Az összes csúcs megjelölése nem látogatottként (Alapértelmezés szerint
+        // hamisként beállítva)
 
         boolean visited[] = new boolean[nodes];
 
-        // Create a queue for BFS
+        // sor létrehozása a BFS számára
         LinkedList<Integer> queue
                 = new LinkedList<Integer>();
 
-        // Mark the current node as visited and enqueue it
+        // Jelölje meg az aktuális csomópontot látogatottként, és helyezze sorba
         visited[s] = true;
         queue.add(s);
 
         while (queue.size() != 0) {
-            // Dequeue a vertex from queue and print it
+            // Állítson fel egy csúcsot a sorból, és nyomtassa ki
             s = queue.poll();
             System.out.print(s + " ");
+            if(getNodeRoad(s) == false){
+                continue;
+            }
 
             // Get all adjacent vertices of the dequeued
             // vertex s If a adjacent has not been visited,
@@ -77,11 +92,15 @@ public class Graph {
             while (i.hasNext()) {
                 int n = i.next();
                 if (!visited[n]) {
+                    System.out.println(n + " " + visited[n] + " ");
                     visited[n] = true;
                     queue.add(n);
                 }
             }
         }
+        System.out.println("\n");
+        System.out.println(numberBuilding);
+
         int visit = 0;
         for(int i = 0; i < visited.length; i++){
             if(visited[i] == true && (nodes_array.get(i).isIsroad() == false) ){
@@ -90,7 +109,10 @@ public class Graph {
         }
         if(visit == numberBuilding){
             System.out.println("Rendben");
+            return true;
+
         }
+        return false;
     }
 
 
