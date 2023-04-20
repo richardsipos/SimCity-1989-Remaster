@@ -32,14 +32,14 @@ public class MenuWindow extends JPanel {
         exitactive = new ImageIcon("KukaPest/Assets/exitactive.png");
 
         JLabel contentPane = new JLabel();
-        contentPane.setIcon( bg);
+        contentPane.setIcon(bg);
         contentPane.setLayout( new GridBagLayout() );
         frame.setContentPane( contentPane );
 
         JPanel buttons = new JPanel();
         buttons.setLayout(new GridBagLayout());
         buttons.setOpaque(false);
-/*
+
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -59,7 +59,7 @@ public class MenuWindow extends JPanel {
         gbc3.gridy = 2;
         gbc3.weightx = 1;
         gbc3.weighty = 1;
-        gbc3.fill = GridBagConstraints.HORIZONTAL;*/
+        gbc3.fill = GridBagConstraints.HORIZONTAL;
 
         JButton ngame = new JButton();
         ngame.setIcon(ng);
@@ -77,8 +77,12 @@ public class MenuWindow extends JPanel {
                     name = JOptionPane.showInputDialog(null, "Your city's name:");
                 }
                 if (name != null) {
-                    new MainWindow(name);
                     frame.setVisible(false);
+
+                    new MainWindow(name);
+                    /*frame.dispose();
+                    frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));*/
+
                 }
             }
         });
@@ -106,18 +110,18 @@ public class MenuWindow extends JPanel {
             }
         });
 
-        //buttons.add(ngame, gbc);
-        //buttons.add(lgame, gbc2);
-        //buttons.add(egame, gbc3);
-        buttons.add(ngame); //setting vertical or horizontal arrangement
+        buttons.add(ngame, gbc);
+        buttons.add(lgame, gbc2);
+        buttons.add(egame, gbc3);
+        /*buttons.add(ngame); //setting vertical or horizontal arrangement
         buttons.add(lgame);
-        buttons.add(egame);
+        buttons.add(egame);*/
         frame.add(buttons);
 
 
         frame.setSize(1280,720);
         frame.setResizable(false);
-        frame.setUndecorated(true); //hiding the title bar
+        //frame.setUndecorated(true); //hiding the title bar
         frame.pack();
         frame.setVisible(true);
         frame.setLocationRelativeTo(null);

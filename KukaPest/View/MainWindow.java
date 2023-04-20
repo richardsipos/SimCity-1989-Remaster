@@ -19,6 +19,7 @@ public class MainWindow extends JFrame{
     String cityname;
 
 
+
     public MainWindow(String cityName){
 
         cityname = cityName;
@@ -35,6 +36,8 @@ public class MainWindow extends JFrame{
             }
         });
         gameTime.start();
+
+        dispose();
 
         setTitle("KukaPest");
         setSize(1500, 1500);
