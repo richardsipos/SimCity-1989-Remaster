@@ -10,13 +10,17 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Random;
 import java.util.Scanner;
+
+//import java.util.Date;
 
 public class City {
     private final String name;
     private final ArrayList<Citizen> citizens;
     private int funds = 10000;
+    private int lastBalance[] = {0 , 0};
+    private Date date;
 
     //Map dimensions:
     private final int mapHeight = 31;
@@ -24,12 +28,23 @@ public class City {
 
     private final Tile[][] map;
 
+    public int satisfaction(){
+        int total = 0;
+        for (Citizen c : this.citizens) {
+            total += c.satisfaction();
+        }
+        return total;
+    }
+
     public int getPopulation() {
         return citizens.size();
     }
 
     public int getFunds() {
         return funds;
+    }
+    public int[] getLastBalance(){
+        return lastBalance;
     }
 
     public Graph destroyGraph;
@@ -43,7 +58,7 @@ public class City {
     public City(String cityName) {
         this.name = cityName;
         this.citizens = new ArrayList<>();
-
+        date = new Date(2000,02,1);
 
         // Read the default map
         this.map = new Tile[31][59];
@@ -103,6 +118,7 @@ public class City {
             }
             this.map[coords.getHeight()][coords.getWidth()] = toBeBuilt;
             this.funds -= (toBeBuilt.getPrice());
+            calculateSatisfaction();
             return true;
         }
         return false;
@@ -207,14 +223,38 @@ public class City {
         ResidentialZone Rzone = hasFreeResidential();
         IndustrialZone Izone = hasFreeIndustrial();
 
-        //ha van free residential zone es van industrial zone is akkor letre kell hozzni egy citizent.
-        if(Rzone!=null && Izone!=null){
-            Citizen citizen = new Citizen(Rzone,Izone);
-            citizens.add(citizen);
-            Rzone.addCitizen(citizen);
-            Izone.addCitizen(citizen);
+        //random people will come to the city (bebtween 1-4 bot ends included)
+        Random rand = new Random();
+        int randomNumber = (rand.nextInt(4))+1;
+
+        for(int i=1;i<=randomNumber;i++){
+            //ha van free residential zone es van industrial zone is akkor letre kell hozzni egy citizent.
+            if(Rzone!=null && Izone!=null){
+                Citizen citizen = new Citizen(Rzone,Izone);
+                citizens.add(citizen);
+                Rzone.addCitizen(citizen);
+                Izone.addCitizen(citizen);
+            }
         }
         //amugy meg nem tortenik semmi.
+
+
+
+    }
+    void updateBalance(){
+        int balance[] = {0 , 0};
+        for (int i = 0; i < mapHeight; i++) {
+            for (int j = 0; j < mapWidth; j++) {
+                if(map[i][j] instanceof Constructable) balance[0] -= ((Constructable) map[i][j]).getUpKeep();
+            }
+        }
+
+        for (Citizen c : citizens) {
+            balance[1] += c.payTax();
+        }
+
+        this.funds += balance[1] + balance[0];
+        lastBalance = balance;
     }
 
     ResidentialZone hasFreeResidential(){
@@ -246,13 +286,56 @@ public class City {
     }
 
     public void timePassed(int days){
-        // int dateChange = Date.daychenges(as)
+        int dateChange = date.DaysPassed(days);
         for (int i = 0; i < days; i++) {
-            // One day
+            // One day Passed!
             handleMoveIn();
-//            if(datechange > 0){
-//                // Eltelt egy hónap
-//            }
+            updateBalance();
+        }
+        if(dateChange > 0){
+             //A month has passed!
+            if(dateChange>1){
+                //A year has passed!
+            }
+        }
+        System.out.println("Elégedettség: " + satisfaction()); //debug
+    }
+
+    /**
+     * This method calculates the radii of service buildings, in which satisfaction of resi/industrial zones are boosted
+     * and then executes the satisfaction boost.
+     * @param coords Coordinates of the given service building
+     * @param radius Radius of given service building
+     * @param value Value of satisfaction boost
+     * @param b Given service building
+     */
+    public void modifySatisfactionBoost(Coordinates coords, int radius, int value, Constructable b){
+        MainZone mz = (MainZone)b;
+        int left, right, top, bottom;
+
+        if (coords.getWidth() - radius < 0) { // check if radius is too big for the left side
+            left = 0;
+        } else left = coords.getWidth() - radius;
+        if ((coords.getWidth()+mz.getWidth()+radius) >= mapWidth) { // check if radius is too big for the right side
+            right = mapWidth-1;
+        } else right = coords.getWidth()+mz.getWidth() + radius;
+        if (coords.getHeight() - radius < 0) { // check if radius is too big for top
+            top = 0;
+        } else top = coords.getHeight() - radius;
+        if ((coords.getHeight()+mz.getHeight()+radius) >= mapHeight) { // check if radius is too big for bottom
+            bottom = mapHeight-1;
+        } else bottom = (coords.getHeight()+mz.getHeight()) + radius;
+        for (int i = top; i < bottom; ++i) {
+            for (int j = left; j < right; ++j) {
+                if(this.map[i][j] instanceof ResidentialZone || this.map[i][j] instanceof IndustrialZone){
+                    ((MainZone) this.map[i][j]).setSatisfactionBoost(value);
+                } /*else if (this.map[i][j] instanceof ZonePart){ //zonepart check, NOT usable
+                    if (((ZonePart) this.map[i][j]).mainBuilding instanceof ResidentialZone
+                            || ((ZonePart) this.map[i][j]).mainBuilding instanceof IndustrialZone){
+                        ((ZonePart) this.map[i][j]).mainBuilding.setSatisfactionBoost(value);
+                    }
+                }*/
+            }
         }
     }
 
@@ -534,6 +617,25 @@ public class City {
 
 
 
+    /**
+     * This method resets all satisfaction boost values every time something is built and recalculates the new values.
+     */
+    public void calculateSatisfaction(){
+        for (Tile x[] : this.map) {
+            for (Tile z : x) {
+                if (z instanceof MainZone) ((MainZone) z).resetSatisfactionBoost();
+            }
+        }
+
+        for (int i = 0; i < mapHeight; i++) {
+            for (int j = 0; j < mapWidth; j++) {
+                if (this.map[i][j] instanceof Stadium) modifySatisfactionBoost(new Coordinates(i,j), 9, 15, (Constructable) this.map[i][j]);
+                else if (this.map[i][j] instanceof Police) modifySatisfactionBoost(new Coordinates(i,j), 6, 10, (Constructable) this.map[i][j]);
+            }
+        }
+
+    }
+
     //forTesting
     public void printMap() {
         for (int i = 0; i < mapHeight; i++) {
@@ -557,6 +659,9 @@ public class City {
     }
     public String getName() {
         return name;
+    }
+    public String getDate(){
+        return date.toString();
     }
 
 }
