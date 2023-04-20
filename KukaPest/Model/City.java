@@ -8,13 +8,15 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Scanner;
+
+//import java.util.Date;
 
 public class City {
     private final String name;
     private final ArrayList<Citizen> citizens;
     private int funds = 10000;
+    private Date date;
 
     //Map dimensions:
     private final int mapHeight = 31;
@@ -33,7 +35,7 @@ public class City {
     public City(String cityName) {
         this.name = cityName;
         this.citizens = new ArrayList<>();
-
+        date = new Date(2000,02,1);
 
         // Read the default map
         this.map = new Tile[31][59];
@@ -225,13 +227,20 @@ public class City {
     }
 
     public void timePassed(int days){
-        // int dateChange = Date.daychenges(as)
+        int dateChange = date.DaysPassed(days);
         for (int i = 0; i < days; i++) {
             // One day
             handleMoveIn();
-//            if(datechange > 0){
-//                // Eltelt egy hónap
-//            }
+            System.out.println("One day Passed!");
+
+        }
+        if(dateChange > 0){
+             //eltelt egy honap
+            System.out.println("A month has passed!");
+            if(dateChange>1){
+                //eltelt egy ev
+                System.out.println("A year has passed!");
+            }
         }
     }
 
@@ -258,6 +267,9 @@ public class City {
     }
     public String getName() {
         return name;
+    }
+    public String getDate(){
+        return date.toString();
     }
 
 }
