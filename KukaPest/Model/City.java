@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
 
 //import java.util.Date;
@@ -188,14 +189,23 @@ public class City {
         ResidentialZone Rzone = hasFreeResidential();
         IndustrialZone Izone = hasFreeIndustrial();
 
-        //ha van free residential zone es van industrial zone is akkor letre kell hozzni egy citizent.
-        if(Rzone!=null && Izone!=null){
-            Citizen citizen = new Citizen(Rzone,Izone);
-            citizens.add(citizen);
-            Rzone.addCitizen(citizen);
-            Izone.addCitizen(citizen);
+        //random people will come to the city (bebtween 1-4 bot ends included)
+        Random rand = new Random();
+        int randomNumber = (rand.nextInt(4))+1;
+
+        for(int i=1;i<=randomNumber;i++){
+            //ha van free residential zone es van industrial zone is akkor letre kell hozzni egy citizent.
+            if(Rzone!=null && Izone!=null){
+                Citizen citizen = new Citizen(Rzone,Izone);
+                citizens.add(citizen);
+                Rzone.addCitizen(citizen);
+                Izone.addCitizen(citizen);
+            }
         }
         //amugy meg nem tortenik semmi.
+
+
+
     }
 
     ResidentialZone hasFreeResidential(){
