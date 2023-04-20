@@ -239,17 +239,14 @@ public class City {
     public void timePassed(int days){
         int dateChange = date.DaysPassed(days);
         for (int i = 0; i < days; i++) {
-            // One day
+            // One day Passed!
             handleMoveIn();
-            System.out.println("One day Passed!");
 
         }
         if(dateChange > 0){
-             //eltelt egy honap
-            System.out.println("A month has passed!");
+             //A month has passed!
             if(dateChange>1){
-                //eltelt egy ev
-                System.out.println("A year has passed!");
+                //A year has passed!
             }
         }
     }
