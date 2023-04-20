@@ -2,6 +2,7 @@ package Model;
 
 import Model.Helper.Building;
 import Model.Helper.Coordinates;
+import Model.Helper.Graph;
 import Model.Map.*;
 
 import java.io.File;
@@ -30,6 +31,14 @@ public class City {
         return funds;
     }
 
+    public Graph destroyGraph;
+
+    public int destroynodes = 0;
+
+    public int numberBuilding = 0;
+
+    public Coordinates startRoad;
+
     public City(String cityName) {
         this.name = cityName;
         this.citizens = new ArrayList<>();
@@ -50,6 +59,10 @@ public class City {
                         case 4 -> new Road();
                         default -> throw new InvalidParameterException();
                     };
+                    if(this.map[i][j] instanceof Road){
+                        destroynodes = destroynodes + 1;
+                        startRoad = new Coordinates(i,j);
+                    }
                 }
             }
             sc.close();
@@ -71,6 +84,13 @@ public class City {
             case INDUSTRY -> new IndustrialZone(coords);
 
         };
+
+        if(toBeBuilt instanceof Road){
+            destroynodes = destroynodes + 1;
+        }else{
+            destroynodes = destroynodes + 1;
+            numberBuilding = numberBuilding + 1;
+        }
 
         if(canBeBuilt(toBeBuilt,coords)) {
             if((toBeBuilt instanceof MainZone)) {
@@ -237,7 +257,11 @@ public class City {
 
     public boolean destroy(Coordinates coords) {
         if (this.map[coords.getHeight()][coords.getWidth()] instanceof Road) {
-            //későbbi ellenőrzés
+            destroyGraph = new Graph(destroynodes);
+            System.out.println(destroynodes);
+            destroygraphEdges();
+            System.out.println(destroyGraph);
+            //destroyGraph.BFS(0,numberBuilding);
             return false;
         }
         else if (this.map[coords.getHeight()][coords.getWidth()] instanceof Pole) {
@@ -298,6 +322,12 @@ public class City {
 
         }
         return true;
+    }
+
+    public void destroygraphEdges(){
+        destroyGraph.addNode(0,true,new Coordinates(25,30));
+        int id = 1;
+
     }
 
     //forTesting

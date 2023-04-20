@@ -305,6 +305,7 @@ public class MainWindow extends JFrame{
                 pack();
 
                 BoardPanel.build = true;
+                BoardPanel.destroy = false;
             }
         });
         // figyeli, hogy a Stats menübe kattintottunk-e
@@ -319,6 +320,7 @@ public class MainWindow extends JFrame{
 
                 pack();
                 BoardPanel.build = false;
+                BoardPanel.destroy = false;
             }
         });
 
@@ -335,6 +337,7 @@ public class MainWindow extends JFrame{
                 pack();
 
                 BoardPanel.build = false;
+                BoardPanel.destroy = false;
                 BoardPanel.selectedBuilding = null;
 
 
