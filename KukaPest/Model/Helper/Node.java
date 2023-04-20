@@ -15,7 +15,7 @@ public class Node {
         return id;
     }
 
-    public boolean isIsroad() {
+    public boolean Isroad() {
         return isroad;
     }
 

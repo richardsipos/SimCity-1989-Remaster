@@ -55,7 +55,7 @@ public class Graph {
     public boolean getNodeRoad(int id){
         for(Node node_1: nodes_array){
             if(node_1.getID() == id){
-                return node_1.isIsroad();
+                return node_1.Isroad();
             }
         }
         return false;
@@ -64,30 +64,22 @@ public class Graph {
 
     public boolean BFS(int s, int numberBuilding) {
 
-        // Az összes csúcs megjelölése nem látogatottként (Alapértelmezés szerint
-        // hamisként beállítva)
-
         boolean visited[] = new boolean[nodes];
 
-        // sor létrehozása a BFS számára
         LinkedList<Integer> queue
                 = new LinkedList<Integer>();
 
-        // Jelölje meg az aktuális csomópontot látogatottként, és helyezze sorba
         visited[s] = true;
         queue.add(s);
 
         while (queue.size() != 0) {
-            // Állítson fel egy csúcsot a sorból, és nyomtassa ki
+
             s = queue.poll();
             System.out.print(s + " ");
             if(getNodeRoad(s) == false){
                 continue;
             }
 
-            // Get all adjacent vertices of the dequeued
-            // vertex s If a adjacent has not been visited,
-            // then mark it visited and enqueue it
             Iterator<Integer> i = adj[s].listIterator();
             while (i.hasNext()) {
                 int n = i.next();
@@ -103,7 +95,7 @@ public class Graph {
 
         int visit = 0;
         for(int i = 0; i < visited.length; i++){
-            if(visited[i] == true && (nodes_array.get(i).isIsroad() == false) ){
+            if(visited[i] == true && (nodes_array.get(i).Isroad() == false) ){
                 visit = visit + 1;
             }
         }
@@ -118,13 +110,13 @@ public class Graph {
 
     @Override
     public String toString() {
-        String str = "Csucsok:\n";
-        for (Node cs: nodes_array) {
-            str += cs + "\n";
+        String str = "Nodes:\n";
+        for (Node n: nodes_array) {
+            str += n + "\n";
         }
-        str += "Elek:\n";
-        for (Edge el: edges) {
-            str += el + "\n";
+        str += "Edges:\n";
+        for (Edge e: edges) {
+            str += e + "\n";
         }
         return str;
     }

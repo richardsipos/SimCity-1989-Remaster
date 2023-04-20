@@ -262,9 +262,9 @@ public class City {
                 return false;
             }
             destroyGraph = new Graph(destroynodes);
-            System.out.println(destroynodes);
-            destroygraphEdges(coords);
-            System.out.println(destroyGraph);
+            //System.out.println(destroynodes);
+            buildingsAvailable(coords);
+            //System.out.println(destroyGraph);
             if(destroyGraph.BFS(0,numberBuilding)){
                 this.map[coords.getHeight()][coords.getWidth()] = null;
                 this.map[coords.getHeight()][coords.getWidth()] = new Grass();
@@ -340,9 +340,9 @@ public class City {
         return true;
     }
 
-    public void destroygraphEdges(Coordinates coords) {
+    public void buildingsAvailable(Coordinates coords) {
         destroyGraph.addNode(0, true, new Coordinates(startRoad.getHeight(), startRoad.getWidth()));
-        System.out.println(startRoad.getHeight() + " " + startRoad.getWidth() + " id: " + destroyGraph.getNodeID(new Coordinates(startRoad.getHeight(),startRoad.getWidth())));
+        //System.out.println(startRoad.getHeight() + " " + startRoad.getWidth() + " id: " + destroyGraph.getNodeID(new Coordinates(startRoad.getHeight(),startRoad.getWidth())));
         int id = 1;
 
         //node hozzáadás

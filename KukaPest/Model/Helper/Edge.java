@@ -20,6 +20,6 @@ public class Edge {
 
     @Override
     public String toString() {
-        return String.format("(%d - %d)", node_1, node_2);
+        return String.format("(%d -> %d)", node_1, node_2);
     }
 }
