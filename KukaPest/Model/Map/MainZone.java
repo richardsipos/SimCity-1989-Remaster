@@ -1,24 +1,27 @@
 package Model.Map;
 
 import Model.Citizen;
+import Model.Helper.Coordinates;
 
 import java.util.ArrayList;
 
 abstract public class MainZone extends Constructable {
     private final int width;
     private final int height;
+
+    private final Coordinates coordinates;
     private int capacity;
     private int satisfactionBoost;
     private ArrayList<Citizen> citizens;
 
-
-    public MainZone(int width, int height,int maxCapacity,int priceOfBuilding, int upKeep) {
+    public MainZone(int width, int height, int maxCapacity, int priceOfBuilding, Coordinates coordinates, int upKeep) {
         super(priceOfBuilding, upKeep);
         this.width = width;
         this.height = height;
         this.capacity = maxCapacity;
         this.satisfactionBoost = 0;
         this.citizens = new ArrayList<>();
+        this.coordinates = coordinates;
     }
 
     public void addCitizen(Citizen c){
@@ -54,4 +57,6 @@ abstract public class MainZone extends Constructable {
     public void resetSatisfactionBoost() {
          this.satisfactionBoost = 0;
     }
+
+    public Coordinates getCoordinates() { return coordinates;}
 }

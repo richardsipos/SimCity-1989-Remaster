@@ -102,6 +102,7 @@ public class MenuWindow extends JPanel {
         egame.setContentAreaFilled(false);
         egame.setBorderPainted(false);
         egame.setFocusPainted(false);
+        buttons.add(ngame); //setting vertical or horizontal arrangement
 
         egame.addActionListener(new ActionListener() {
             @Override
@@ -125,5 +126,17 @@ public class MenuWindow extends JPanel {
         frame.pack();
         frame.setVisible(true);
         frame.setLocationRelativeTo(null);
+
+        egame.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                System.exit(0);
+            }
+        });
+
+        //buttons.add(ngame, gbc);
+        //buttons.add(lgame, gbc2);
+        //buttons.add(egame, gbc3);
+
     }
 }

@@ -20,10 +20,11 @@ public class BoardGUI extends JPanel implements MouseListener {
     Image background, grass, dirt, water, road, uni, res_zone,res_zone_1,res_zone_2,res_zone_3,res_zone_max, pp, school, police, stadium,industrial, power_pole;
     Board board;
     boolean build = false;
+    boolean destroy = false;
     Building selectedBuilding;
     Tile[][] map;
     private Game game;
-    private MenuWindow menuWindow = new MenuWindow();
+    //private MenuWindow menuWindow = new MenuWindow();
 
 
 
@@ -32,8 +33,9 @@ public class BoardGUI extends JPanel implements MouseListener {
      * @param fieldX map width
      * @param fieldY height
      */
-    public BoardGUI(int fieldX, int fieldY){
-        game = new Game(menuWindow.getName());
+    public BoardGUI(int fieldX, int fieldY, String cityname){
+        //menuWindow.setVisible(false);
+        game = new Game(cityname);
 
         this.board = new Board(fieldX,fieldY);
 
@@ -139,9 +141,21 @@ public class BoardGUI extends JPanel implements MouseListener {
         int y = e.getPoint().y;
         int row = (y  / board.getCellSide());
 
-        game.build(selectedBuilding, new Coordinates(row, col));
+        if(build){
+            game.build(selectedBuilding, new Coordinates(row, col));
+        }
+
+        if(destroy){
+            boolean candestroy = game.destroy(new Coordinates(row,col));
+            if(candestroy == false){
+                System.out.println("Nem sikerült a rombolás");
+            }
+            //destroy = false;
+            repaint();
+        }
 
         repaint();
+
     }
 
     @Override

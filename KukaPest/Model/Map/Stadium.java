@@ -1,8 +1,9 @@
 package Model.Map;
 
-public class Stadium extends ServiceZone{
+import Model.Helper.Coordinates;
 
-    public Stadium() {
-        super(4,4,20,2000, 20);
+public class Stadium extends ServiceZone{
+    public Stadium(Coordinates coordinates) {
+        super(4,4,20,2000, coordinates, 20);
     }
 }
