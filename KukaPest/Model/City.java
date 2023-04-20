@@ -8,13 +8,17 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Random;
 import java.util.Scanner;
+
+//import java.util.Date;
 
 public class City {
     private final String name;
     private final ArrayList<Citizen> citizens;
     private int funds = 10000;
+    private int lastBalance[] = {0 , 0};
+    private Date date;
 
     //Map dimensions:
     private final int mapHeight = 31;
@@ -37,11 +41,14 @@ public class City {
     public int getFunds() {
         return funds;
     }
+    public int[] getLastBalance(){
+        return lastBalance;
+    }
 
     public City(String cityName) {
         this.name = cityName;
         this.citizens = new ArrayList<>();
-
+        date = new Date(2000,02,1);
 
         // Read the default map
         this.map = new Tile[31][59];
@@ -195,14 +202,38 @@ public class City {
         ResidentialZone Rzone = hasFreeResidential();
         IndustrialZone Izone = hasFreeIndustrial();
 
-        //ha van free residential zone es van industrial zone is akkor letre kell hozzni egy citizent.
-        if(Rzone!=null && Izone!=null){
-            Citizen citizen = new Citizen(Rzone,Izone);
-            citizens.add(citizen);
-            Rzone.addCitizen(citizen);
-            Izone.addCitizen(citizen);
+        //random people will come to the city (bebtween 1-4 bot ends included)
+        Random rand = new Random();
+        int randomNumber = (rand.nextInt(4))+1;
+
+        for(int i=1;i<=randomNumber;i++){
+            //ha van free residential zone es van industrial zone is akkor letre kell hozzni egy citizent.
+            if(Rzone!=null && Izone!=null){
+                Citizen citizen = new Citizen(Rzone,Izone);
+                citizens.add(citizen);
+                Rzone.addCitizen(citizen);
+                Izone.addCitizen(citizen);
+            }
         }
         //amugy meg nem tortenik semmi.
+
+
+
+    }
+    void updateBalance(){
+        int balance[] = {0 , 0};
+        for (int i = 0; i < mapHeight; i++) {
+            for (int j = 0; j < mapWidth; j++) {
+                if(map[i][j] instanceof Constructable) balance[0] -= ((Constructable) map[i][j]).getUpKeep();
+            }
+        }
+
+        for (Citizen c : citizens) {
+            balance[1] += c.payTax();
+        }
+
+        this.funds += balance[1] + balance[0];
+        lastBalance = balance;
     }
 
     ResidentialZone hasFreeResidential(){
@@ -234,13 +265,17 @@ public class City {
     }
 
     public void timePassed(int days){
-        // int dateChange = Date.daychenges(as)
+        int dateChange = date.DaysPassed(days);
         for (int i = 0; i < days; i++) {
-            // One day
+            // One day Passed!
             handleMoveIn();
-//            if(datechange > 0){
-//                // Eltelt egy hónap
-//            }
+            updateBalance();
+        }
+        if(dateChange > 0){
+             //A month has passed!
+            if(dateChange>1){
+                //A year has passed!
+            }
         }
         System.out.println("Elégedettség: " + satisfaction()); //debug
     }
@@ -325,6 +360,9 @@ public class City {
     }
     public String getName() {
         return name;
+    }
+    public String getDate(){
+        return date.toString();
     }
 
 }

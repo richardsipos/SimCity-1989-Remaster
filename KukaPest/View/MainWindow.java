@@ -14,6 +14,7 @@ public class MainWindow extends JFrame{
     private BoardGUI BoardPanel;
     JLabel populationlabel = new JLabel();
     JLabel fundslabel = new JLabel();
+    JLabel balancelabel = new JLabel();
     Timer gameTime;
     String cityname;
 
@@ -30,6 +31,7 @@ public class MainWindow extends JFrame{
                 BoardPanel.getGame().stepGame();
                 System.out.println("Lakók: " + BoardPanel.getGame().getPopulation() + "\nPézz: " + BoardPanel.getGame().getFunds()+ "\n\n");
                 refreshGameStatLabel();
+                repaint();
 
             }
         });
@@ -89,7 +91,7 @@ public class MainWindow extends JFrame{
         Icon iconRoad = new ImageIcon("KukaPest/Assets/road_button.png");
         Icon iconUniversity = new ImageIcon("KukaPest/Assets/university_button.png");
         Icon iconpp = new ImageIcon("KukaPest/Assets/pp_button.png");
-        Icon iconresidental = new ImageIcon("KukaPest/Assets/residental_button2.png");
+        Icon iconresidental = new ImageIcon("KukaPest/Assets/residental_button.png");
         Icon iconindustrial = new ImageIcon("KukaPest/Assets/industrial_button.png");
         Icon iconpowerPole = new ImageIcon("KukaPest/Assets/power_pole_button.png");
 
@@ -211,10 +213,25 @@ public class MainWindow extends JFrame{
         fundslabel.setMinimumSize(new Dimension(250,50));
         fundslabel.setMaximumSize(new Dimension(250,50));
 
+        balancelabel.setBackground(Color.WHITE);
+        balancelabel.setBorder(
+                BorderFactory.createTitledBorder(
+                        BorderFactory.createEtchedBorder(
+                                EtchedBorder.RAISED, Color.GRAY
+                                , Color.DARK_GRAY), "Last balance"));
+        balancelabel.setText((BoardPanel.getGame().getLastBalance()[0] + BoardPanel.getGame().getLastBalance()[1]) + " $");
+
+        balancelabel.setFont(new Font("Cooper Black", Font.BOLD, 15));
+
+        balancelabel.setPreferredSize(new Dimension(250,50));
+        balancelabel.setMinimumSize(new Dimension(250,50));
+        balancelabel.setMaximumSize(new Dimension(250,50));
+
 
         statBar.add(statlabel);
         statBar.add(populationlabel);
         statBar.add(fundslabel);
+        statBar.add(balancelabel);
 
         statBar.setFloatable(false);
 
@@ -378,7 +395,7 @@ public class MainWindow extends JFrame{
 
         populationlabel.setText(BoardPanel.getGame().getPopulation() + " people");
         fundslabel.setText(BoardPanel.getGame().getFunds()+ " $");
-
+        balancelabel.setText((BoardPanel.getGame().getLastBalance()[0] + BoardPanel.getGame().getLastBalance()[1]) + " $");
     }
 
 }

@@ -26,4 +26,8 @@ public class Citizen {
         if (total > 100) total = 100;
         return total;
     }
+    public int payTax(){
+        return workPlace == null ? 2 : 5;
+    }
+
 }
