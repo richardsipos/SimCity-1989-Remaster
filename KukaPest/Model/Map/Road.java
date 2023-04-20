@@ -2,6 +2,6 @@ package Model.Map;
 
 public class Road extends Constructable{
     public Road(){
-        super(10);
+        super(10, 1);
     }
 }

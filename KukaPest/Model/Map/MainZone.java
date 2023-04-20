@@ -11,8 +11,8 @@ abstract public class MainZone extends Constructable {
     private ArrayList<Citizen> citizens;
 
 
-    public MainZone(int width, int height,int maxCapacity,int priceOfBuilding) {
-        super(priceOfBuilding);
+    public MainZone(int width, int height,int maxCapacity,int priceOfBuilding, int upKeep) {
+        super(priceOfBuilding, upKeep);
         this.width = width;
         this.height = height;
         this.capacity = maxCapacity;
