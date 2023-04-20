@@ -30,6 +30,7 @@ public class MainWindow extends JFrame{
                 BoardPanel.getGame().stepGame();
                 System.out.println("Lakók: " + BoardPanel.getGame().getPopulation() + "\nPézz: " + BoardPanel.getGame().getFunds()+ "\n\n");
                 refreshGameStatLabel();
+                repaint();
 
             }
         });
@@ -87,7 +88,7 @@ public class MainWindow extends JFrame{
         Icon iconRoad = new ImageIcon("KukaPest/Assets/road_button.png");
         Icon iconUniversity = new ImageIcon("KukaPest/Assets/university_button.png");
         Icon iconpp = new ImageIcon("KukaPest/Assets/pp_button.png");
-        Icon iconresidental = new ImageIcon("KukaPest/Assets/residental_button2.png");
+        Icon iconresidental = new ImageIcon("KukaPest/Assets/residental_button.png");
         Icon iconindustrial = new ImageIcon("KukaPest/Assets/industrial_button.png");
         Icon iconpowerPole = new ImageIcon("KukaPest/Assets/power_pole_button.png");
 
