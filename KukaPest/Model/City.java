@@ -284,7 +284,7 @@ public class City {
     }
 
     /**
-     * This method resets all satisfaction boost values in every game cycle and recalculates them for the whole map.
+     * This method resets all satisfaction boost values every time something is built and recalculates the new values.
      */
     public void calculateSatisfaction(){
         for (Tile x[] : this.map) {
