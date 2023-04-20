@@ -220,14 +220,13 @@ public class City {
 
 //    ezt hivja majd a TimePassed es intezzi majd a Citizenet bekoltozeset.
     void handleMoveIn(){
-        ResidentialZone Rzone = hasFreeResidential();
-        IndustrialZone Izone = hasFreeIndustrial();
-
         //random people will come to the city (bebtween 1-4 bot ends included)
         Random rand = new Random();
         int randomNumber = (rand.nextInt(4))+1;
 
         for(int i=1;i<=randomNumber;i++){
+            ResidentialZone Rzone = hasFreeResidential();
+            IndustrialZone Izone = hasFreeIndustrial();
             //ha van free residential zone es van industrial zone is akkor letre kell hozzni egy citizent.
             if(Rzone!=null && Izone!=null){
                 Citizen citizen = new Citizen(Rzone,Izone);
