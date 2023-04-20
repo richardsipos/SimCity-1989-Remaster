@@ -19,7 +19,7 @@ public class City {
     private final String name;
     private final ArrayList<Citizen> citizens;
     private int funds = 10000;
-    private int lastBalance[] = {0 , 0};
+    private int[] lastBalance = {0 , 0};
     private Date date;
 
     //Map dimensions:
@@ -192,7 +192,7 @@ public class City {
                 }
             }
             //bal felso sarok, jobb felso sarok, bal also sarok, jobb also sarok
-            if(coords.getHeight()>0 && coords.getWidth()>0){
+            /*if(coords.getHeight()>0 && coords.getWidth()>0){
                 if(this.map[coords.getHeight()-1][coords.getWidth()-1] instanceof  Road){
                     nearbyRoadExists=true;
                 }
@@ -211,7 +211,7 @@ public class City {
                 if(this.map[coords.getHeight()+mz.getHeight()][coords.getWidth()+ mz.getWidth()] instanceof Road){
                     nearbyRoadExists=true;
                 }
-            }
+            }*/
 
             //van Út mellete
             return nearbyRoadExists;
@@ -242,7 +242,7 @@ public class City {
 
     }
     void updateBalance(){
-        int balance[] = {0 , 0};
+        int[] balance = {0 , 0};
         for (int i = 0; i < mapHeight; i++) {
             for (int j = 0; j < mapWidth; j++) {
                 if(map[i][j] instanceof Constructable) balance[0] -= ((Constructable) map[i][j]).getUpKeep();
@@ -424,6 +424,7 @@ public class City {
     }
 
     public void buildingsAvailable(Coordinates coords) {
+        numberBuilding = 0;
         destroyGraph.addNode(0, true, new Coordinates(startRoad.getHeight(), startRoad.getWidth()));
         //System.out.println(startRoad.getHeight() + " " + startRoad.getWidth() + " id: " + destroyGraph.getNodeID(new Coordinates(startRoad.getHeight(),startRoad.getWidth())));
         int id = 1;
@@ -440,6 +441,7 @@ public class City {
                     id = id + 1;
                 }
                 else if (this.map[i][j] instanceof MainZone) {
+                    numberBuilding++;
                     System.out.println(i + " " + j + " id: " + id);
                     destroyGraph.addNode(id, false, new Coordinates(i, j));
                     id = id + 1;
@@ -621,7 +623,7 @@ public class City {
      * This method resets all satisfaction boost values every time something is built and recalculates the new values.
      */
     public void calculateSatisfaction(){
-        for (Tile x[] : this.map) {
+        for (Tile[] x : this.map) {
             for (Tile z : x) {
                 if (z instanceof MainZone) ((MainZone) z).resetSatisfactionBoost();
             }
