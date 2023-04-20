@@ -13,6 +13,11 @@ public class Citizen {
         this.workPlace = workPlace;
     }
 
+    /**
+     * This method calculates satisfaction value for an individual Citizen
+     * @return Returns total satisfaction of citizen, which is equal to
+     *         base + home boost + workplace boost
+     */
     public int satisfaction() {
         int total = 50;
         total += home.getSatisfactionBoost();

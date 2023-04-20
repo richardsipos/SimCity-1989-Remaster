@@ -12,7 +12,7 @@ abstract public class MainZone extends Constructable {
     private ArrayList<Citizen> citizens;
 
 
-    public MainZone(int width, int height,int maxCapacity,int priceOfBuilding, int satisfactionBoost) {
+    public MainZone(int width, int height,int maxCapacity,int priceOfBuilding) {
         super(priceOfBuilding);
         this.width = width;
         this.height = height;
@@ -21,6 +21,13 @@ abstract public class MainZone extends Constructable {
         this.citizens = new ArrayList<>();
     }
 
+    public void addCitizen(Citizen c){
+        this.citizens.add(c);
+    }
+
+    /**
+     * Get/set methods
+     */
     public int getWidth() {
         return width;
     }
@@ -35,9 +42,6 @@ abstract public class MainZone extends Constructable {
 
     public int getCurrentCapacity() {
         return citizens.size();
-    }
-    public void addCitizen(Citizen c){
-        this.citizens.add(c);
     }
 
     public int getSatisfactionBoost() {
