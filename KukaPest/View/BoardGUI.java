@@ -9,12 +9,9 @@ import org.w3c.dom.ls.LSOutput;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
 
-public class BoardGUI extends JPanel implements MouseListener {
+public class BoardGUI extends JPanel implements MouseListener, MouseMotionListener {
 
     static final int DELAY = 1000;
     Image background, grass, dirt, water, road, uni, res_zone,res_zone_1,res_zone_2,res_zone_3,res_zone_max, pp, school, police, stadium,industrial, power_pole;
@@ -40,6 +37,7 @@ public class BoardGUI extends JPanel implements MouseListener {
         this.board = new Board(fieldX,fieldY);
 
         addMouseListener(this);
+        addMouseMotionListener(this);
 
         //szükséges képek felvétele a kirajzoláshoz
 
@@ -155,6 +153,23 @@ public class BoardGUI extends JPanel implements MouseListener {
         }
 
         repaint();
+
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent e){
+        if(selectedBuilding == Building.ROAD && build){
+            int x = e.getPoint().x;
+            int col = (x  / board.getCellSide());
+            int y = e.getPoint().y;
+            int row = (y  / board.getCellSide());
+
+            game.build(selectedBuilding, new Coordinates(row, col));
+            repaint();
+        }
+    }
+    @Override
+    public void mouseMoved(MouseEvent e){
 
     }
 

@@ -266,7 +266,7 @@ public class City {
                 }
             }
         }
-        System.out.println("residential");
+        // System.out.println("residential");
         return null;
     }
 
@@ -280,7 +280,7 @@ public class City {
                 }
             }
         }
-        System.out.println("industrial");
+        // System.out.println("industrial");
         return null;
     }
 
@@ -435,13 +435,13 @@ public class City {
                     continue;
                 }
                 else if (this.map[i][j] instanceof Road) {
-                    System.out.println(i + " " + j + " id: " + id);
+                    // System.out.println(i + " " + j + " id: " + id);
                     destroyGraph.addNode(id, true, new Coordinates(i, j));
                     id = id + 1;
                 }
                 else if (this.map[i][j] instanceof MainZone) {
                     numberBuilding++;
-                    System.out.println(i + " " + j + " id: " + id);
+                    // System.out.println(i + " " + j + " id: " + id);
                     destroyGraph.addNode(id, false, new Coordinates(i, j));
                     id = id + 1;
                 }
