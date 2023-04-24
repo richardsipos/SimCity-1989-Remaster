@@ -2,13 +2,14 @@ package Model;
 
 import Model.Map.IndustrialZone;
 import Model.Map.ResidentialZone;
+import Model.Map.Workplace;
 
 public class Citizen {
 
     ResidentialZone home;
-    IndustrialZone workPlace;
+    Workplace workPlace;
 
-    Citizen(ResidentialZone home,IndustrialZone workPlace){
+    Citizen(ResidentialZone home,Workplace workPlace){
         this.home = home;
         this.workPlace = workPlace;
     }

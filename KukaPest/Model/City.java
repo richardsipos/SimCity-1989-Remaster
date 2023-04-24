@@ -4,7 +4,6 @@ import Model.Helper.Building;
 import Model.Helper.Coordinates;
 import Model.Helper.Graph;
 import Model.Map.*;
-import com.sun.tools.javac.Main;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -98,7 +97,7 @@ public class City {
             case POWER_PLANT -> new PowerPlant(coords);
             case RESIDENTIAL -> new ResidentialZone(coords);
             case INDUSTRY -> new IndustrialZone(coords);
-
+            case SERVICE -> new ServiceZone(coords);
         };
 
         if(toBeBuilt instanceof Road || toBeBuilt instanceof Pole){
@@ -226,13 +225,13 @@ public class City {
 
         for(int i=1;i<=randomNumber;i++){
             ResidentialZone Rzone = hasFreeResidential();
-            IndustrialZone Izone = hasFreeIndustrial();
+            Workplace Wzone = hasFreeWorkplace();
             //ha van free residential zone es van industrial zone is akkor letre kell hozzni egy citizent.
-            if(Rzone!=null && Izone!=null){
-                Citizen citizen = new Citizen(Rzone,Izone);
+            if(Rzone!=null && Wzone!=null){
+                Citizen citizen = new Citizen(Rzone,Wzone);
                 citizens.add(citizen);
                 Rzone.addCitizen(citizen);
-                Izone.addCitizen(citizen);
+                Wzone.addCitizen(citizen);
             }
         }
         //amugy meg nem tortenik semmi.
@@ -270,12 +269,12 @@ public class City {
         return null;
     }
 
-    IndustrialZone hasFreeIndustrial(){
+    Workplace hasFreeWorkplace(){
         for (int i = 0; i < mapHeight; i++) {
             for (int j = 0; j < mapWidth; j++) {
-                if( (this.map[i][j] instanceof IndustrialZone) ) {
+                if( (this.map[i][j] instanceof IndustrialZone || this.map[i][j] instanceof ServiceZone) ) {
                     if(  ((MainZone)this.map[i][j]).getCurrentCapacity() < ((MainZone)this.map[i][j]).getMaxCapacity()  ){
-                        return ((IndustrialZone) this.map[i][j]);
+                        return ((Workplace) this.map[i][j]);
                     }
                 }
             }
@@ -293,7 +292,7 @@ public class City {
         }
         if(dateChange > 0){
              //A month has passed!
-            if(dateChange>1){
+            if(dateChange > 1){
                 //A year has passed!
             }
         }
@@ -386,7 +385,7 @@ public class City {
                     return true;
                 }
             }
-            if (mainZone instanceof IndustrialZone) {
+            if (mainZone instanceof Workplace) {
                 if (mainZone.getCurrentCapacity() != 0) {
                     return false;
                 } else {
@@ -403,7 +402,7 @@ public class City {
                     return true;
                 }
             }
-            if (mainZone instanceof ServiceZone) {
+            if (mainZone instanceof Infrastructure) {
                 int width = mainZone.getWidth();
                 int heigth = mainZone.getHeight();
                 for (int i = mainZone.getCoordinates().getHeight(); i < mainZone.getCoordinates().getHeight() + heigth; i++) {

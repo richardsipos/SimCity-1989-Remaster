@@ -15,7 +15,7 @@ public class BoardGUI extends JPanel implements MouseListener, MouseMotionListen
 
     static final int DELAY = 1000;
     Image background, grass, dirt, water, road, uni, res_zone, res_zone_1, res_zone_2, res_zone_3, res_zone_max, pp,
-            school, police, stadium, industrial, power_pole;
+            school, police, stadium, industrial, power_pole, service;
     Board board;
     boolean build = false;
     boolean destroy = false;
@@ -59,6 +59,7 @@ public class BoardGUI extends JPanel implements MouseListener, MouseMotionListen
         stadium = new ImageIcon("KukaPest/Assets/stadium.png").getImage();
         industrial = new ImageIcon("KukaPest/Assets/industrial.png").getImage();
         power_pole = new ImageIcon("KukaPest/Assets/power_pole.png").getImage();
+        service = new ImageIcon("KukaPest/Assets/service.png").getImage();
 
         map = game.getMap();
 
@@ -98,7 +99,7 @@ public class BoardGUI extends JPanel implements MouseListener, MouseMotionListen
                 else if (map[i][j] instanceof University)
                     g2.drawImage(uni, j * board.getCellSide(),i * board.getCellSide(),80,80, null);
                 else if (map[i][j] instanceof ResidentialZone) {
-                    System.out.println(((ResidentialZone) map[i][j]).getCurrentCapacity());
+                    // System.out.println(((ResidentialZone) map[i][j]).getCurrentCapacity());
                     if (((ResidentialZone) map[i][j]).getCurrentCapacity() == 0) {
                         g2.drawImage(res_zone, j * board.getCellSide(), i * board.getCellSide(), 40, 40, null);
                     }
@@ -123,6 +124,8 @@ public class BoardGUI extends JPanel implements MouseListener, MouseMotionListen
                     g2.drawImage(industrial, j * board.getCellSide(), i * board.getCellSide(),40,40, null);
                 else if (map[i][j] instanceof Pole)
                     g2.drawImage(power_pole, j * board.getCellSide(), i * board.getCellSide(),20,20, null);
+                else if (map[i][j] instanceof ServiceZone)
+                    g2.drawImage(service, j * board.getCellSide(), i * board.getCellSide(),40,40, null);
 
             }
         }
