@@ -94,6 +94,7 @@ public class MainWindow extends JFrame{
         Icon iconresidental = new ImageIcon("KukaPest/Assets/residental_button.png");
         Icon iconindustrial = new ImageIcon("KukaPest/Assets/industrial_button.png");
         Icon iconpowerPole = new ImageIcon("KukaPest/Assets/power_pole_button.png");
+        Icon iconservice = new ImageIcon("KukaPest/Assets/service_button.png");
 
 
         //a gombok létrehozása és vertikálisan középre igazítása
@@ -128,11 +129,13 @@ public class MainWindow extends JFrame{
         JButton powerpolebutton = new JButton(iconpowerPole);
         powerpolebutton.setBackground(Color.WHITE);
         powerpolebutton.setPreferredSize(new Dimension(125,122));
+        JButton servicebutton = new JButton(iconservice);
+        servicebutton.setBackground(Color.WHITE);
+        servicebutton.setPreferredSize(new Dimension(125,122));
 
 
         // hozzáadjuk a gombokat a box-hoz
 
-        box.add(buildExit);
         box.add(buildSchool);
         box.add(buildPolice);
         box.add(buildStadium);
@@ -141,6 +144,7 @@ public class MainWindow extends JFrame{
         box.add(buildpp);
         box.add(buildResidentalZone);
         box.add(buildIndustrialZone);
+        box.add(servicebutton);
         box.add(powerpolebutton);
 
 
@@ -425,6 +429,13 @@ public class MainWindow extends JFrame{
             public void actionPerformed(ActionEvent ae) {
 
                 BoardPanel.selectedBuilding = Building.POLE;
+            }
+        });
+        servicebutton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+
+                BoardPanel.selectedBuilding = Building.SERVICE;
             }
         });
     }
