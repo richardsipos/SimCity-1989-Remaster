@@ -270,17 +270,42 @@ public class City {
     }
 
     Workplace hasFreeWorkplace(){
+        Workplace industrialWorkplace = null;
+        int workersInIndustrialZones = 0;
+        Workplace serviceWorkplace = null;
+        int workersInServiceZones = 0;
         for (int i = 0; i < mapHeight; i++) {
             for (int j = 0; j < mapWidth; j++) {
-                if( (this.map[i][j] instanceof IndustrialZone || this.map[i][j] instanceof ServiceZone) ) {
+                if( (this.map[i][j] instanceof IndustrialZone) ) {
+                    workersInIndustrialZones = workersInIndustrialZones + ((MainZone)this.map[i][j]).getCurrentCapacity();
                     if(  ((MainZone)this.map[i][j]).getCurrentCapacity() < ((MainZone)this.map[i][j]).getMaxCapacity()  ){
-                        return ((Workplace) this.map[i][j]);
+                        industrialWorkplace = ((Workplace) this.map[i][j]);
+                    }
+                }
+                if( (this.map[i][j] instanceof ServiceZone) ) {
+                    workersInServiceZones = workersInServiceZones + ((MainZone)this.map[i][j]).getCurrentCapacity();
+                    if(  ((MainZone)this.map[i][j]).getCurrentCapacity() < ((MainZone)this.map[i][j]).getMaxCapacity()  ){
+                        serviceWorkplace = ((Workplace) this.map[i][j]);
                     }
                 }
             }
         }
-        // System.out.println("industrial");
-        return null;
+
+        if(industrialWorkplace == null && serviceWorkplace == null ){
+            return null;
+        }else if(serviceWorkplace == null){
+            return industrialWorkplace;
+        }else if(industrialWorkplace == null){
+            return serviceWorkplace;
+        }else{
+            if(workersInIndustrialZones >= workersInServiceZones){
+                System.out.println("Working in Service");
+                return serviceWorkplace;
+            }else{
+                System.out.println("Working in Industrial");
+                return industrialWorkplace;
+            }
+        }
     }
 
     public void timePassed(int days){
