@@ -14,7 +14,8 @@ import java.awt.event.*;
 public class BoardGUI extends JPanel implements MouseListener, MouseMotionListener {
 
     static final int DELAY = 1000;
-    Image background, grass, dirt, water, road, uni, res_zone,res_zone_1,res_zone_2,res_zone_3,res_zone_max, pp, school, police, stadium,industrial, power_pole;
+    Image background, grass, dirt, water, road, uni, res_zone, res_zone_1, res_zone_2, res_zone_3, res_zone_max, pp,
+            school, police, stadium, industrial, power_pole;
     Board board;
     boolean build = false;
     boolean destroy = false;
