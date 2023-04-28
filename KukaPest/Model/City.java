@@ -32,7 +32,10 @@ public class City {
         for (Citizen c : this.citizens) {
             total += c.satisfaction();
         }
-        return total;
+        if(this.citizens.size() > 0)
+            return total/this.citizens.size();
+        else
+            return total;
     }
 
     public int getPopulation() {
@@ -438,6 +441,7 @@ public class City {
                 }
                 destroynodes = destroynodes - 1;
                 numberBuilding = numberBuilding - 1;
+                calculateSatisfaction();
                 return true;
             }
 
@@ -685,8 +689,9 @@ public class City {
     public String getName() {
         return name;
     }
-    public String getDate(){
-        return date.toString();
+    public Date getDate(){
+        return date;
     }
+
 
 }

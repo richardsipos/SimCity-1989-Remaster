@@ -13,8 +13,12 @@ public class MainWindow extends JFrame{
     private static final int INITIAL_BOARD_Y = 31;
     private BoardGUI BoardPanel;
     JLabel populationlabel = new JLabel();
+    JProgressBar b;
+
     JLabel fundslabel = new JLabel();
     JLabel balancelabel = new JLabel();
+    JLabel year = new JLabel();
+    JLabel found = new JLabel();
     Timer gameTime;
     String cityname;
 
@@ -31,6 +35,26 @@ public class MainWindow extends JFrame{
                 BoardPanel.getGame().stepGame();
                 System.out.println("Lakók: " + BoardPanel.getGame().getPopulation() + "\nPézz: " + BoardPanel.getGame().getFunds()+ "\n\n");
                 refreshGameStatLabel();
+                int day = BoardPanel.getGame().getCity().getDate().getDay();
+                String dayString = "";
+                if(day < 10){
+                    dayString = "0" + day;
+                }
+                else{
+                    dayString = day + "";
+                }
+                int month = BoardPanel.getGame().getCity().getDate().getMonth();
+                String monthString = "";
+                if(month < 10){
+                    monthString = "0" + month;
+                }
+                else{
+                    monthString = month + "";
+                }
+                year.setText("" + BoardPanel.getGame().getCity().getDate().getYear() + ". " + monthString
+                        + ". " +  dayString);
+                found.setText("" + BoardPanel.getGame().getFunds() + " $");
+                b.setValue(BoardPanel.getGame().getCity().satisfaction());
                 repaint();
 
             }
@@ -42,6 +66,109 @@ public class MainWindow extends JFrame{
         setTitle("KukaPest");
         setSize(1500, 1500);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
+/*
+        //JMenuBar menubar;
+        //menubar=new JMenuBar();
+        JMenu timeSpeed;
+        timeSpeed=new JMenu("Time Speed");
+        JMenuItem firstspeed,secondspeed, thirdspeed;
+        firstspeed=new JMenuItem("1x");
+        secondspeed=new JMenuItem("2x");
+        thirdspeed=new JMenuItem("5x");
+
+        timeSpeed.add(firstspeed);
+        timeSpeed.add(secondspeed);
+        timeSpeed.add(thirdspeed);
+        //menubar.add(timeSpeed);
+
+        add(menubar,BorderLayout.SOUTH);
+        setJMenuBar(menubar);*/
+
+
+        JPanel progresspanel = new JPanel();
+        JLabel progress = new JLabel("Satisfaction: ");
+
+        b = new JProgressBar();
+        b.setValue(BoardPanel.getGame().getCity().satisfaction());
+
+        b.setStringPainted(true);
+        //b.setBackground(new Color(14,74,140));
+        b.setMaximumSize(new Dimension(70,20));
+        progresspanel.add(progress);
+        progresspanel.add(b);
+        JToolBar menubar = new JToolBar();
+        JPanel panel2 = new JPanel();
+
+        Icon firstspeedicon = new ImageIcon("KukaPest/Assets/speed-icon.png");
+        Icon secondspeedicon = new ImageIcon("KukaPest/Assets/speed-3x-icon.png");
+        Icon thirdspeedicon = new ImageIcon("KukaPest/Assets/speed-5x-icon.png");
+
+        JButton firstspeed = new JButton(firstspeedicon);
+        firstspeed.setBackground(Color.WHITE);
+        JButton secondspeed = new JButton(secondspeedicon);
+        secondspeed.setBackground(Color.WHITE);
+        JButton thirdspeed = new JButton(thirdspeedicon);
+        thirdspeed.setBackground(Color.WHITE);
+
+        panel2.add(firstspeed);
+        panel2.add(secondspeed);
+        panel2.add(thirdspeed);
+
+
+        year.setBackground(Color.WHITE);
+        year.setBorder(
+                BorderFactory.createTitledBorder(
+                        BorderFactory.createEtchedBorder(
+                                EtchedBorder.RAISED, Color.GRAY
+                                , Color.DARK_GRAY), "Date"));
+
+        int day = BoardPanel.getGame().getCity().getDate().getDay();
+        String dayString = "";
+        if(day < 10){
+            dayString = "0" + day;
+        }
+        else{
+            dayString = day + "";
+        }
+
+        year.setText("" + BoardPanel.getGame().getCity().getDate().getYear() + ". " +  BoardPanel.getGame().getCity().getDate().getMonth()
+                + ". " +  BoardPanel.getGame().getCity().getDate().getDay());
+
+        year.setFont(new Font("Arial", Font.BOLD, 18));
+
+        found.setBackground(Color.WHITE);
+        found.setBorder(
+                BorderFactory.createTitledBorder(
+                        BorderFactory.createEtchedBorder(
+                                EtchedBorder.RAISED, Color.GRAY
+                                , Color.DARK_GRAY), "Found"));
+
+
+        found.setText("" + BoardPanel.getGame().getFunds() + " $");
+
+        found.setFont(new Font("Arial", Font.BOLD, 18));
+
+        menubar.add(firstspeed);
+        menubar.addSeparator();
+        menubar.add(secondspeed);
+        menubar.addSeparator();
+        menubar.add(thirdspeed);
+        menubar.addSeparator();
+        menubar.addSeparator();
+        menubar.addSeparator();
+        menubar.add(year);
+        menubar.addSeparator();
+        menubar.addSeparator();
+        menubar.addSeparator();
+        menubar.add(found);
+        menubar.addSeparator();
+        menubar.addSeparator();
+        menubar.addSeparator();
+        menubar.add(progress);
+        menubar.add(b);
+        menubar.setFloatable(false);
+        add(menubar, BorderLayout.NORTH);
 
         //alsó menü gombok létrehozása
 
@@ -436,6 +563,27 @@ public class MainWindow extends JFrame{
             public void actionPerformed(ActionEvent ae) {
 
                 BoardPanel.selectedBuilding = Building.SERVICE;
+            }
+        });
+        firstspeed.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+
+                BoardPanel.getGame().setTimeSpeed(1);
+            }
+        });
+        secondspeed.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+
+                BoardPanel.getGame().setTimeSpeed(3);
+            }
+        });
+        thirdspeed.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+
+                BoardPanel.getGame().setTimeSpeed(5);
             }
         });
     }

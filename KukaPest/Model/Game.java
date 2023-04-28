@@ -44,4 +44,12 @@ public class Game {
     public int[] getLastBalance(){
         return city.getLastBalance();
     }
+
+    public City getCity() {
+        return city;
+    }
+
+    public void setTimeSpeed(int timeSpeed) {
+        this.timeSpeed = timeSpeed;
+    }
 }
