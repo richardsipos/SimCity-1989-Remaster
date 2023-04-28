@@ -27,6 +27,18 @@ public class Date {
         return 0;
     }
 
+    public int getYear() {
+        return year;
+    }
+
+    public int getMonth() {
+        return month;
+    }
+
+    public int getDay() {
+        return day;
+    }
+
     @Override
     public String toString() {
         return "Date{" +

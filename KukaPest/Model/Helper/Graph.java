@@ -90,6 +90,7 @@ public class Graph {
                 }
             }
         }
+
         System.out.println("\n");
         System.out.println(numberBuilding);
 
