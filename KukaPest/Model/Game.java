@@ -24,6 +24,9 @@ public class Game {
     public boolean destroy(Coordinates coords){
         return city.destroy(coords);
     }
+    public void upgrade(Coordinates coords){
+        city.upgrade(coords);
+    }
 
     public void stepGame(){
         city.timePassed(timeSpeed);

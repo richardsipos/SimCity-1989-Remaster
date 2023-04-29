@@ -683,6 +683,45 @@ public class City {
         System.out.println();
     }
 
+    public void upgrade(Coordinates coords){
+        if (this.map[coords.getHeight()][coords.getWidth()] instanceof Road) {
+
+        }
+        else if (this.map[coords.getHeight()][coords.getWidth()] instanceof Pole) {
+
+        }
+        else if (this.map[coords.getHeight()][coords.getWidth()] instanceof MainZone || this.map[coords.getHeight()][coords.getWidth()] instanceof ZonePart) {
+            MainZone mainZone;
+            if(this.map[coords.getHeight()][coords.getWidth()] instanceof MainZone){
+                mainZone = (MainZone) this.map[coords.getHeight()][coords.getWidth()];
+            }
+            else{
+                mainZone = ((ZonePart) this.map[coords.getHeight()][coords.getWidth()]).mainBuilding;
+            }
+
+            if (mainZone instanceof ResidentialZone) {
+                if(((ResidentialZone) mainZone).getLevel() == 1){
+                    ((ResidentialZone) mainZone).setLevel(2);
+                    System.out.println(((ResidentialZone) mainZone).getLevel());
+                    ((ResidentialZone) mainZone).setCapacity(25);
+                }
+                else if(((ResidentialZone) mainZone).getLevel() == 2){
+                    ((ResidentialZone) mainZone).setLevel(3);
+                    ((ResidentialZone) mainZone).setCapacity(50);
+                }
+            }
+            if (mainZone instanceof Workplace) {
+
+            }
+            if (mainZone instanceof Infrastructure) {
+
+            }
+
+
+        }
+
+    }
+
     public Tile[][] getMap() {
         return map;
     }

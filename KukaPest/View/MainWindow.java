@@ -614,6 +614,21 @@ public class MainWindow extends JFrame{
                 BoardPanel.getGame().setTimeSpeed(5);
             }
         });
+        upgrade.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+
+                remove(startBar);
+                remove(statBar);
+                remove(buildBar);
+                add(startBar,BorderLayout.EAST);
+                pack();
+
+                BoardPanel.build = false;
+                BoardPanel.destroy = false;
+                BoardPanel.upgrade = true;
+            }
+        });
     }
 
     /**
