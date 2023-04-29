@@ -3,7 +3,7 @@ package View;
 public class Board {
     private int boardX;
     private int boardY;
-    private int cellSide = 20;
+    private int cellSide = 25;
 
 
     /**

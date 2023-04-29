@@ -63,7 +63,7 @@ public class BoardGUI extends JPanel implements MouseListener, MouseMotionListen
 
         map = game.getMap();
 
-        Dimension dim = new Dimension(59 * 20, 31 * 20);
+        Dimension dim = new Dimension(48 * 25, 27 * 25);
         setPreferredSize(dim);
         setMaximumSize(dim);
         setSize(dim);
@@ -85,13 +85,13 @@ public class BoardGUI extends JPanel implements MouseListener, MouseMotionListen
 
             for(int j = 0; j < board.getBoardX(); j++){
                 if(map[i][j] instanceof Grass)
-                    g2.drawImage(grass, j * 20,i * 20,20,20, null);
+                    g2.drawImage(grass, j * 25,i * 25,25,25, null);
                 else if (map[i][j] instanceof Dirt)
-                    g2.drawImage(dirt, j * 20,i * 20,20,20, null);
+                    g2.drawImage(dirt, j * 25,i * 25,25,25, null);
                 else if (map[i][j] instanceof Water)
-                    g2.drawImage(water, j * 20,i * 20,20,20, null);
+                    g2.drawImage(water, j *25,i * 25,25,25, null);
                 else if (map[i][j] instanceof Road)
-                    g2.drawImage(road, j * board.getCellSide(), i * board.getCellSide(),20,20, null);
+                    g2.drawImage(road, j * board.getCellSide(), i * board.getCellSide(),25,25, null);
                 else if (map[i][j] instanceof Police)
                     g2.drawImage(police, j * board.getCellSide(), i * board.getCellSide(),40,80, null);
                 else if (map[i][j] instanceof Stadium)

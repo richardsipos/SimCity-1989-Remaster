@@ -22,8 +22,8 @@ public class City {
     private Date date;
 
     //Map dimensions:
-    private final int mapHeight = 31;
-    private final int mapWidth = 59;
+    private final int mapHeight = 27;
+    private final int mapWidth = 48;
 
     private final Tile[][] map;
 
@@ -63,12 +63,12 @@ public class City {
         date = new Date(2000,02,1);
 
         // Read the default map
-        this.map = new Tile[31][59];
+        this.map = new Tile[mapHeight][mapWidth];
         try {
             Scanner sc = new Scanner(new File("KukaPest/Assets/map.txt"));
-            for (int i = 0; i < 31; i++) {
+            for (int i = 0; i < mapHeight; i++) {
                 String line = sc.nextLine();
-                for (int j = 0; j < 59; j++) {
+                for (int j = 0; j < mapWidth; j++) {
                     int mapNum = Character.getNumericValue(line.charAt(j));
                     this.map[i][j] = switch (mapNum) {
                         case 1 -> new Grass();

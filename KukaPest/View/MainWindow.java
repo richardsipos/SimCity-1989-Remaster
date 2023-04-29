@@ -9,8 +9,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class MainWindow extends JFrame{
-    private static final int INITIAL_BOARD_X = 59;
-    private static final int INITIAL_BOARD_Y = 31;
+    private static final int INITIAL_BOARD_X = 48;
+    private static final int INITIAL_BOARD_Y = 27;
     private BoardGUI BoardPanel;
     JLabel populationlabel = new JLabel();
     JProgressBar b;
@@ -168,7 +168,7 @@ public class MainWindow extends JFrame{
         menubar.add(progress);
         menubar.add(b);
         menubar.setFloatable(false);
-        add(menubar, BorderLayout.NORTH);
+
 
         //alsó menü gombok létrehozása
 
@@ -189,16 +189,44 @@ public class MainWindow extends JFrame{
         stats.setBackground(Color.WHITE);
 
 
+        //add(menubar, BorderLayout.NORTH);
         //alsó menü létrehozás
 
-        JToolBar tbClip = new JToolBar();
-        JPanel panel = new JPanel();
+        JToolBar panel = new JToolBar();
+        //JPanel panel = new JPanel();
+        panel.add(firstspeed);
+        panel.addSeparator();
+        panel.add(secondspeed);
+        panel.addSeparator();
+        panel.add(thirdspeed);
+        panel.addSeparator();
+        panel.addSeparator();
+        panel.addSeparator();
+        panel.add(year);
+        panel.addSeparator();
+        panel.addSeparator();
+        panel.addSeparator();
+        panel.add(found);
+        panel.addSeparator();
+        panel.addSeparator();
+        panel.addSeparator();
+        panel.add(progress);
+        panel.add(b);
+        panel.addSeparator();
+        panel.addSeparator();
+        panel.addSeparator();
         panel.add(build);
+        panel.addSeparator();
+        panel.addSeparator();
         panel.add(destroy);
+        panel.addSeparator();
+        panel.addSeparator();
         panel.add(upgrade);
+        panel.addSeparator();
+        panel.addSeparator();
         panel.add(stats);
-        tbClip.add(panel);
-        add(tbClip, BorderLayout.SOUTH);
+        //tbClip.add(panel);
+        add(panel, BorderLayout.SOUTH);
 
 
         // container felvétele, hogy a felugró Build menü vertikális legyen
