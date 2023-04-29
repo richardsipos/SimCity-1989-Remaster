@@ -8,4 +8,8 @@ public class ZonePart extends Tile{
         super();
         this.mainBuilding = mainBuilding;
     }
+
+    public MainZone getMainBuilding() {
+        return mainBuilding;
+    }
 }

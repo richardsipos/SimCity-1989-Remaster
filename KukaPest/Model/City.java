@@ -8,9 +8,7 @@ import Model.Map.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
 
 //import java.util.Date;
 
@@ -32,6 +30,7 @@ public class City {
         for (Citizen c : this.citizens) {
             total += c.satisfaction();
         }
+
         if(this.citizens.size() > 0)
             return total/this.citizens.size();
         else
@@ -313,6 +312,7 @@ public class City {
 
     public void timePassed(int days){
         int dateChange = date.DaysPassed(days);
+        electricitySupply();
         for (int i = 0; i < days; i++) {
             // One day Passed!
             handleMoveIn();
@@ -658,8 +658,8 @@ public class City {
 
         for (int i = 0; i < mapHeight; i++) {
             for (int j = 0; j < mapWidth; j++) {
-                if (this.map[i][j] instanceof Stadium) modifySatisfactionBoost(new Coordinates(i,j), 9, 15, (Constructable) this.map[i][j]);
-                else if (this.map[i][j] instanceof Police) modifySatisfactionBoost(new Coordinates(i,j), 6, 10, (Constructable) this.map[i][j]);
+                if (this.map[i][j] instanceof Stadium && ((Stadium) this.map[i][j]).isElectricity()) modifySatisfactionBoost(new Coordinates(i,j), 9, 15, (Constructable) this.map[i][j]);
+                else if (this.map[i][j] instanceof Police && ((Police) this.map[i][j]).isElectricity()) modifySatisfactionBoost(new Coordinates(i,j), 6, 10, (Constructable) this.map[i][j]);
             }
         }
 
@@ -681,6 +681,148 @@ public class City {
             System.out.println();
         }
         System.out.println();
+    }
+
+    public void electricitySupply(){
+        for (int i = 0; i < mapHeight; i++) {
+            for (int j = 0; j < mapWidth; j++) {
+                if(this.map[i][j] instanceof MainZone){
+                    ((MainZone) this.map[i][j]).setElectricity(false);
+                }
+            }
+        }
+
+        for (int i = 0; i < mapHeight; i++) {
+            for (int j = 0; j < mapWidth; j++) {
+                if(this.map[i][j] instanceof PowerPlant){
+
+                    //preparations for the algorithm
+                    Queue<Coordinates> visitedCoords = new LinkedList<>();
+                    Queue<Coordinates> currentCoords = new LinkedList<>();
+
+                    currentCoords.add(new Coordinates(i,j));
+                    currentCoords.add(new Coordinates(i,j+1));
+                    currentCoords.add(new Coordinates(i,j+2));
+                    currentCoords.add(new Coordinates(i,j+3));
+                    currentCoords.add(new Coordinates(i+1,j+3));
+                    currentCoords.add(new Coordinates(i+2,j+3));
+                    currentCoords.add(new Coordinates(i+3,j+3));
+                    currentCoords.add(new Coordinates(i+3,j+2));
+                    currentCoords.add(new Coordinates(i+3,j+1));
+                    currentCoords.add(new Coordinates(i+3,j));
+                    currentCoords.add(new Coordinates(i+2,j));
+                    currentCoords.add(new Coordinates(i+1,j));
+
+
+
+
+                    visitedCoords.add(new Coordinates(i+1,j+1));
+                    visitedCoords.add(new Coordinates(i+1,j+2));
+                    visitedCoords.add(new Coordinates(i+2,j+1));
+                    visitedCoords.add(new Coordinates(i+2,j+2));
+
+                    visitedCoords.add(new Coordinates(i,j));
+                    visitedCoords.add(new Coordinates(i,j+1));
+                    visitedCoords.add(new Coordinates(i,j+2));
+                    visitedCoords.add(new Coordinates(i,j+3));
+                    visitedCoords.add(new Coordinates(i+1,j+3));
+                    visitedCoords.add(new Coordinates(i+2,j+3));
+                    visitedCoords.add(new Coordinates(i+3,j+3));
+                    visitedCoords.add(new Coordinates(i+3,j+1));
+                    visitedCoords.add(new Coordinates(i+3,j+2));
+                    visitedCoords.add(new Coordinates(i+1,j));
+                    visitedCoords.add(new Coordinates(i+2,j));
+                    visitedCoords.add(new Coordinates(i+3,j));
+
+
+                    //start of the algorithm
+                    int electricityToGive = ((PowerPlant) this.map[i][j]).getElectricityProduction();
+
+                    while (electricityToGive>0 && !currentCoords.isEmpty()){
+
+                        //remove from queue and adding to already searched Tiles.
+                        Coordinates currentTileCoords = currentCoords.remove();
+                        visitedCoords.add(currentTileCoords);
+
+                        int x = currentTileCoords.getHeight();
+                        int y = currentTileCoords.getWidth();
+                        System.out.println(x+" "+y);
+
+                        //add neighbours to the queue.
+                        boolean up = false;
+                        boolean down = false;
+                        boolean right = false;
+                        boolean left = false;
+                        if(visitedCoords.size() == mapHeight*mapWidth){
+                            break;
+                        }
+                        for (Coordinates visitedCoordinate : visitedCoords) {
+                            if(x-1 == visitedCoordinate.getHeight() && y == visitedCoordinate.getWidth() ){
+                                up = true;
+                            }else if(x+1 == visitedCoordinate.getHeight() && y == visitedCoordinate.getWidth()  ) {
+                                down = true;
+                            }else if(x == visitedCoordinate.getHeight() && y-1 == visitedCoordinate.getWidth()  ){
+                                left = true;
+                            }else if(x == visitedCoordinate.getHeight() && y+1 == visitedCoordinate.getWidth() ){
+                                right = true;
+                            }
+                        }
+                        if(!up && x>=1 && (this.map[x-1][y] instanceof MainZone || this.map[x-1][y] instanceof Pole || this.map[x-1][y] instanceof ZonePart)){
+                            currentCoords.add(new Coordinates(x-1,y));
+                        }if(!right && y<mapWidth-1 && (this.map[x][y+1] instanceof MainZone || this.map[x][y+1] instanceof Pole || this.map[x][y+1] instanceof ZonePart)){
+                            currentCoords.add(new Coordinates(x,y+1));
+                        }if(!down && x<mapHeight-1 && (this.map[x+1][y] instanceof MainZone || this.map[x+1][y] instanceof Pole || this.map[x+1][y] instanceof ZonePart)){
+                            currentCoords.add(new Coordinates(x+1,y));
+                        }if(!left && y>=1 && (this.map[x][y-1] instanceof MainZone || this.map[x][y-1] instanceof Pole || this.map[x][y-1] instanceof ZonePart)){
+                            currentCoords.add(new Coordinates(x,y-1));
+                        }
+
+
+                        //dealing with the current Tile
+                        if(this.map[x][y] instanceof PowerPlant){
+                            //do nothing. but it enter in statement (because of the following else if conditions)
+                            continue;
+                        }
+                        else if(this.map[x][y] instanceof MainZone){
+                            if(!((MainZone)this.map[x][y]).isElectricity()){
+                                if(this.map[x][y] instanceof Workplace){
+                                    if(electricityToGive>=((MainZone)this.map[x][y]).getElectricityNeed() * ((MainZone) this.map[x][y]).getCurrentCapacity()){
+                                        electricityToGive=electricityToGive -((MainZone)this.map[x][y]).getElectricityNeed() * ((MainZone) this.map[x][y]).getCurrentCapacity();
+                                        ((MainZone)this.map[x][y]).setElectricity(true);
+                                    }
+                                }
+                                else if(electricityToGive>=((MainZone)this.map[x][y]).getElectricityNeed()){
+                                    electricityToGive=electricityToGive -((MainZone)this.map[x][y]).getElectricityNeed();
+                                    ((MainZone)this.map[x][y]).setElectricity(true);
+                                }//itt ne csinalj semmit. A sorbol majd ugyis kijon.
+                            }
+                        }else if(this.map[x][y] instanceof ZonePart) {
+                            MainZone mainZone = ((ZonePart)this.map[x][y]).getMainBuilding();
+                            if(!mainZone.isElectricity()){
+                                if(mainZone instanceof Workplace){
+                                    if(electricityToGive>=mainZone.getElectricityNeed() * mainZone.getCurrentCapacity()){
+                                        electricityToGive=electricityToGive - mainZone.getElectricityNeed() * mainZone.getCurrentCapacity();
+                                        mainZone.setElectricity(true);
+                                    }
+                                }
+                                else if(electricityToGive>=mainZone.getElectricityNeed()){
+                                    electricityToGive=electricityToGive -mainZone.getElectricityNeed();
+                                    mainZone.setElectricity(true);
+                                }//itt ne csinalj semmit. A sorbol majd ugyis kijon.
+                            }
+
+                        }
+
+
+
+                    }
+
+                    System.out.println("Ennyi aram maradt: "+electricityToGive);
+
+
+                }
+            }
+        }
     }
 
     public Tile[][] getMap() {

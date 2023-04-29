@@ -1,6 +1,5 @@
 package Model;
 
-import Model.Map.IndustrialZone;
 import Model.Map.ResidentialZone;
 import Model.Map.Workplace;
 
@@ -21,8 +20,21 @@ public class Citizen {
      */
     public int satisfaction() {
         int total = 50;
-        total += home.getSatisfactionBoost();
-        total += workPlace.getSatisfactionBoost();
+        if (home.isElectricity()){
+            total += home.getSatisfactionBoost();
+        }else{
+            if(home.getSatisfactionBoost()!=0){
+                total += home.getSatisfactionBoost()/2;
+            }
+        }
+
+        if (workPlace.isElectricity()){
+            total += workPlace.getSatisfactionBoost();
+        }else{
+            if(workPlace.getSatisfactionBoost()!=0){
+                total += workPlace.getSatisfactionBoost()/2;
+            }
+        }
         if (total < 0) total = 0;
         if (total > 100) total = 100;
         return total;
