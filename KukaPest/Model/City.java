@@ -18,6 +18,7 @@ public class City {
     private int funds = 10000;
     private int[] lastBalance = {0 , 0};
     private Date date;
+    private int guaranteedCitizens = 50;
 
     //Map dimensions:
     private final int mapHeight = 31;
@@ -119,7 +120,7 @@ public class City {
             }
             this.map[coords.getHeight()][coords.getWidth()] = toBeBuilt;
             this.funds -= (toBeBuilt.getPrice());
-            calculateSatisfaction();
+            //calculateSatisfaction();
             return true;
         }
         return false;
@@ -227,13 +228,31 @@ public class City {
 
         for(int i=1;i<=randomNumber;i++){
             ResidentialZone Rzone = hasFreeResidential();
+            ResidentialZone RzoneWithElectricity = hasFreeResidentialWithElectricity();
             Workplace Wzone = hasFreeWorkplace();
+
+            //satisfaction miatt nem koltozhet be <30  akkor nem koltozhet be. Eloszor lesz biztosan 50 szemely aki barhogy bekoltozik
+
             //ha van free residential zone es van industrial zone is akkor letre kell hozzni egy citizent.
+
             if(Rzone!=null && Wzone!=null){
-                Citizen citizen = new Citizen(Rzone,Wzone);
-                citizens.add(citizen);
-                Rzone.addCitizen(citizen);
-                Wzone.addCitizen(citizen);
+
+                if(citizens.size() > guaranteedCitizens){
+
+                    if(RzoneWithElectricity != null && satisfaction()>=30){//akkor koltozhet csak  be ha van aram es ha boldogabbak mint 30
+                        Citizen citizen = new Citizen(RzoneWithElectricity,Wzone);
+                        citizens.add(citizen);
+                        RzoneWithElectricity.addCitizen(citizen);
+                        Wzone.addCitizen(citizen);
+                    }
+                }else{
+                    Citizen citizen = new Citizen(Rzone,Wzone);
+                    citizens.add(citizen);
+                    Rzone.addCitizen(citizen);
+                    Wzone.addCitizen(citizen);
+                }
+
+
             }
         }
         //amugy meg nem tortenik semmi.
@@ -262,6 +281,21 @@ public class City {
             for (int j = 0; j < mapWidth; j++) {
                 if(this.map[i][j] instanceof ResidentialZone){
                     if(((MainZone)this.map[i][j]).getCurrentCapacity() < ((MainZone)this.map[i][j]).getMaxCapacity()){
+                        return ((ResidentialZone) this.map[i][j]);
+                    }
+                }
+            }
+        }
+        // System.out.println("residential");
+        return null;
+    }
+
+    ResidentialZone hasFreeResidentialWithElectricity(){
+        for (int i = 0; i < mapHeight; i++) {
+            for (int j = 0; j < mapWidth; j++) {
+                if(this.map[i][j] instanceof ResidentialZone){
+                    if( ((MainZone)this.map[i][j]).isElectricity()
+                          && ((MainZone)this.map[i][j]).getCurrentCapacity() < ((MainZone)this.map[i][j]).getMaxCapacity()){
                         return ((ResidentialZone) this.map[i][j]);
                     }
                 }
@@ -313,6 +347,7 @@ public class City {
     public void timePassed(int days){
         int dateChange = date.DaysPassed(days);
         electricitySupply();
+        calculateSatisfaction();
         for (int i = 0; i < days; i++) {
             // One day Passed!
             handleMoveIn();
@@ -441,7 +476,7 @@ public class City {
                 }
                 destroynodes = destroynodes - 1;
                 numberBuilding = numberBuilding - 1;
-                calculateSatisfaction();
+
                 return true;
             }
 
