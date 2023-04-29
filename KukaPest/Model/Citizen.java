@@ -40,7 +40,15 @@ public class Citizen {
         return total;
     }
     public int payTax(){
-        return workPlace == null ? 2 : 5;
+        if(workPlace == null){
+            return 2;
+        }
+        else if (workPlace.isElectricity()) {
+            return 7;
+        }else {
+            return 5;
+        }
+//        return workPlace == null ? 2 : 5;
     }
 
 }
