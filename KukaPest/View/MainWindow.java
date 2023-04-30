@@ -19,6 +19,7 @@ public class MainWindow extends JFrame{
     JLabel balancelabel = new JLabel();
     JLabel year = new JLabel();
     JLabel found = new JLabel();
+    JLabel citizens = new JLabel();
     Timer gameTime;
     String cityname;
 
@@ -55,6 +56,7 @@ public class MainWindow extends JFrame{
                         + ". " +  dayString);
                 found.setText("" + BoardPanel.getGame().getFunds() + " $");
                 b.setValue(BoardPanel.getGame().getCity().satisfaction());
+                citizens.setText("" + BoardPanel.getGame().getCitizenslength() + " people");
                 repaint();
 
             }
@@ -149,25 +151,17 @@ public class MainWindow extends JFrame{
 
         found.setFont(new Font("Arial", Font.BOLD, 18));
 
-        menubar.add(firstspeed);
-        menubar.addSeparator();
-        menubar.add(secondspeed);
-        menubar.addSeparator();
-        menubar.add(thirdspeed);
-        menubar.addSeparator();
-        menubar.addSeparator();
-        menubar.addSeparator();
-        menubar.add(year);
-        menubar.addSeparator();
-        menubar.addSeparator();
-        menubar.addSeparator();
-        menubar.add(found);
-        menubar.addSeparator();
-        menubar.addSeparator();
-        menubar.addSeparator();
-        menubar.add(progress);
-        menubar.add(b);
-        menubar.setFloatable(false);
+        citizens.setBackground(Color.WHITE);
+        citizens.setBorder(
+                BorderFactory.createTitledBorder(
+                        BorderFactory.createEtchedBorder(
+                                EtchedBorder.RAISED, Color.GRAY
+                                , Color.DARK_GRAY), "Population"));
+
+        citizens.setText("" + BoardPanel.getGame().getCitizenslength() + " people");
+
+        citizens.setFont(new Font("Arial", Font.BOLD, 18));
+
 
 
         //alsó menü gombok létrehozása
@@ -193,7 +187,12 @@ public class MainWindow extends JFrame{
         //alsó menü létrehozás
 
         JToolBar panel = new JToolBar();
-        //JPanel panel = new JPanel();
+        JPanel buttonpanel = new JPanel();
+        buttonpanel.add(build);
+        buttonpanel.add(destroy);
+        buttonpanel.add(upgrade);
+        buttonpanel.add(stats);
+
         panel.add(firstspeed);
         panel.addSeparator();
         panel.add(secondspeed);
@@ -206,7 +205,15 @@ public class MainWindow extends JFrame{
         panel.addSeparator();
         panel.addSeparator();
         panel.addSeparator();
-        panel.add(found);
+
+        panel.addSeparator();
+        panel.addSeparator();
+        panel.addSeparator();
+
+        panel.addSeparator();
+        panel.addSeparator();
+        panel.addSeparator();
+        panel.add(buttonpanel);
         panel.addSeparator();
         panel.addSeparator();
         panel.addSeparator();
@@ -215,16 +222,11 @@ public class MainWindow extends JFrame{
         panel.addSeparator();
         panel.addSeparator();
         panel.addSeparator();
-        panel.add(build);
+        panel.add(found);
         panel.addSeparator();
         panel.addSeparator();
-        panel.add(destroy);
         panel.addSeparator();
-        panel.addSeparator();
-        panel.add(upgrade);
-        panel.addSeparator();
-        panel.addSeparator();
-        panel.add(stats);
+        panel.add(citizens);
         //tbClip.add(panel);
         add(panel, BorderLayout.SOUTH);
 
@@ -420,6 +422,58 @@ public class MainWindow extends JFrame{
         statBar.setOrientation(SwingConstants.VERTICAL);
         statBar.setVisible(true);
 
+        //UpgradeBar létrehozása
+
+        JToolBar upgradeBar = new JToolBar();
+
+        JLabel upgradelabel = new JLabel("<html>Upgrade!<br/><br/></html>");
+        upgradelabel.setFont(new Font("Cooper Black", Font.BOLD, 40));
+
+        JLabel residental1 = new JLabel("<html>Residental Zone level 2 -> 3.000 $<br/><br/></html>");
+        residental1.setFont(new Font("Impact", Font.PLAIN, 17));
+        residental1.setBorder(BorderFactory.createLineBorder(Color.GRAY,2));
+        JLabel residental2 = new JLabel("<html>Residental Zone level 3 -> 8.000 $<br/><br/></html>");
+        residental2.setFont(new Font("Impact", Font.PLAIN, 17));
+        residental2.setBorder(BorderFactory.createLineBorder(Color.GRAY,2));
+
+        JLabel industrial1 = new JLabel("<html>Industrial Zone level 2 -> 5.000 $<br/><br/></html>");
+        industrial1.setFont(new Font("Impact", Font.PLAIN, 17));
+        industrial1.setBorder(BorderFactory.createLineBorder(Color.BLUE,2));
+        JLabel industrial2 = new JLabel("<html>Industrial Zone level 3 -> 10.000 $<br/><br/></html>");
+        industrial2.setFont(new Font("Impact", Font.PLAIN, 17));
+        industrial2.setBorder(BorderFactory.createLineBorder(Color.BLUE,2));
+
+        JLabel service1 = new JLabel("<html>Service Zone level 2 -> 5.000 $<br/><br/></html>");
+        service1.setFont(new Font("Impact", Font.PLAIN, 17));
+        service1.setBorder(BorderFactory.createLineBorder(Color.ORANGE,2));
+        JLabel service2 = new JLabel("<html>Service Zone level 3 -> 10.000 $<br/><br/></html>");
+        service2.setFont(new Font("Impact", Font.PLAIN, 17));
+        service2.setBorder(BorderFactory.createLineBorder(Color.ORANGE,2));
+
+
+
+
+
+        upgradeBar.add(upgradelabel);
+        upgradeBar.add(residental1);
+        upgradeBar.addSeparator();
+        upgradeBar.add(residental2);
+        upgradeBar.addSeparator();
+        upgradeBar.add(industrial1);
+        upgradeBar.addSeparator();
+        upgradeBar.add(industrial2);
+        upgradeBar.addSeparator();
+        upgradeBar.add(service1);
+        upgradeBar.addSeparator();
+        upgradeBar.add(service2);
+
+        upgradeBar.setFloatable(false);
+
+
+        upgradeBar.setOrientation(SwingConstants.VERTICAL);
+        upgradeBar.setVisible(true);
+
+
         add(startBar,BorderLayout.EAST);
 
         add(BoardPanel,BorderLayout.CENTER);
@@ -462,6 +516,7 @@ public class MainWindow extends JFrame{
                 remove(startBar);
                 remove(statBar);
                 remove(buildBar);
+                remove(upgradeBar);
                 add(destroyBar,BorderLayout.EAST);
                 pack();
 
@@ -481,6 +536,7 @@ public class MainWindow extends JFrame{
                 remove(startBar);
                 remove(destroyBar);
                 remove(statBar);
+                remove(upgradeBar);
                 add(buildBar,BorderLayout.EAST);
                 pack();
 
@@ -497,6 +553,7 @@ public class MainWindow extends JFrame{
                 remove(startBar);
                 remove(destroyBar);
                 remove(buildBar);
+                remove(upgradeBar);
                 add(statBar,BorderLayout.EAST);
 
                 pack();
@@ -624,7 +681,8 @@ public class MainWindow extends JFrame{
                 remove(startBar);
                 remove(statBar);
                 remove(buildBar);
-                add(startBar,BorderLayout.EAST);
+                remove(destroyBar);
+                add(upgradeBar,BorderLayout.EAST);
                 pack();
 
                 BoardPanel.build = false;

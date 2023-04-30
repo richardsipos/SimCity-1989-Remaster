@@ -704,10 +704,12 @@ public class City {
                     ((ResidentialZone) mainZone).setLevel(2);
                     System.out.println(((ResidentialZone) mainZone).getLevel());
                     ((ResidentialZone) mainZone).setCapacity(25);
+                    funds = funds - 3000;
                 }
                 else if(((ResidentialZone) mainZone).getLevel() == 2){
                     ((ResidentialZone) mainZone).setLevel(3);
                     ((ResidentialZone) mainZone).setCapacity(50);
+                    funds = funds - 8000;
                 }
             }
             if (mainZone instanceof Workplace) {
@@ -716,10 +718,12 @@ public class City {
                         ((Workplace) mainZone).setLevel(2);
                         System.out.println(((Workplace) mainZone).getLevel());
                         ((Workplace) mainZone).setCapacity(30);
+                        funds = funds - 5000;
                     }
                     else if(((Workplace) mainZone).getLevel() == 2){
                         ((Workplace) mainZone).setLevel(3);
                         ((Workplace) mainZone).setCapacity(55);
+                        funds = funds - 10000;
                     }
 
                 }
@@ -742,6 +746,8 @@ public class City {
     public Date getDate(){
         return date;
     }
+
+    public int getCitizenslength(){return citizens.size();}
 
 
 }

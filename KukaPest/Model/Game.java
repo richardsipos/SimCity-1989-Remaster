@@ -47,6 +47,7 @@ public class Game {
     public int[] getLastBalance(){
         return city.getLastBalance();
     }
+    public int getCitizenslength(){return city.getCitizenslength();}
 
     public City getCity() {
         return city;
