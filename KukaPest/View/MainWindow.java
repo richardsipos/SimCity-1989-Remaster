@@ -69,24 +69,6 @@ public class MainWindow extends JFrame{
         setSize(1500, 1500);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-/*
-        //JMenuBar menubar;
-        //menubar=new JMenuBar();
-        JMenu timeSpeed;
-        timeSpeed=new JMenu("Time Speed");
-        JMenuItem firstspeed,secondspeed, thirdspeed;
-        firstspeed=new JMenuItem("1x");
-        secondspeed=new JMenuItem("2x");
-        thirdspeed=new JMenuItem("5x");
-
-        timeSpeed.add(firstspeed);
-        timeSpeed.add(secondspeed);
-        timeSpeed.add(thirdspeed);
-        //menubar.add(timeSpeed);
-
-        add(menubar,BorderLayout.SOUTH);
-        setJMenuBar(menubar);*/
-
 
         JPanel progresspanel = new JPanel();
         JLabel progress = new JLabel("Satisfaction: ");
@@ -133,9 +115,17 @@ public class MainWindow extends JFrame{
         else{
             dayString = day + "";
         }
+        int month = BoardPanel.getGame().getCity().getDate().getMonth();
+        String monthString = "";
+        if(month < 10){
+            monthString = "0" + month;
+        }
+        else{
+            monthString = month + "";
+        }
 
-        year.setText("" + BoardPanel.getGame().getCity().getDate().getYear() + ". " +  BoardPanel.getGame().getCity().getDate().getMonth()
-                + ". " +  BoardPanel.getGame().getCity().getDate().getDay());
+        year.setText("" + BoardPanel.getGame().getCity().getDate().getYear() + ". " + monthString
+                + ". " +  dayString);
 
         year.setFont(new Font("Arial", Font.BOLD, 18));
 
@@ -228,6 +218,7 @@ public class MainWindow extends JFrame{
         panel.addSeparator();
         panel.add(citizens);
         //tbClip.add(panel);
+        panel.setFloatable(false);
         add(panel, BorderLayout.SOUTH);
 
 
@@ -346,12 +337,56 @@ public class MainWindow extends JFrame{
         destroylabel.setVerticalAlignment(SwingConstants.CENTER);
         destroylabel.setFont(new Font("Cooper Black", Font.BOLD, 35));
 
+        JLabel residentaldestroy = new JLabel("<html>Residental Zone destroy -> +0 $<br/><br/></html>");
+        residentaldestroy.setFont(new Font("Impact", Font.PLAIN, 17));
+        residentaldestroy.setBorder(BorderFactory.createLineBorder(Color.GRAY,2));
+        JLabel industrialdestroy = new JLabel("<html>Industrial Zone destroy -> +0 $<br/><br/></html>");
+        industrialdestroy.setFont(new Font("Impact", Font.PLAIN, 17));
+        industrialdestroy.setBorder(BorderFactory.createLineBorder(Color.GRAY,2));
+        JLabel servicedestroy = new JLabel("<html>Service Zone destroy -> +0 $<br/><br/></html>");
+        servicedestroy.setFont(new Font("Impact", Font.PLAIN, 17));
+        servicedestroy.setBorder(BorderFactory.createLineBorder(Color.GRAY,2));
+        JLabel road = new JLabel("<html>Road destroy -> +4 $<br/><br/></html>");
+        road.setFont(new Font("Impact", Font.PLAIN, 17));
+        road.setBorder(BorderFactory.createLineBorder(Color.GRAY,2));
+        JLabel stadiumdestroy = new JLabel("<html>Stadium destroy -> +800 $<br/><br/></html>");
+        stadiumdestroy.setFont(new Font("Impact", Font.PLAIN, 17));
+        stadiumdestroy.setBorder(BorderFactory.createLineBorder(Color.GRAY,2));
+        JLabel schooldestroy = new JLabel("<html>School  destroy -> +400 $<br/><br/></html>");
+        schooldestroy.setFont(new Font("Impact", Font.PLAIN, 17));
+        schooldestroy.setBorder(BorderFactory.createLineBorder(Color.GRAY,2));
+        JLabel universitydestroy = new JLabel("<html>University destroy -> +600 $<br/><br/></html>");
+        universitydestroy.setFont(new Font("Impact", Font.PLAIN, 17));
+        universitydestroy.setBorder(BorderFactory.createLineBorder(Color.GRAY,2));
+        JLabel powerplantdestroy = new JLabel("<html>Power Plant destroy -> +1200 $<br/><br/></html>");
+        powerplantdestroy.setFont(new Font("Impact", Font.PLAIN, 17));
+        powerplantdestroy.setBorder(BorderFactory.createLineBorder(Color.GRAY,2));
+        JLabel policedestroy = new JLabel("<html>Police destroy -> +600 $<br/><br/></html>");
+        policedestroy.setFont(new Font("Impact", Font.PLAIN, 17));
+        policedestroy.setBorder(BorderFactory.createLineBorder(Color.GRAY,2));
 
-        JLabel destroypic = new JLabel(new ImageIcon("KukaPest/Assets/destroy_.png"));
+
+        //JLabel destroypic = new JLabel(new ImageIcon("KukaPest/Assets/destroy_.png"));
 
 
         destroyBar.add(destroylabel);
-        destroyBar.add(destroypic,BorderLayout.CENTER);
+        destroyBar.add(residentaldestroy);
+        destroyBar.addSeparator();
+        destroyBar.add(industrialdestroy);
+        destroyBar.addSeparator();
+        destroyBar.add(servicedestroy);
+        destroyBar.addSeparator();
+        destroyBar.add(road);
+        destroyBar.addSeparator();
+        destroyBar.add(stadiumdestroy);
+        destroyBar.addSeparator();
+        destroyBar.add(powerplantdestroy);
+        destroyBar.addSeparator();
+        destroyBar.add(policedestroy);
+        destroyBar.addSeparator();
+        destroyBar.add(schooldestroy);
+        destroyBar.addSeparator();
+        destroyBar.add(universitydestroy);
         destroyBar.setFloatable(false);
 
 

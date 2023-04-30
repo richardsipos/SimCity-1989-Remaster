@@ -387,6 +387,7 @@ public class City {
             //System.out.println(destroyGraph);
             if(destroyGraph.BFS(0,numberBuilding)){
                 Environment environment = ((Road) this.map[coords.getHeight()][coords.getWidth()]).getFormerEnvironment();
+                funds = funds + (((Road) this.map[coords.getHeight()][coords.getWidth()]).getPrice()/100*40);
                 this.map[coords.getHeight()][coords.getWidth()] = null;
                 this.map[coords.getHeight()][coords.getWidth()] = environment;
                 destroynodes = destroynodes - 1;
@@ -422,6 +423,7 @@ public class City {
                     }
                     destroynodes = destroynodes - 1;
                     numberBuilding = numberBuilding - 1;
+                    funds = funds + (mainZone.getPrice()/100*40);
                     return true;
                 }
             }
@@ -439,6 +441,7 @@ public class City {
                     }
                     destroynodes = destroynodes - 1;
                     numberBuilding = numberBuilding - 1;
+                    funds = funds + (mainZone.getPrice()/100*40);
                     return true;
                 }
             }
@@ -451,6 +454,7 @@ public class City {
                         this.map[i][j] = new Grass();
                     }
                 }
+                funds = funds + (mainZone.getPrice()/100*40);
                 destroynodes = destroynodes - 1;
                 numberBuilding = numberBuilding - 1;
                 calculateSatisfaction();
