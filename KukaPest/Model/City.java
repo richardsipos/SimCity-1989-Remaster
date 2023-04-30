@@ -22,8 +22,8 @@ public class City {
     private Date date;
 
     //Map dimensions:
-    private final int mapHeight = 31;
-    private final int mapWidth = 59;
+    private final int mapHeight = 27;
+    private final int mapWidth = 48;
 
     private final Tile[][] map;
 
@@ -63,12 +63,12 @@ public class City {
         date = new Date(2000,02,1);
 
         // Read the default map
-        this.map = new Tile[31][59];
+        this.map = new Tile[mapHeight][mapWidth];
         try {
             Scanner sc = new Scanner(new File("KukaPest/Assets/map.txt"));
-            for (int i = 0; i < 31; i++) {
+            for (int i = 0; i < mapHeight; i++) {
                 String line = sc.nextLine();
-                for (int j = 0; j < 59; j++) {
+                for (int j = 0; j < mapWidth; j++) {
                     int mapNum = Character.getNumericValue(line.charAt(j));
                     this.map[i][j] = switch (mapNum) {
                         case 1 -> new Grass();
@@ -683,6 +683,60 @@ public class City {
         System.out.println();
     }
 
+    public void upgrade(Coordinates coords){
+        if (this.map[coords.getHeight()][coords.getWidth()] instanceof Road) {
+
+        }
+        else if (this.map[coords.getHeight()][coords.getWidth()] instanceof Pole) {
+
+        }
+        else if (this.map[coords.getHeight()][coords.getWidth()] instanceof MainZone || this.map[coords.getHeight()][coords.getWidth()] instanceof ZonePart) {
+            MainZone mainZone;
+            if(this.map[coords.getHeight()][coords.getWidth()] instanceof MainZone){
+                mainZone = (MainZone) this.map[coords.getHeight()][coords.getWidth()];
+            }
+            else{
+                mainZone = ((ZonePart) this.map[coords.getHeight()][coords.getWidth()]).mainBuilding;
+            }
+
+            if (mainZone instanceof ResidentialZone) {
+                if(((ResidentialZone) mainZone).getLevel() == 1){
+                    ((ResidentialZone) mainZone).setLevel(2);
+                    System.out.println(((ResidentialZone) mainZone).getLevel());
+                    ((ResidentialZone) mainZone).setCapacity(25);
+                    funds = funds - 3000;
+                }
+                else if(((ResidentialZone) mainZone).getLevel() == 2){
+                    ((ResidentialZone) mainZone).setLevel(3);
+                    ((ResidentialZone) mainZone).setCapacity(50);
+                    funds = funds - 8000;
+                }
+            }
+            if (mainZone instanceof Workplace) {
+                if(mainZone instanceof IndustrialZone || mainZone instanceof ServiceZone){
+                    if(((Workplace) mainZone).getLevel() == 1){
+                        ((Workplace) mainZone).setLevel(2);
+                        System.out.println(((Workplace) mainZone).getLevel());
+                        ((Workplace) mainZone).setCapacity(30);
+                        funds = funds - 5000;
+                    }
+                    else if(((Workplace) mainZone).getLevel() == 2){
+                        ((Workplace) mainZone).setLevel(3);
+                        ((Workplace) mainZone).setCapacity(55);
+                        funds = funds - 10000;
+                    }
+
+                }
+            }
+            if (mainZone instanceof Infrastructure) {
+
+            }
+
+
+        }
+
+    }
+
     public Tile[][] getMap() {
         return map;
     }
@@ -692,6 +746,8 @@ public class City {
     public Date getDate(){
         return date;
     }
+
+    public int getCitizenslength(){return citizens.size();}
 
 
 }

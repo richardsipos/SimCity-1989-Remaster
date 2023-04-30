@@ -4,6 +4,6 @@ import Model.Helper.Coordinates;
 
 public class School extends EduBuilding{
     public School(Coordinates coordinates) {
-        super(2, 4,30,1000,coordinates ,10);
+        super(4, 2,30,1000,coordinates ,10);
     }
 }
