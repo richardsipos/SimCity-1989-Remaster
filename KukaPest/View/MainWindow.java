@@ -465,6 +465,7 @@ public class MainWindow extends JFrame{
                 add(destroyBar,BorderLayout.EAST);
                 pack();
 
+                BoardPanel.upgrade = false;
                 BoardPanel.build = false;
                 BoardPanel.destroy = true;
             }
@@ -483,6 +484,7 @@ public class MainWindow extends JFrame{
                 add(buildBar,BorderLayout.EAST);
                 pack();
 
+                BoardPanel.upgrade = false;
                 BoardPanel.build = true;
                 BoardPanel.destroy = false;
             }
@@ -498,6 +500,7 @@ public class MainWindow extends JFrame{
                 add(statBar,BorderLayout.EAST);
 
                 pack();
+                BoardPanel.upgrade = false;
                 BoardPanel.build = false;
                 BoardPanel.destroy = false;
             }

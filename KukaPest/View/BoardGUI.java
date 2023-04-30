@@ -16,7 +16,8 @@ public class BoardGUI extends JPanel implements MouseListener, MouseMotionListen
     static final int DELAY = 1000;
     Image background, grass, dirt, water, road, uni, res_zone, res_zone_1, res_zone_2, res_zone_3, res_zone_max, res_zone_level2,
             res_zone_level2_2,res_zone_level3,res_zone_level3_2,pp, school, police, stadium, industrial, power_pole,
-            service, industrial_1, industrial_2, service_1, service_2;
+            service, industrial_1, industrial_2, industrial_level2, industrial_level2_2, industrial_level3,
+            industrial_level3_2, service_1, service_2, service_level2, service_level2_2, service_level3, service_level3_2;
     Board board;
     boolean build = false;
     boolean destroy = false;
@@ -66,10 +67,18 @@ public class BoardGUI extends JPanel implements MouseListener, MouseMotionListen
         industrial = new ImageIcon("KukaPest/Assets/industrial.png").getImage();
         industrial_1 = new ImageIcon("KukaPest/Assets/industrial_1.png").getImage();
         industrial_2 = new ImageIcon("KukaPest/Assets/industrial_2.png").getImage();
+        industrial_level2 = new ImageIcon("KukaPest/Assets/industrial_level2.png").getImage();
+        industrial_level2_2 = new ImageIcon("KukaPest/Assets/industrial_level2_2.png").getImage();
+        industrial_level3 = new ImageIcon("KukaPest/Assets/industrial_level3.png").getImage();
+        industrial_level3_2 = new ImageIcon("KukaPest/Assets/industrial_level3_2.png").getImage();
         power_pole = new ImageIcon("KukaPest/Assets/power_pole.png").getImage();
         service = new ImageIcon("KukaPest/Assets/service.png").getImage();
         service_1 = new ImageIcon("KukaPest/Assets/service_1.png").getImage();
         service_2 = new ImageIcon("KukaPest/Assets/service_2.png").getImage();
+        service_level2 = new ImageIcon("KukaPest/Assets/service_level2.png").getImage();
+        service_level2_2 = new ImageIcon("KukaPest/Assets/service_level2_2.png").getImage();
+        service_level3 = new ImageIcon("KukaPest/Assets/service_level3.png").getImage();
+        service_level3_2 = new ImageIcon("KukaPest/Assets/service_level3_2.png").getImage();
 
         map = game.getMap();
 
@@ -129,6 +138,9 @@ public class BoardGUI extends JPanel implements MouseListener, MouseMotionListen
 
                     }
                     if(((ResidentialZone) map[i][j]).getLevel() == 2){
+                        if (((ResidentialZone) map[i][j]).getCurrentCapacity() == 0) {
+                            g2.drawImage(res_zone, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
+                        }
                         if (((ResidentialZone) map[i][j]).getCurrentCapacity() <= 16 && ((ResidentialZone) map[i][j]).getCurrentCapacity() > 0) {
                             g2.drawImage(res_zone_level2, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
                         }
@@ -138,6 +150,9 @@ public class BoardGUI extends JPanel implements MouseListener, MouseMotionListen
 
                     }
                     if(((ResidentialZone) map[i][j]).getLevel() == 3){
+                        if (((ResidentialZone) map[i][j]).getCurrentCapacity() == 0) {
+                            g2.drawImage(res_zone, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
+                        }
                         if (((ResidentialZone) map[i][j]).getCurrentCapacity() <= 32 && ((ResidentialZone) map[i][j]).getCurrentCapacity() > 0) {
                             g2.drawImage(res_zone_level3, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
                         }
@@ -153,28 +168,68 @@ public class BoardGUI extends JPanel implements MouseListener, MouseMotionListen
                 else if (map[i][j] instanceof School)
                     g2.drawImage(school, j * board.getCellSide(), i * board.getCellSide(),100,50, null);
                 else if (map[i][j] instanceof IndustrialZone) {
-                    if (((IndustrialZone) map[i][j]).getCurrentCapacity() == 0) {
-                        g2.drawImage(industrial, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
+
+                    if(((IndustrialZone) map[i][j]).getLevel() == 1) {
+                        if (((IndustrialZone) map[i][j]).getCurrentCapacity() == 0) {
+                            g2.drawImage(industrial, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
+                        } else if (((IndustrialZone) map[i][j]).getCurrentCapacity() <= 6 && ((IndustrialZone) map[i][j]).getCurrentCapacity() > 0) {
+                            g2.drawImage(industrial_1, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
+                        } else {
+                            g2.drawImage(industrial_2, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
+                        }
                     }
-                    else if (((IndustrialZone) map[i][j]).getCurrentCapacity() <= 4 && ((IndustrialZone) map[i][j]).getCurrentCapacity() > 0) {
-                        g2.drawImage(industrial_1, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
+                    if(((IndustrialZone) map[i][j]).getLevel() == 2){
+                        if (((IndustrialZone) map[i][j]).getCurrentCapacity() == 0) {
+                            g2.drawImage(industrial, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
+                        } else if (((IndustrialZone) map[i][j]).getCurrentCapacity() <= 20 && ((IndustrialZone) map[i][j]).getCurrentCapacity() > 0) {
+                            g2.drawImage(industrial_level2, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
+                        } else {
+                            g2.drawImage(industrial_level2_2, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
+                        }
+
                     }
-                    else{
-                        g2.drawImage(industrial_2, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
+                    if(((IndustrialZone) map[i][j]).getLevel() == 3){
+                        if (((IndustrialZone) map[i][j]).getCurrentCapacity() == 0) {
+                            g2.drawImage(industrial, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
+                        } else if (((IndustrialZone) map[i][j]).getCurrentCapacity() <= 42 && ((IndustrialZone) map[i][j]).getCurrentCapacity() > 0) {
+                            g2.drawImage(industrial_level3, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
+                        } else {
+                            g2.drawImage(industrial_level3_2, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
+                        }
+
                     }
                     //g2.drawImage(industrial, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
                 }
                 else if (map[i][j] instanceof Pole)
                     g2.drawImage(power_pole, j * board.getCellSide(), i * board.getCellSide(),25,25, null);
                 else if (map[i][j] instanceof ServiceZone){
-                    if (((ServiceZone) map[i][j]).getCurrentCapacity() == 0) {
-                        g2.drawImage(service, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
+
+                    if(((ServiceZone) map[i][j]).getLevel() == 1) {
+                        if (((ServiceZone) map[i][j]).getCurrentCapacity() == 0) {
+                            g2.drawImage(service, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
+                        } else if (((ServiceZone) map[i][j]).getCurrentCapacity() <= 6 && ((ServiceZone) map[i][j]).getCurrentCapacity() > 0) {
+                            g2.drawImage(service_1, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
+                        } else {
+                            g2.drawImage(service_2, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
+                        }
                     }
-                    else if (((ServiceZone) map[i][j]).getCurrentCapacity() <= 4 && ((ServiceZone) map[i][j]).getCurrentCapacity() > 0) {
-                        g2.drawImage(service_1, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
+                    if(((ServiceZone) map[i][j]).getLevel() == 2) {
+                        if (((ServiceZone) map[i][j]).getCurrentCapacity() == 0) {
+                            g2.drawImage(service, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
+                        } else if (((ServiceZone) map[i][j]).getCurrentCapacity() <= 20 && ((ServiceZone) map[i][j]).getCurrentCapacity() > 0) {
+                            g2.drawImage(service_level2, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
+                        } else {
+                            g2.drawImage(service_level2_2, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
+                        }
                     }
-                    else{
-                        g2.drawImage(service_2, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
+                    if(((ServiceZone) map[i][j]).getLevel() == 3) {
+                        if (((ServiceZone) map[i][j]).getCurrentCapacity() == 0) {
+                            g2.drawImage(service, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
+                        } else if (((ServiceZone) map[i][j]).getCurrentCapacity() <= 42 && ((ServiceZone) map[i][j]).getCurrentCapacity() > 20) {
+                            g2.drawImage(service_level3, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
+                        } else {
+                            g2.drawImage(service_level3_2, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
+                        }
                     }
                 }
                     //g2.drawImage(service, j * board.getCellSide(), i * board.getCellSide(),50,50, null);

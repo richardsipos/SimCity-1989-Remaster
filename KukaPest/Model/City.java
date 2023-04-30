@@ -711,7 +711,18 @@ public class City {
                 }
             }
             if (mainZone instanceof Workplace) {
+                if(mainZone instanceof IndustrialZone || mainZone instanceof ServiceZone){
+                    if(((Workplace) mainZone).getLevel() == 1){
+                        ((Workplace) mainZone).setLevel(2);
+                        System.out.println(((Workplace) mainZone).getLevel());
+                        ((Workplace) mainZone).setCapacity(30);
+                    }
+                    else if(((Workplace) mainZone).getLevel() == 2){
+                        ((Workplace) mainZone).setLevel(3);
+                        ((Workplace) mainZone).setCapacity(55);
+                    }
 
+                }
             }
             if (mainZone instanceof Infrastructure) {
 
