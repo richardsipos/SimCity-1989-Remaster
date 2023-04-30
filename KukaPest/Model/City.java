@@ -74,7 +74,7 @@ public class City {
                         case 1 -> new Grass();
                         case 2 -> new Dirt();
                         case 3 -> new Water();
-                        case 4 -> new Road();
+                        case 4 -> new Road(null);
                         default -> throw new InvalidParameterException();
                     };
                     if(this.map[i][j] instanceof Road){
@@ -90,9 +90,20 @@ public class City {
     }
 
     boolean build(Building toBuild, Coordinates coords){
+        Environment enviroment;
+        if(this.map[coords.getHeight()][coords.getWidth()] instanceof Grass){
+            enviroment = new Grass();
+        }
+        else if(this.map[coords.getHeight()][coords.getWidth()] instanceof Dirt){
+            enviroment = new Dirt();
+        }
+        else{
+            enviroment = new Water();
+        }
+
         Constructable toBeBuilt = switch(toBuild){
             case STADIUM -> new Stadium(coords);
-            case ROAD -> new Road();
+            case ROAD -> new Road(enviroment);
             case POLICE -> new Police(coords);
             case UNIVERSITY -> new University(coords);
             case SCHOOL -> new School(coords);
@@ -375,8 +386,9 @@ public class City {
             buildingsAvailable(coords);
             //System.out.println(destroyGraph);
             if(destroyGraph.BFS(0,numberBuilding)){
+                Environment environment = ((Road) this.map[coords.getHeight()][coords.getWidth()]).getFormerEnvironment();
                 this.map[coords.getHeight()][coords.getWidth()] = null;
-                this.map[coords.getHeight()][coords.getWidth()] = new Grass();
+                this.map[coords.getHeight()][coords.getWidth()] = environment;
                 destroynodes = destroynodes - 1;
                 return true;
             }
