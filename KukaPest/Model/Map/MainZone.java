@@ -27,6 +27,9 @@ abstract public class MainZone extends Constructable {
     public void addCitizen(Citizen c){
         this.citizens.add(c);
     }
+    public void removeCitizen(Citizen c){
+        this.citizens.remove(c);
+    }
 
     /**
      * Get/set methods

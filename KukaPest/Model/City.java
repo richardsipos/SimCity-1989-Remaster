@@ -16,7 +16,7 @@ import java.util.Scanner;
 
 public class City {
     private final String name;
-    private final ArrayList<Citizen> citizens;
+    final ArrayList<Citizen> citizens;
     private int funds = 10000;
     private int[] lastBalance = {0 , 0};
     private Date date;
@@ -223,15 +223,14 @@ public class City {
 //    ezt hivja majd a TimePassed es intezzi majd a Citizenet bekoltozeset.
     void handleMoveIn(){
         //random people will come to the city (bebtween 1-4 bot ends included)
-        Random rand = new Random();
-        int randomNumber = (rand.nextInt(4))+1;
+        int randomNumber = (new Random().nextInt(4)) + 1;
 
         for(int i=1;i<=randomNumber;i++){
             ResidentialZone Rzone = hasFreeResidential();
             Workplace Wzone = hasFreeWorkplace();
             //ha van free residential zone es van industrial zone is akkor letre kell hozzni egy citizent.
             if(Rzone!=null && Wzone!=null){
-                Citizen citizen = new Citizen(Rzone,Wzone);
+                Citizen citizen = new Citizen(new Random().nextInt(42) + 18, Rzone, Wzone, this);
                 citizens.add(citizen);
                 Rzone.addCitizen(citizen);
                 Wzone.addCitizen(citizen);
