@@ -14,7 +14,7 @@ public class MainWindow extends JFrame{
     private BoardGUI BoardPanel;
     JLabel populationlabel = new JLabel();
     JProgressBar b;
-
+    JToolBar statBar = new JToolBar();
     JLabel fundslabel = new JLabel();
     JLabel balancelabel = new JLabel();
     JLabel year = new JLabel();
@@ -396,7 +396,7 @@ public class MainWindow extends JFrame{
 
         //StatusBar létrehozása
 
-        JToolBar statBar = new JToolBar();
+
 
         JLabel statlabel = new JLabel("<html>Stats:<br/><br/></html>");
         statlabel.setFont(new Font("Cooper Black", Font.BOLD, 30));
@@ -445,11 +445,16 @@ public class MainWindow extends JFrame{
         balancelabel.setMinimumSize(new Dimension(250,50));
         balancelabel.setMaximumSize(new Dimension(250,50));
 
+        JButton zoneClick = new JButton("Zone Stats: Off");
+        zoneClick.setFont(new Font("Cooper Black2",Font.BOLD,13));
+
 
         statBar.add(statlabel);
         statBar.add(populationlabel);
         statBar.add(fundslabel);
         statBar.add(balancelabel);
+        statBar.addSeparator(new Dimension(20,20));
+        statBar.add(zoneClick);
 
         statBar.setFloatable(false);
 
@@ -555,6 +560,9 @@ public class MainWindow extends JFrame{
                 add(destroyBar,BorderLayout.EAST);
                 pack();
 
+                zoneClick.setText("Zone Stats: Off");
+                zoneClick.setFont(new Font("Cooper Black2",Font.BOLD,13));
+                BoardPanel.zonestat = false;
                 BoardPanel.upgrade = false;
                 BoardPanel.build = false;
                 BoardPanel.destroy = true;
@@ -575,6 +583,9 @@ public class MainWindow extends JFrame{
                 add(buildBar,BorderLayout.EAST);
                 pack();
 
+                zoneClick.setText("Zone Stats: Off");
+                zoneClick.setFont(new Font("Cooper Black2",Font.BOLD,13));
+                BoardPanel.zonestat = false;
                 BoardPanel.upgrade = false;
                 BoardPanel.build = true;
                 BoardPanel.destroy = false;
@@ -595,6 +606,25 @@ public class MainWindow extends JFrame{
                 BoardPanel.upgrade = false;
                 BoardPanel.build = false;
                 BoardPanel.destroy = false;
+            }
+        });
+        zoneClick.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+
+                if(zoneClick.getText().equals("Zone Stats: Off")) {
+                    zoneClick.setText("Zone Stats: On");
+                    zoneClick.setFont(new Font("Cooper Black2",Font.BOLD,13));
+                    BoardPanel.zonestat = true;
+                    System.out.println(zoneClick.getText());
+                }
+                else if(zoneClick.getText().equals("Zone Stats: On")) {
+                    zoneClick.setText("Zone Stats: Off");
+                    zoneClick.setFont(new Font("Cooper Black2",Font.BOLD,13));
+                    BoardPanel.zonestat = false;
+                    System.out.println(zoneClick.getText());
+                }
+
             }
         });
 
@@ -720,6 +750,9 @@ public class MainWindow extends JFrame{
                 add(upgradeBar,BorderLayout.EAST);
                 pack();
 
+                zoneClick.setText("Zone Stats: Off");
+                zoneClick.setFont(new Font("Cooper Black2",Font.BOLD,13));
+                BoardPanel.zonestat = false;
                 BoardPanel.build = false;
                 BoardPanel.destroy = false;
                 BoardPanel.upgrade = true;
@@ -736,5 +769,7 @@ public class MainWindow extends JFrame{
         fundslabel.setText(BoardPanel.getGame().getFunds()+ " $");
         balancelabel.setText((BoardPanel.getGame().getLastBalance()[0] + BoardPanel.getGame().getLastBalance()[1]) + " $");
     }
+
+
 
 }

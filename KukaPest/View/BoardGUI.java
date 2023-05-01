@@ -22,9 +22,11 @@ public class BoardGUI extends JPanel implements MouseListener, MouseMotionListen
     boolean build = false;
     boolean destroy = false;
     boolean upgrade = false;
+    boolean zonestat = false;
     Building selectedBuilding;
     Tile[][] map;
     private Game game;
+
     //private MenuWindow menuWindow = new MenuWindow();
 
 
@@ -225,7 +227,7 @@ public class BoardGUI extends JPanel implements MouseListener, MouseMotionListen
                     if(((ServiceZone) map[i][j]).getLevel() == 3) {
                         if (((ServiceZone) map[i][j]).getCurrentCapacity() == 0) {
                             g2.drawImage(service, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
-                        } else if (((ServiceZone) map[i][j]).getCurrentCapacity() <= 42 && ((ServiceZone) map[i][j]).getCurrentCapacity() > 20) {
+                        } else if (((ServiceZone) map[i][j]).getCurrentCapacity() <= 35 && ((ServiceZone) map[i][j]).getCurrentCapacity() > 0) {
                             g2.drawImage(service_level3, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
                         } else {
                             g2.drawImage(service_level3_2, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
@@ -265,6 +267,41 @@ public class BoardGUI extends JPanel implements MouseListener, MouseMotionListen
         if(upgrade){
             game.upgrade(new Coordinates(row,col));
             repaint();
+        }
+        if(zonestat){
+            System.out.println(row +" " + col);
+            //JFrame popupframe = new JFrame();
+            if(this.map[row][col] instanceof MainZone || this.map[row][col] instanceof ZonePart){
+                MainZone mainZone;
+                if(this.map[row][col] instanceof MainZone){
+                    mainZone = (MainZone) this.map[row][col];
+                }
+                else{
+                    mainZone = ((ZonePart) this.map[row][col]).mainBuilding;
+                }
+                if(mainZone instanceof ResidentialZone) {
+                    JOptionPane.showMessageDialog(null,
+                            "Level: " + ((ResidentialZone) mainZone).getLevel()+ " level\nCapacity: " + mainZone.getMaxCapacity() + " people \nPopulation: "
+                                    + mainZone.getCurrentCapacity() + " people",
+                            "Residental Zone",
+                            JOptionPane.PLAIN_MESSAGE);
+                }
+                else if(mainZone instanceof ServiceZone) {
+                    JOptionPane.showMessageDialog(null,
+                            "Level: " + ((ServiceZone) mainZone).getLevel()+ " level\nCapacity: " + mainZone.getMaxCapacity() + " people \nWorkers: "
+                                    + mainZone.getCurrentCapacity() + " people",
+                            "Service Zone",
+                            JOptionPane.PLAIN_MESSAGE);
+                }
+                else if(mainZone instanceof IndustrialZone) {
+                    JOptionPane.showMessageDialog(null,
+                             "Level: " + ((IndustrialZone) mainZone).getLevel()+ " level\nCapacity: " + mainZone.getMaxCapacity() + " people \nWorkers: "
+                                    + mainZone.getCurrentCapacity() + " people",
+                            "Industrial Zone",
+                            JOptionPane.PLAIN_MESSAGE);
+                }
+
+            }
         }
 
         repaint();
@@ -316,4 +353,6 @@ public class BoardGUI extends JPanel implements MouseListener, MouseMotionListen
     public Game getGame() {
         return game;
     }
+
+
 }
