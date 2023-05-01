@@ -301,10 +301,10 @@ public class City {
             return serviceWorkplace;
         }else{
             if(workersInIndustrialZones >= workersInServiceZones){
-                System.out.println("Working in Service");
+                // System.out.println("Working in Service");
                 return serviceWorkplace;
             }else{
-                System.out.println("Working in Industrial");
+                // System.out.println("Working in Industrial");
                 return industrialWorkplace;
             }
         }
@@ -320,7 +320,9 @@ public class City {
         if(dateChange > 0){
              //A month has passed!
             if(dateChange > 1){
-                //A year has passed!
+                for (int i = 0; i < citizens.size(); i++){
+                    citizens.get(i).yearPassed();
+                }
             }
         }
         System.out.println("Elégedettség: " + satisfaction()); //debug

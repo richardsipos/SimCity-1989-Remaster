@@ -37,7 +37,7 @@ public class Citizen {
         return total;
     }
     public int payTax(){
-        return isPensioner ? (pension * -1) : tax();
+        return isPensioner ? (pension / TAX_FREQUENCY * -1) : tax();
     }
     private int tax(){
         return 5;
@@ -81,9 +81,9 @@ public class Citizen {
         ResidentialZone Rzone = city.hasFreeResidential();
         Workplace Wzone = city.hasFreeWorkplace();
         //ha van free residential zone es van industrial zone is akkor letre kell hozzni egy citizent.
-        if(Rzone!=null && Wzone!=null){
+        if(Wzone != null){
             this.age = 18;
-            this.home = Rzone;
+            this.home = Rzone == null ? home : Rzone;
             this.workPlace = Wzone;
             this.pension = 0;
             this.isPensioner = false;
@@ -94,4 +94,15 @@ public class Citizen {
         }
     }
 
+    @Override
+    public String toString() {
+        return "Citizen{" +
+                "age=" + age +
+                ", isPensioner=" + isPensioner +
+                ", pension=" + pension +
+                ", chanceToDie=" + chanceToDie +
+                ", home=" + home +
+                ", workPlace=" + workPlace +
+                '}';
+    }
 }
