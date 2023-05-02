@@ -5,11 +5,12 @@ import Model.Game;
 import Model.Helper.Building;
 import Model.Helper.Coordinates;
 import Model.Map.*;
-import org.w3c.dom.ls.LSOutput;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 
 public class BoardGUI extends JPanel implements MouseListener, MouseMotionListener {
 
@@ -310,7 +311,7 @@ public class BoardGUI extends JPanel implements MouseListener, MouseMotionListen
 
     @Override
     public void mouseDragged(MouseEvent e){
-        if(selectedBuilding == Building.ROAD && build){
+        if((selectedBuilding == Building.ROAD || selectedBuilding == Building.POLE ) && build){
             int x = e.getPoint().x;
             int col = (x  / board.getCellSide());
             int y = e.getPoint().y;

@@ -30,6 +30,21 @@ public class Citizen {
      */
     public int satisfaction() {
         int total = 50;
+        if (home.isElectricity()){
+            total += home.getSatisfactionBoost();
+        }else{
+            if(home.getSatisfactionBoost()!=0){
+                total += home.getSatisfactionBoost()/2;
+            }
+        }
+
+        if (workPlace.isElectricity()){
+            total += workPlace.getSatisfactionBoost();
+        }else{
+            if(workPlace.getSatisfactionBoost()!=0){
+                total += workPlace.getSatisfactionBoost()/2;
+            }
+        }
         total += home.getSatisfactionBoost();
         if (!isPensioner) total += workPlace.getSatisfactionBoost();
         if (total < 0) total = 0;
@@ -40,7 +55,14 @@ public class Citizen {
         return isPensioner ? (pension / TAX_FREQUENCY * -1) : tax();
     }
     private int tax(){
-        return 5;
+        if(workPlace == null){
+            return 2;
+        }
+        else if (workPlace.isElectricity()) {
+            return 7;
+        }else {
+            return 5;
+        }
     }
 
     public void yearPassed(){
