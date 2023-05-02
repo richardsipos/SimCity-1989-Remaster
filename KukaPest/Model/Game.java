@@ -31,7 +31,6 @@ public class Game {
     public void stepGame(){
         city.timePassed(timeSpeed);
     }
-
     public Tile[][] getMap(){
         return city.getMap();
     }
