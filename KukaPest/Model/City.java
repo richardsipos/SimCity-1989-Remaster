@@ -252,13 +252,13 @@ public class City {
                 if(citizens.size() > guaranteedCitizens){
 
                     if(RzoneWithElectricity != null && satisfaction()>=30){//akkor koltozhet csak  be ha van aram es ha boldogabbak mint 30
-                        Citizen citizen = new Citizen(new Random().nexInt(42) + 18, RzoneWithElectricity,Wzone);
+                        Citizen citizen = new Citizen(new Random().nextInt(42) + 18, RzoneWithElectricity, Wzone, this);
                         citizens.add(citizen);
                         RzoneWithElectricity.addCitizen(citizen);
                         Wzone.addCitizen(citizen);
                     }
                 }else{
-                    Citizen citizen = new Citizen(new Random().nexInt(42) + 18, Rzone,Wzone);
+                    Citizen citizen = new Citizen(new Random().nextInt(42) + 18, Rzone, Wzone, this);
                     citizens.add(citizen);
                     Rzone.addCitizen(citizen);
                     Wzone.addCitizen(citizen);
@@ -447,8 +447,9 @@ public class City {
             return false;
         }
         else if (this.map[coords.getHeight()][coords.getWidth()] instanceof Pole) {
-            //későbbi ellenőrzés
-            return false;
+            this.map[coords.getHeight()][coords.getWidth()] = null;
+            this.map[coords.getHeight()][coords.getWidth()] = new Grass();
+            return true;
         }
         else if (this.map[coords.getHeight()][coords.getWidth()] instanceof MainZone || this.map[coords.getHeight()][coords.getWidth()] instanceof ZonePart) {
             MainZone mainZone;
@@ -891,21 +892,22 @@ public class City {
         }
     }
 
-    public void electricityStats(){
+    public void electricityStats() {
 
         for (int i = 0; i < mapHeight; i++) {
             for (int j = 0; j < mapWidth; j++) {
-                if(this.map[i][j] instanceof  PowerPlant){
-                    this.electricityProduction=this.electricityProduction+((PowerPlant)this.map[i][j]).getElectricityProduction();
+                if (this.map[i][j] instanceof PowerPlant) {
+                    this.electricityProduction = this.electricityProduction + ((PowerPlant) this.map[i][j]).getElectricityProduction();
                 }
-                if(this.map[i][j] instanceof MainZone && ((MainZone) this.map[i][j]).isElectricity()){
-                    this.electricityNeed=this.electricityNeed+((MainZone) this.map[i][j]).getElectricityNeed();
+                if (this.map[i][j] instanceof MainZone && ((MainZone) this.map[i][j]).isElectricity()) {
+                    this.electricityNeed = this.electricityNeed + ((MainZone) this.map[i][j]).getElectricityNeed();
                 }
-                if(this.map[i][j] instanceof MainZone){
-                    this.electricityUsed=this.electricityUsed+((MainZone) this.map[i][j]).getElectricityNeed();
+                if (this.map[i][j] instanceof MainZone) {
+                    this.electricityUsed = this.electricityUsed + ((MainZone) this.map[i][j]).getElectricityNeed();
                 }
             }
         }
+    }
 
     public void upgrade(Coordinates coords){
         if (this.map[coords.getHeight()][coords.getWidth()] instanceof Road) {

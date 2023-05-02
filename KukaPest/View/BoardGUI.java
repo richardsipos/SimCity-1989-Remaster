@@ -283,21 +283,21 @@ public class BoardGUI extends JPanel implements MouseListener, MouseMotionListen
                 if(mainZone instanceof ResidentialZone) {
                     JOptionPane.showMessageDialog(null,
                             "Level: " + ((ResidentialZone) mainZone).getLevel()+ " level\nCapacity: " + mainZone.getMaxCapacity() + " people \nPopulation: "
-                                    + mainZone.getCurrentCapacity() + " people",
+                                    + mainZone.getCurrentCapacity() + " people\nElectricity: " + mainZone.isElectricity(),
                             "Residental Zone",
                             JOptionPane.PLAIN_MESSAGE);
                 }
                 else if(mainZone instanceof ServiceZone) {
                     JOptionPane.showMessageDialog(null,
                             "Level: " + ((ServiceZone) mainZone).getLevel()+ " level\nCapacity: " + mainZone.getMaxCapacity() + " people \nWorkers: "
-                                    + mainZone.getCurrentCapacity() + " people",
+                                    + mainZone.getCurrentCapacity() + " people\nElectricity: " + mainZone.isElectricity(),
                             "Service Zone",
                             JOptionPane.PLAIN_MESSAGE);
                 }
                 else if(mainZone instanceof IndustrialZone) {
                     JOptionPane.showMessageDialog(null,
                              "Level: " + ((IndustrialZone) mainZone).getLevel()+ " level\nCapacity: " + mainZone.getMaxCapacity() + " people \nWorkers: "
-                                    + mainZone.getCurrentCapacity() + " people",
+                                    + mainZone.getCurrentCapacity() + " people\nElectricity: " + mainZone.isElectricity(),
                             "Industrial Zone",
                             JOptionPane.PLAIN_MESSAGE);
                 }
