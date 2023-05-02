@@ -25,11 +25,13 @@ public class Game {
     public boolean destroy(Coordinates coords){
         return city.destroy(coords);
     }
+    public void upgrade(Coordinates coords){
+        city.upgrade(coords);
+    }
 
     public void stepGame(){
         city.timePassed(timeSpeed);
     }
-
     public Tile[][] getMap(){
         return city.getMap();
     }
@@ -45,6 +47,7 @@ public class Game {
     public int[] getLastBalance(){
         return city.getLastBalance();
     }
+    public int getCitizenslength(){return city.getCitizenslength();}
 
     public City getCity() {
         return city;

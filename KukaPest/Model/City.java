@@ -14,7 +14,7 @@ import java.util.*;
 
 public class City {
     private final String name;
-    private final ArrayList<Citizen> citizens;
+    final ArrayList<Citizen> citizens;
     private int funds = 10000;
     private int[] lastBalance = {0 , 0};
     private Date date;
@@ -24,8 +24,8 @@ public class City {
     private int electricityNeed=0;
 
     //Map dimensions:
-    private final int mapHeight = 31;
-    private final int mapWidth = 59;
+    private final int mapHeight = 27;
+    private final int mapWidth = 48;
 
     private final Tile[][] map;
 
@@ -66,18 +66,18 @@ public class City {
         date = new Date(2000,02,1);
 
         // Read the default map
-        this.map = new Tile[31][59];
+        this.map = new Tile[mapHeight][mapWidth];
         try {
             Scanner sc = new Scanner(new File("KukaPest/Assets/map.txt"));
-            for (int i = 0; i < 31; i++) {
+            for (int i = 0; i < mapHeight; i++) {
                 String line = sc.nextLine();
-                for (int j = 0; j < 59; j++) {
+                for (int j = 0; j < mapWidth; j++) {
                     int mapNum = Character.getNumericValue(line.charAt(j));
                     this.map[i][j] = switch (mapNum) {
                         case 1 -> new Grass();
                         case 2 -> new Dirt();
                         case 3 -> new Water();
-                        case 4 -> new Road();
+                        case 4 -> new Road(null);
                         default -> throw new InvalidParameterException();
                     };
                     if(this.map[i][j] instanceof Road){
@@ -93,9 +93,20 @@ public class City {
     }
 
     boolean build(Building toBuild, Coordinates coords){
+        Environment enviroment;
+        if(this.map[coords.getHeight()][coords.getWidth()] instanceof Grass){
+            enviroment = new Grass();
+        }
+        else if(this.map[coords.getHeight()][coords.getWidth()] instanceof Dirt){
+            enviroment = new Dirt();
+        }
+        else{
+            enviroment = new Water();
+        }
+
         Constructable toBeBuilt = switch(toBuild){
             case STADIUM -> new Stadium(coords);
-            case ROAD -> new Road();
+            case ROAD -> new Road(enviroment);
             case POLICE -> new Police(coords);
             case UNIVERSITY -> new University(coords);
             case SCHOOL -> new School(coords);
@@ -226,8 +237,7 @@ public class City {
 //    ezt hivja majd a TimePassed es intezzi majd a Citizenet bekoltozeset.
     void handleMoveIn(){
         //random people will come to the city (bebtween 1-4 bot ends included)
-        Random rand = new Random();
-        int randomNumber = (rand.nextInt(4))+1;
+        int randomNumber = (new Random().nextInt(4)) + 1;
 
         for(int i=1;i<=randomNumber;i++){
             ResidentialZone Rzone = hasFreeResidential();
@@ -239,22 +249,20 @@ public class City {
             //ha van free residential zone es van industrial zone is akkor letre kell hozzni egy citizent.
 
             if(Rzone!=null && Wzone!=null){
-
                 if(citizens.size() > guaranteedCitizens){
 
                     if(RzoneWithElectricity != null && satisfaction()>=30){//akkor koltozhet csak  be ha van aram es ha boldogabbak mint 30
-                        Citizen citizen = new Citizen(RzoneWithElectricity,Wzone);
+                        Citizen citizen = new Citizen(new Random().nexInt(42) + 18, RzoneWithElectricity,Wzone);
                         citizens.add(citizen);
                         RzoneWithElectricity.addCitizen(citizen);
                         Wzone.addCitizen(citizen);
                     }
                 }else{
-                    Citizen citizen = new Citizen(Rzone,Wzone);
+                    Citizen citizen = new Citizen(new Random().nexInt(42) + 18, Rzone,Wzone);
                     citizens.add(citizen);
                     Rzone.addCitizen(citizen);
                     Wzone.addCitizen(citizen);
                 }
-
 
             }
         }
@@ -338,10 +346,10 @@ public class City {
             return serviceWorkplace;
         }else{
             if(workersInIndustrialZones >= workersInServiceZones){
-                System.out.println("Working in Service");
+                // System.out.println("Working in Service");
                 return serviceWorkplace;
             }else{
-                System.out.println("Working in Industrial");
+                // System.out.println("Working in Industrial");
                 return industrialWorkplace;
             }
         }
@@ -372,7 +380,9 @@ public class City {
         if(dateChange > 0){
              //A month has passed!
             if(dateChange > 1){
-                //A year has passed!
+                for (int i = 0; i < citizens.size(); i++){
+                    citizens.get(i).yearPassed();
+                }
             }
         }
         System.out.println("Elégedettség: " + satisfaction()); //debug
@@ -426,8 +436,10 @@ public class City {
             buildingsAvailable(coords);
             //System.out.println(destroyGraph);
             if(destroyGraph.BFS(0,numberBuilding)){
+                Environment environment = ((Road) this.map[coords.getHeight()][coords.getWidth()]).getFormerEnvironment();
+                funds = funds + (((Road) this.map[coords.getHeight()][coords.getWidth()]).getPrice()/100*40);
                 this.map[coords.getHeight()][coords.getWidth()] = null;
-                this.map[coords.getHeight()][coords.getWidth()] = new Grass();
+                this.map[coords.getHeight()][coords.getWidth()] = environment;
                 destroynodes = destroynodes - 1;
                 return true;
             }
@@ -461,6 +473,7 @@ public class City {
                     }
                     destroynodes = destroynodes - 1;
                     numberBuilding = numberBuilding - 1;
+                    funds = funds + (mainZone.getPrice()/100*40);
                     return true;
                 }
             }
@@ -478,6 +491,7 @@ public class City {
                     }
                     destroynodes = destroynodes - 1;
                     numberBuilding = numberBuilding - 1;
+                    funds = funds + (mainZone.getPrice()/100*40);
                     return true;
                 }
             }
@@ -490,6 +504,7 @@ public class City {
                         this.map[i][j] = new Grass();
                     }
                 }
+                funds = funds + (mainZone.getPrice()/100*40);
                 destroynodes = destroynodes - 1;
                 numberBuilding = numberBuilding - 1;
 
@@ -891,6 +906,58 @@ public class City {
                 }
             }
         }
+
+    public void upgrade(Coordinates coords){
+        if (this.map[coords.getHeight()][coords.getWidth()] instanceof Road) {
+
+        }
+        else if (this.map[coords.getHeight()][coords.getWidth()] instanceof Pole) {
+
+        }
+        else if (this.map[coords.getHeight()][coords.getWidth()] instanceof MainZone || this.map[coords.getHeight()][coords.getWidth()] instanceof ZonePart) {
+            MainZone mainZone;
+            if(this.map[coords.getHeight()][coords.getWidth()] instanceof MainZone){
+                mainZone = (MainZone) this.map[coords.getHeight()][coords.getWidth()];
+            }
+            else{
+                mainZone = ((ZonePart) this.map[coords.getHeight()][coords.getWidth()]).mainBuilding;
+            }
+
+            if (mainZone instanceof ResidentialZone) {
+                if(((ResidentialZone) mainZone).getLevel() == 1){
+                    ((ResidentialZone) mainZone).setLevel(2);
+                    System.out.println(((ResidentialZone) mainZone).getLevel());
+                    ((ResidentialZone) mainZone).setCapacity(25);
+                    funds = funds - 3000;
+                }
+                else if(((ResidentialZone) mainZone).getLevel() == 2){
+                    ((ResidentialZone) mainZone).setLevel(3);
+                    ((ResidentialZone) mainZone).setCapacity(50);
+                    funds = funds - 8000;
+                }
+            }
+            if (mainZone instanceof Workplace) {
+                if(mainZone instanceof IndustrialZone || mainZone instanceof ServiceZone){
+                    if(((Workplace) mainZone).getLevel() == 1){
+                        ((Workplace) mainZone).setLevel(2);
+                        System.out.println(((Workplace) mainZone).getLevel());
+                        ((Workplace) mainZone).setCapacity(30);
+                        funds = funds - 5000;
+                    }
+                    else if(((Workplace) mainZone).getLevel() == 2){
+                        ((Workplace) mainZone).setLevel(3);
+                        ((Workplace) mainZone).setCapacity(55);
+                        funds = funds - 10000;
+                    }
+
+                }
+            }
+            if (mainZone instanceof Infrastructure) {
+
+            }
+
+
+        }
     }
 
     public Tile[][] getMap() {
@@ -902,6 +969,8 @@ public class City {
     public Date getDate(){
         return date;
     }
+
+    public int getCitizenslength(){return citizens.size();}
 
 
 }
