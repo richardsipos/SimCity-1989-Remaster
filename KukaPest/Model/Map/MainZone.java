@@ -59,4 +59,8 @@ abstract public class MainZone extends Constructable {
     }
 
     public Coordinates getCoordinates() { return coordinates;}
+
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
+    }
 }
