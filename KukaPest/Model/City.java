@@ -19,6 +19,9 @@ public class City {
     private int[] lastBalance = {0 , 0};
     private Date date;
     private int guaranteedCitizens = 50;
+    private int electricityProduction=0;
+    private int electricityUsed=0;
+    private int electricityNeed=0;
 
     //Map dimensions:
     private final int mapHeight = 31;
@@ -344,9 +347,22 @@ public class City {
         }
     }
 
+    public int getElectricityProduction() {
+        return electricityProduction;
+    }
+
+    public int getElectricityUsed() {
+        return electricityUsed;
+    }
+
+    public int getElectricityNeed() {
+        return electricityNeed;
+    }
+
     public void timePassed(int days){
         int dateChange = date.DaysPassed(days);
         electricitySupply();
+        electricityStats();
         calculateSatisfaction();
         for (int i = 0; i < days; i++) {
             // One day Passed!
@@ -855,6 +871,23 @@ public class City {
                     System.out.println("Ennyi aram maradt: "+electricityToGive);
 
 
+                }
+            }
+        }
+    }
+
+    public void electricityStats(){
+
+        for (int i = 0; i < mapHeight; i++) {
+            for (int j = 0; j < mapWidth; j++) {
+                if(this.map[i][j] instanceof  PowerPlant){
+                    this.electricityProduction=this.electricityProduction+((PowerPlant)this.map[i][j]).getElectricityProduction();
+                }
+                if(this.map[i][j] instanceof MainZone && ((MainZone) this.map[i][j]).isElectricity()){
+                    this.electricityNeed=this.electricityNeed+((MainZone) this.map[i][j]).getElectricityNeed();
+                }
+                if(this.map[i][j] instanceof MainZone){
+                    this.electricityUsed=this.electricityUsed+((MainZone) this.map[i][j]).getElectricityNeed();
                 }
             }
         }

@@ -11,6 +11,7 @@ public class Game {
     private City city;
     private int timeSpeed;
 
+
     public Game(String cityName){
         gameID = UUID.randomUUID();
         city = new City(cityName);
@@ -51,5 +52,17 @@ public class Game {
 
     public void setTimeSpeed(int timeSpeed) {
         this.timeSpeed = timeSpeed;
+    }
+
+    public int getElectricityProduction() {
+        return city.getElectricityProduction();
+    }
+
+    public int getElectricityUsed() {
+        return city.getElectricityUsed();
+    }
+
+    public int getElectricityNeed() {
+        return city.getElectricityNeed();
     }
 }
