@@ -17,6 +17,7 @@ public class MainWindow extends JFrame{
     JToolBar statBar = new JToolBar();
     JLabel fundslabel = new JLabel();
     JLabel balancelabel = new JLabel();
+    JLabel  electricityneed = new JLabel();
     JLabel year = new JLabel();
     JLabel found = new JLabel();
     JLabel citizens = new JLabel();
@@ -57,6 +58,7 @@ public class MainWindow extends JFrame{
                 found.setText("" + BoardPanel.getGame().getFunds() + " $");
                 b.setValue(BoardPanel.getGame().getCity().satisfaction());
                 citizens.setText("" + BoardPanel.getGame().getCitizenslength() + " people");
+                electricityneed.setText(BoardPanel.getGame().getElectricityProduction()-BoardPanel.getGame().getElectricityNeed()+ "");
                 repaint();
 
             }
@@ -431,6 +433,20 @@ public class MainWindow extends JFrame{
         fundslabel.setMinimumSize(new Dimension(250,50));
         fundslabel.setMaximumSize(new Dimension(250,50));
 
+        electricityneed.setBackground(Color.WHITE);
+        electricityneed.setBorder(
+                BorderFactory.createTitledBorder(
+                        BorderFactory.createEtchedBorder(
+                                EtchedBorder.RAISED, Color.GRAY
+                                , Color.DARK_GRAY), "Electricity need: "));
+        electricityneed.setText(BoardPanel.getGame().getElectricityProduction()-BoardPanel.getGame().getElectricityNeed()+ "");
+
+        electricityneed.setFont(new Font("Cooper Black", Font.BOLD, 15));
+
+        electricityneed.setPreferredSize(new Dimension(250,50));
+        electricityneed.setMinimumSize(new Dimension(250,50));
+        electricityneed.setMaximumSize(new Dimension(250,50));
+
         balancelabel.setBackground(Color.WHITE);
         balancelabel.setBorder(
                 BorderFactory.createTitledBorder(
@@ -453,6 +469,7 @@ public class MainWindow extends JFrame{
         statBar.add(populationlabel);
         statBar.add(fundslabel);
         statBar.add(balancelabel);
+        statBar.add( electricityneed);
         statBar.addSeparator(new Dimension(20,20));
         statBar.add(zoneClick);
 

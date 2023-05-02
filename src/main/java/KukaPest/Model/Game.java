@@ -61,9 +61,6 @@ public class Game {
         return city.getElectricityProduction();
     }
 
-    public int getElectricityUsed() {
-        return city.getElectricityUsed();
-    }
 
     public int getElectricityNeed() {
         return city.getElectricityNeed();
