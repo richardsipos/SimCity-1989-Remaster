@@ -1,5 +1,0 @@
-package Model.Helper;
-
-public enum Building {
-    ROAD, STADIUM, POLICE, SCHOOL, UNIVERSITY, POLE, POWER_PLANT, RESIDENTIAL, INDUSTRY, SERVICE
-}
