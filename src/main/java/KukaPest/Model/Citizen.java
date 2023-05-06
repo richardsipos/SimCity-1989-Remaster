@@ -39,16 +39,14 @@ public class Citizen {
                 total += home.getSatisfactionBoost()/2;
             }
         }
-
-        if (workPlace.isElectricity()){
-            total += workPlace.getSatisfactionBoost();
-        }else{
-            if(workPlace.getSatisfactionBoost()!=0){
+        if(!isPensioner){
+            if (workPlace.isElectricity()){
+                total += workPlace.getSatisfactionBoost();
+            }else{
                 total += workPlace.getSatisfactionBoost()/2;
             }
         }
-        total += home.getSatisfactionBoost();
-        if (!isPensioner) total += workPlace.getSatisfactionBoost();
+
         if (total < 0) total = 0;
         if (total > 100) total = 100;
         return total;

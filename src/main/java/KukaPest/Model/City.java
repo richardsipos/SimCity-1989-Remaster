@@ -388,6 +388,16 @@ public class City {
                 }
 
             }
+            int basic = 0, mid = 0, high = 0;
+            for (Citizen c : citizens){
+                if(c.education == EduLevel.BASIC) basic++;
+                if(c.education == EduLevel.MID) mid++;
+                if(c.education == EduLevel.HIGH) high++;
+            }
+            System.out.println("Oktatási százalákok: ");
+            System.out.println("\tAlap " + basic * 100d / citizens.size());
+            System.out.println("\tKözép " + mid * 100d / citizens.size());
+            System.out.println("\tFelső " + high * 100d / citizens.size());
         }
         System.out.println("Elégedettség: " + satisfaction()); //debug
     }
@@ -395,9 +405,9 @@ public class City {
     private void handleGraduation() {
         // Valahogy meghívja az egyetemek és ikolák handleGraduate metódusát random emberekkel, úgy hogy figyel a max %-ra
 
-        ArrayList<Citizen> inNeedOfSchoolDegree = new ArrayList();
-        ArrayList<Citizen> inNeedOfUniversitylDegree = new ArrayList();
-        ArrayList<Citizen> hasAlreadyUniversityDegree = new ArrayList();
+        ArrayList<Citizen> inNeedOfSchoolDegree = new ArrayList<>();
+        ArrayList<Citizen> inNeedOfUniversitylDegree = new ArrayList<>();
+        ArrayList<Citizen> hasAlreadyUniversityDegree = new ArrayList<>();
         for (Citizen citizen : this.citizens)
         {
             if(citizen.education == EduLevel.BASIC){
@@ -411,53 +421,48 @@ public class City {
         }
 
 
-        if(citizens.size()>0){
-            double oneCitizenPercentage = 100/citizens.size();
+        if(citizens.size() > 0){
+            double oneCitizenPercentage = 100d / citizens.size();
             for (int i = 0; i < mapHeight; i++) {
                 for (int j = 0; j < mapWidth; j++) {
                     if(this.map[i][j] instanceof School){
 
-                        double percentageWithSchoolDegree = (inNeedOfUniversitylDegree.size()*100)/citizens.size();
+                        double percentageWithSchoolDegree = (inNeedOfUniversitylDegree.size() * 100d) / citizens.size();
                         //check if percentage is alright
                         if(percentageWithSchoolDegree < maxSchoolDegrees){
 
-                            int citizensGraduated = 0;
-                            ArrayList<Citizen> graduatedFromSchool = new ArrayList();
-                            while((((School) this.map[i][j]).getCurrentCapacity() + citizensGraduated <= (((School) this.map[i][j]).getMaxCapacity())) && (Math.ceil(percentageWithSchoolDegree)<maxSchoolDegrees)){
+                            ArrayList<Citizen> graduatedFromSchool = new ArrayList<>();
+                            while((graduatedFromSchool.size() <= (((School) this.map[i][j]).getMaxCapacity())) && (Math.ceil(percentageWithSchoolDegree) < maxSchoolDegrees)){
 
                                 graduatedFromSchool.add(inNeedOfSchoolDegree.get(0));
                                 inNeedOfSchoolDegree.remove(0);
                                 percentageWithSchoolDegree = percentageWithSchoolDegree + oneCitizenPercentage;
-                                citizensGraduated++;
 
                             }
                             System.out.println("Ennyi szemely fog az iskolabol grarudalni");
                             System.out.println(graduatedFromSchool.size());
-//                            this.handleGraduation(graduatedFromSchool);
+                            ((School)this.map[i][j]).handleGraduation(graduatedFromSchool);
                         }
 
                     }else if(this.map[i][j] instanceof University){
-                        double percentageWithUniversityDegree = (hasAlreadyUniversityDegree.size()*100)/citizens.size();
+                        double percentageWithUniversityDegree = (hasAlreadyUniversityDegree.size() * 100d) / citizens.size();
 
                         if(percentageWithUniversityDegree < maxUniversityDegrees){
-                            int citizensGraduated = 0;
-                            ArrayList<Citizen> graduatedFromUniversity = new ArrayList();
-                            while((((University) this.map[i][j]).getCurrentCapacity() + citizensGraduated <= ((University) this.map[i][j]).getMaxCapacity()) && (Math.ceil(percentageWithUniversityDegree)<maxUniversityDegrees)){
-                                System.out.println("ide meg megy");
-                                if(inNeedOfUniversitylDegree.size()==0){
+                            ArrayList<Citizen> graduatedFromUniversity = new ArrayList<>();
+                            while((graduatedFromUniversity.size() <= ((University) this.map[i][j]).getMaxCapacity()) && (Math.ceil(percentageWithUniversityDegree)<maxUniversityDegrees)){
+                                if(inNeedOfUniversitylDegree.size() == 0){
                                     break;
                                 }else{
                                     graduatedFromUniversity.add(inNeedOfUniversitylDegree.get(0));
                                     inNeedOfUniversitylDegree.remove(0);
                                     percentageWithUniversityDegree = percentageWithUniversityDegree + oneCitizenPercentage;
-                                    citizensGraduated++;
                                 }
 
 
                             }
                             System.out.println("Ennyi szemely fog az egyetemrol gradualni");
                             System.out.println(graduatedFromUniversity.size());
-//                            this.handleGraduation(graduatedFromUniversity);
+                            ((University)this.map[i][j]).handleGraduation(graduatedFromUniversity);
                         }
                     }
                 }
@@ -891,7 +896,7 @@ public class City {
 
                         int x = currentTileCoords.getHeight();
                         int y = currentTileCoords.getWidth();
-                        System.out.println(x+" "+y);
+                        // System.out.println(x+" "+y);
 
                         //add neighbours to the queue.
                         boolean up = false;
@@ -930,7 +935,7 @@ public class City {
                         }
                         else if(this.map[x][y] instanceof MainZone){
                             if(!((MainZone)this.map[x][y]).isElectricity()){
-                                if(this.map[x][y] instanceof Workplace){
+                                if(this.map[x][y] instanceof Workplace || this.map[x][y] instanceof ResidentialZone){
                                     if(electricityToGive>=((MainZone)this.map[x][y]).getElectricityNeed() * ((MainZone) this.map[x][y]).getCurrentCapacity()){
                                         electricityToGive=electricityToGive -((MainZone)this.map[x][y]).getElectricityNeed() * ((MainZone) this.map[x][y]).getCurrentCapacity();
                                         ((MainZone)this.map[x][y]).setElectricity(true);
@@ -978,7 +983,10 @@ public class City {
                 if (this.map[i][j] instanceof PowerPlant) {
                     this.electricityProduction = this.electricityProduction + ((PowerPlant) this.map[i][j]).getElectricityProduction();
                 }
-                if (this.map[i][j] instanceof MainZone) {
+                if (this.map[i][j] instanceof ServiceZone || this.map[i][j] instanceof ResidentialZone || this.map[i][j] instanceof IndustrialZone){
+                    this.electricityNeed = this.electricityNeed + ((MainZone) this.map[i][j]).getElectricityNeed() * ((MainZone)this.map[i][j]).getCurrentCapacity();
+                }
+                else if (this.map[i][j] instanceof MainZone) {
                     this.electricityNeed = this.electricityNeed + ((MainZone) this.map[i][j]).getElectricityNeed();
                 }
             }
@@ -1006,7 +1014,7 @@ public class City {
             if (mainZone instanceof ResidentialZone) {
                 if(((ResidentialZone) mainZone).getLevel() == 1){
                     ((ResidentialZone) mainZone).setLevel(2);
-                    System.out.println(((ResidentialZone) mainZone).getLevel());
+                    // System.out.println(((ResidentialZone) mainZone).getLevel());
                     ((ResidentialZone) mainZone).setCapacity(25);
                     funds = funds - 3000;
                 }
@@ -1020,7 +1028,7 @@ public class City {
                 if(mainZone instanceof IndustrialZone || mainZone instanceof ServiceZone){
                     if(((Workplace) mainZone).getLevel() == 1){
                         ((Workplace) mainZone).setLevel(2);
-                        System.out.println(((Workplace) mainZone).getLevel());
+                        // System.out.println(((Workplace) mainZone).getLevel());
                         ((Workplace) mainZone).setCapacity(30);
                         funds = funds - 5000;
                     }
@@ -1033,7 +1041,7 @@ public class City {
                 }
             }
             if (mainZone instanceof Infrastructure) {
-
+                // TODO: Ez itt mi?
             }
 
 
