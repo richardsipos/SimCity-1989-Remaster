@@ -18,7 +18,7 @@ public class City {
     private int funds = 10000;
     private int[] lastBalance = {0 , 0};
     private KukaPest.Model.Date date;
-    private int guaranteedCitizens = 50;
+    private final int guaranteedCitizens = 50;
     private int electricityProduction=0;
     private int electricityNeed=0;
 
@@ -379,9 +379,14 @@ public class City {
                 for (int i = 0; i < citizens.size(); i++){
                     citizens.get(i).yearPassed();
                 }
+                handleGraduation();
             }
         }
         System.out.println("Elégedettség: " + satisfaction()); //debug
+    }
+
+    private void handleGraduation() {
+        // Valahogy meghívja az egyetemek és ikolák handleGraduate metódusát random emberekkel, úgy hogy figyel a max %-ra
     }
 
     /**

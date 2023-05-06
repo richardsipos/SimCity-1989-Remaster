@@ -61,9 +61,9 @@ public class Citizen {
             return 2;
         }
         else if (workPlace.isElectricity()) {
-            return 7;
+            return 7 * education.salaryModifier();
         }else {
-            return 5;
+            return 5 * education.salaryModifier();
         }
     }
 
