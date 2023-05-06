@@ -11,6 +11,7 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.Map;
 
 public class BoardGUI extends JPanel implements MouseListener, MouseMotionListener {
 
@@ -243,7 +244,7 @@ public class BoardGUI extends JPanel implements MouseListener, MouseMotionListen
 
 
     /**
-     *Click monitoring and coordinate determination
+     * Click monitoring and coordinate determination
      * @param e
      */
     @Override
@@ -259,7 +260,7 @@ public class BoardGUI extends JPanel implements MouseListener, MouseMotionListen
 
         if(destroy){
             boolean candestroy = game.destroy(new Coordinates(row,col));
-            if(candestroy == false){
+            if(!candestroy){
                 System.out.println("Nem sikerült a rombolás");
             }
             //destroy = false;
@@ -280,7 +281,7 @@ public class BoardGUI extends JPanel implements MouseListener, MouseMotionListen
                 else{
                     mainZone = ((ZonePart) this.map[row][col]).mainBuilding;
                 }
-                if(mainZone instanceof ResidentialZone) {
+                /*if(mainZone instanceof ResidentialZone) {
                     JOptionPane.showMessageDialog(null,
                             "Level: " + ((ResidentialZone) mainZone).getLevel()+ " level\nCapacity: " + mainZone.getMaxCapacity() + " people \nPopulation: "
                                     + mainZone.getCurrentCapacity() + " people\nElectricity: " + mainZone.isElectricity(),
@@ -300,7 +301,16 @@ public class BoardGUI extends JPanel implements MouseListener, MouseMotionListen
                                     + mainZone.getCurrentCapacity() + " people\nElectricity: " + mainZone.isElectricity(),
                             "Industrial Zone",
                             JOptionPane.PLAIN_MESSAGE);
+                }*/
+                StringBuilder stats = new StringBuilder();
+                for (Map.Entry<String, String> stat :
+                        mainZone.getStats().entrySet()) {
+                    stats.append(stat.getKey() + ": " + stat.getValue() + "\n");
                 }
+                JOptionPane.showMessageDialog(null,
+                        stats.toString().trim(),
+                        "Stats",
+                        JOptionPane.PLAIN_MESSAGE);
 
             }
         }
