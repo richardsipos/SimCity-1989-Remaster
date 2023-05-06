@@ -1,5 +1,6 @@
 package KukaPest.Model;
 
+import KukaPest.Model.Helper.EduLevel;
 import KukaPest.Model.Map.ResidentialZone;
 import KukaPest.Model.Map.Workplace;
 
@@ -10,6 +11,7 @@ public class Citizen {
     boolean isPensioner = false;
     int pension = 0;
     int chanceToDie = 0;
+    EduLevel education = EduLevel.BASIC;
     ResidentialZone home;
     Workplace workPlace;
     City city;
@@ -114,6 +116,14 @@ public class Citizen {
         else{
             this.city.citizens.remove(this);
         }
+    }
+
+    public EduLevel getEducation() {
+        return education;
+    }
+
+    public void setEducation(EduLevel education) {
+        this.education = education;
     }
 
     @Override
