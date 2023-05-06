@@ -1,5 +1,6 @@
 package KukaPest.Model;
 
+import KukaPest.Model.Helper.EduLevel;
 import KukaPest.Model.Map.*;
 import KukaPest.Model.Helper.Building;
 import KukaPest.Model.Helper.Coordinates;
@@ -21,6 +22,9 @@ public class City {
     private final int guaranteedCitizens = 50;
     private int electricityProduction=0;
     private int electricityNeed=0;
+
+    private int maxSchoolDegrees = 50; //in percentage
+    private int maxUniversityDegrees = 20; //in percentage
 
     //Map dimensions:
     private final int mapHeight = 27;
@@ -365,8 +369,10 @@ public class City {
 
     public void timePassed(int days){
         int dateChange = date.DaysPassed(days);
+
         electricitySupply();
         electricityStats();
+
         calculateSatisfaction();
         for (int i = 0; i < days; i++) {
             // One day Passed!
@@ -375,11 +381,12 @@ public class City {
         }
         if(dateChange > 0){
              //A month has passed!
+            handleGraduation(); //ezt majd rakd eggyel lejjeb legyen evrol evre, igy csak khonaprol honapra
             if(dateChange > 1){
                 for (int i = 0; i < citizens.size(); i++){
                     citizens.get(i).yearPassed();
                 }
-                handleGraduation();
+
             }
         }
         System.out.println("Elégedettség: " + satisfaction()); //debug
@@ -387,6 +394,76 @@ public class City {
 
     private void handleGraduation() {
         // Valahogy meghívja az egyetemek és ikolák handleGraduate metódusát random emberekkel, úgy hogy figyel a max %-ra
+
+        ArrayList<Citizen> inNeedOfSchoolDegree = new ArrayList();
+        ArrayList<Citizen> inNeedOfUniversitylDegree = new ArrayList();
+        ArrayList<Citizen> hasAlreadyUniversityDegree = new ArrayList();
+        for (Citizen citizen : this.citizens)
+        {
+            if(citizen.education == EduLevel.BASIC){
+                inNeedOfSchoolDegree.add(citizen);
+            }
+            else if(citizen.education == EduLevel.MID){
+                inNeedOfUniversitylDegree.add(citizen);
+            }else if(citizen.education == EduLevel.HIGH){
+                hasAlreadyUniversityDegree.add(citizen);
+            }
+        }
+
+
+        if(citizens.size()>0){
+            double oneCitizenPercentage = 100/citizens.size();
+            for (int i = 0; i < mapHeight; i++) {
+                for (int j = 0; j < mapWidth; j++) {
+                    if(this.map[i][j] instanceof School){
+
+                        double percentageWithSchoolDegree = (inNeedOfUniversitylDegree.size()*100)/citizens.size();
+                        //check if percentage is alright
+                        if(percentageWithSchoolDegree < maxSchoolDegrees){
+
+                            int citizensGraduated = 0;
+                            ArrayList<Citizen> graduatedFromSchool = new ArrayList();
+                            while((((School) this.map[i][j]).getCurrentCapacity() + citizensGraduated <= (((School) this.map[i][j]).getMaxCapacity())) && (Math.ceil(percentageWithSchoolDegree)<maxSchoolDegrees)){
+
+                                graduatedFromSchool.add(inNeedOfSchoolDegree.get(0));
+                                inNeedOfSchoolDegree.remove(0);
+                                percentageWithSchoolDegree = percentageWithSchoolDegree + oneCitizenPercentage;
+                                citizensGraduated++;
+
+                            }
+                            System.out.println("Ennyi szemely fog az iskolabol grarudalni");
+                            System.out.println(graduatedFromSchool.size());
+//                            this.handleGraduation(graduatedFromSchool);
+                        }
+
+                    }else if(this.map[i][j] instanceof University){
+                        double percentageWithUniversityDegree = (hasAlreadyUniversityDegree.size()*100)/citizens.size();
+
+                        if(percentageWithUniversityDegree < maxUniversityDegrees){
+                            int citizensGraduated = 0;
+                            ArrayList<Citizen> graduatedFromUniversity = new ArrayList();
+                            while((((University) this.map[i][j]).getCurrentCapacity() + citizensGraduated <= ((University) this.map[i][j]).getMaxCapacity()) && (Math.ceil(percentageWithUniversityDegree)<maxUniversityDegrees)){
+                                System.out.println("ide meg megy");
+                                if(inNeedOfUniversitylDegree.size()==0){
+                                    break;
+                                }else{
+                                    graduatedFromUniversity.add(inNeedOfUniversitylDegree.get(0));
+                                    inNeedOfUniversitylDegree.remove(0);
+                                    percentageWithUniversityDegree = percentageWithUniversityDegree + oneCitizenPercentage;
+                                    citizensGraduated++;
+                                }
+
+
+                            }
+                            System.out.println("Ennyi szemely fog az egyetemrol gradualni");
+                            System.out.println(graduatedFromUniversity.size());
+//                            this.handleGraduation(graduatedFromUniversity);
+                        }
+                    }
+                }
+            }
+        }
+
     }
 
     /**
