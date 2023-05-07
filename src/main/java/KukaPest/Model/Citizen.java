@@ -51,9 +51,19 @@ public class Citizen {
         if (total > 100) total = 100;
         return total;
     }
+
+    /**
+     * This method decides whether the given citizen needs to pay taxes or is a pensioner and returns accordingly:
+     * @return negative value if citizen gets pension, positive if pays tax
+     */
     public int payTax(){
         return isPensioner ? (pension / TAX_FREQUENCY * -1) : tax();
     }
+
+    /**
+     * This method calculates the amount of tax this citizen pays
+     * @return int, amount of tax
+     */
     private int tax(){
         if(workPlace == null){
             return 2;
@@ -65,6 +75,9 @@ public class Citizen {
         }
     }
 
+    /**
+     * This method ages th citizen if a year passes, and settles age related matters (tax, pension, death)
+     */
     public void yearPassed(){
         this.age++;
         if (age >= 65) {
@@ -89,6 +102,9 @@ public class Citizen {
         }
     }
 
+    /**
+     * This method rolls the dice whther the citizen dice with increasing odds.
+     */
     private void tryToKill() {
         int rolledChance = new Random().nextInt(100);
         if(chanceToDie < rolledChance){
@@ -99,6 +115,9 @@ public class Citizen {
         }
     }
 
+    /**
+     * This method handles the death of a citizen and an arrival of a new one
+     */
     private void die() {
         ResidentialZone Rzone = city.hasFreeResidential();
         Workplace Wzone = city.hasFreeWorkplace();

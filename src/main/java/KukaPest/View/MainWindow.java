@@ -19,7 +19,7 @@ public class MainWindow extends JFrame{
     JLabel balancelabel = new JLabel();
     JLabel  electricityneed = new JLabel();
     JLabel year = new JLabel();
-    JLabel found = new JLabel();
+    JLabel fund = new JLabel();
     JLabel citizens = new JLabel();
     Timer gameTime;
     String cityname;
@@ -55,7 +55,7 @@ public class MainWindow extends JFrame{
                 }
                 year.setText("" + BoardPanel.getGame().getCity().getDate().getYear() + ". " + monthString
                         + ". " +  dayString);
-                found.setText("" + BoardPanel.getGame().getFunds() + " $");
+                fund.setText("" + BoardPanel.getGame().getFunds() + " $");
                 b.setValue(BoardPanel.getGame().getCity().satisfaction());
                 citizens.setText("" + BoardPanel.getGame().getCitizenslength() + " people");
                 electricityneed.setText(BoardPanel.getGame().getElectricityProduction()-BoardPanel.getGame().getElectricityNeed()+ "");
@@ -131,17 +131,17 @@ public class MainWindow extends JFrame{
 
         year.setFont(new Font("Arial", Font.BOLD, 18));
 
-        found.setBackground(Color.WHITE);
-        found.setBorder(
+        fund.setBackground(Color.WHITE);
+        fund.setBorder(
                 BorderFactory.createTitledBorder(
                         BorderFactory.createEtchedBorder(
                                 EtchedBorder.RAISED, Color.GRAY
-                                , Color.DARK_GRAY), "Found"));
+                                , Color.DARK_GRAY), "Fund"));
 
 
-        found.setText("" + BoardPanel.getGame().getFunds() + " $");
+        fund.setText("" + BoardPanel.getGame().getFunds() + " $");
 
-        found.setFont(new Font("Arial", Font.BOLD, 18));
+        fund.setFont(new Font("Arial", Font.BOLD, 18));
 
         citizens.setBackground(Color.WHITE);
         citizens.setBorder(
@@ -214,7 +214,7 @@ public class MainWindow extends JFrame{
         panel.addSeparator();
         panel.addSeparator();
         panel.addSeparator();
-        panel.add(found);
+        panel.add(fund);
         panel.addSeparator();
         panel.addSeparator();
         panel.addSeparator();

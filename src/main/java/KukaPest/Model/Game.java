@@ -28,7 +28,6 @@ public class Game {
     public void upgrade(Coordinates coords){
         city.upgrade(coords);
     }
-
     public void stepGame(){
         city.timePassed(timeSpeed);
     }
@@ -48,20 +47,15 @@ public class Game {
         return city.getLastBalance();
     }
     public int getCitizenslength(){return city.getCitizenslength();}
-
     public City getCity() {
         return city;
     }
-
     public void setTimeSpeed(int timeSpeed) {
         this.timeSpeed = timeSpeed;
     }
-
     public int getElectricityProduction() {
         return city.getElectricityProduction();
     }
-
-
     public int getElectricityNeed() {
         return city.getElectricityNeed();
     }

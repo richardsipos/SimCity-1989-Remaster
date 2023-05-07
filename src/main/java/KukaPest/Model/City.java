@@ -28,6 +28,10 @@ public class City {
 
     private final Tile[][] map;
 
+    /**
+     * This method calculates the city's total satisfaction
+     * @return the overall satisfaction
+     */
     public int satisfaction(){
         int total = 0;
         for (Citizen c : this.citizens) {
@@ -58,6 +62,7 @@ public class City {
     public int numberBuilding = 0;
 
     public Coordinates startRoad;
+
 
     public City(String cityName) {
         this.name = cityName;
@@ -91,6 +96,12 @@ public class City {
         }
     }
 
+    /**
+     * This method handles the building process, calling upon checking methods to decide whether the construction is feasible
+     * @param toBuild The building to be constructed
+     * @param coords The top left coordinates of given building
+     * @return True/false depending on the state of construction
+     */
     boolean build(Building toBuild, Coordinates coords){
         Environment enviroment;
         if(this.map[coords.getHeight()][coords.getWidth()] instanceof Grass){
@@ -133,11 +144,17 @@ public class City {
             }
             this.map[coords.getHeight()][coords.getWidth()] = toBeBuilt;
             this.funds -= (toBeBuilt.getPrice());
-            //calculateSatisfaction();
             return true;
         }
         return false;
     }
+
+    /**
+     * This method checks if building requirements are met or not (road nearby and empty space)
+     * @param toBuild Building to be built
+     * @param coords Top left coordinates of given building
+     * @return True if a nearby road exists and space is available, else false
+     */
     boolean canBeBuilt(Constructable toBuild, Coordinates coords){
         if(toBuild instanceof Road){
             return (map[coords.getHeight()][coords.getWidth()] instanceof Environment
@@ -233,6 +250,9 @@ public class City {
         }
     }
 
+    /**
+     * This method calls upon methods checking reqs of move in, if they are met, handles the creation of new citizen
+     */
 //    ezt hivja majd a TimePassed es intezzi majd a Citizenet bekoltozeset.
     void handleMoveIn(){
         //random people will come to the city (bebtween 1-4 bot ends included)
@@ -266,10 +286,11 @@ public class City {
             }
         }
         //amugy meg nem tortenik semmi.
-
-
-
     }
+
+    /**
+     * This method updates the funds (income, upkeep) and last month's balance array
+     */
     void updateBalance(){
         int[] balance = {0 , 0};
         for (int i = 0; i < mapHeight; i++) {
@@ -286,6 +307,10 @@ public class City {
         lastBalance = balance;
     }
 
+    /**
+     * Helper method for move in, checks for available residential zones
+     * @return A free residential zone, if available
+     */
     ResidentialZone hasFreeResidential(){
         for (int i = 0; i < mapHeight; i++) {
             for (int j = 0; j < mapWidth; j++) {
@@ -300,6 +325,10 @@ public class City {
         return null;
     }
 
+    /**
+     * Helper method for move in, checks for available residential zones with electricity
+     * @return A free residential zone, if available
+     */
     ResidentialZone hasFreeResidentialWithElectricity(){
         for (int i = 0; i < mapHeight; i++) {
             for (int j = 0; j < mapWidth; j++) {
@@ -315,6 +344,10 @@ public class City {
         return null;
     }
 
+    /**
+     * Helper method for move in, checks for available workplace
+     * @return A free workplace, if available
+     */
     Workplace hasFreeWorkplace(){
         Workplace industrialWorkplace = null;
         int workersInIndustrialZones = 0;
@@ -363,6 +396,10 @@ public class City {
         return electricityNeed;
     }
 
+    /**
+     * The game cycle method, called upon every second with
+     * @param days as the number of days passed per second (game speed)
+     */
     public void timePassed(int days){
         int dateChange = date.DaysPassed(days);
         electricitySupply();
@@ -422,6 +459,11 @@ public class City {
         }
     }
 
+    /**
+     * This method handles the destruction of a building, spawning a grassy area in its place
+     * @param coords The top left coords of the building destroyed
+     * @return True/false depending on the success of destruction
+     */
     public boolean destroy(Coordinates coords) {
         if (this.map[coords.getHeight()][coords.getWidth()] instanceof Road) {
             if(coords.getHeight() == startRoad.getHeight() && coords.getWidth() == startRoad.getWidth()){
@@ -513,6 +555,10 @@ public class City {
         return true;
     }
 
+    /**
+     * This method builds the graph necessary to check whether a building is destructible and the road network stays intact
+     * @param coords Coordinates of said building
+     */
     public void buildingsAvailable(Coordinates coords) {
         numberBuilding = 0;
         destroyGraph.addNode(0, true, new Coordinates(startRoad.getHeight(), startRoad.getWidth()));
@@ -728,24 +774,9 @@ public class City {
 
     }
 
-    //forTesting
-    public void printMap() {
-        for (int i = 0; i < mapHeight; i++) {
-            for (int j = 0; j < mapWidth; j++) {
-                if(this.map[i][j] instanceof MainZone || this.map[i][j] instanceof ZonePart
-                    || this.map[i][j] instanceof Road || this.map[i][j] instanceof Pole){
-                //if(this.map[i][j] instanceof ResidentialZone){
-                    System.out.print("1");
-                }else{
-                    System.out.print("0");
-                }
-                System.out.print(" ");
-            }
-            System.out.println();
-        }
-        System.out.println();
-    }
-
+    /**
+     * This method calculates the electricity supply throughout the city
+     */
     public void electricitySupply(){
         for (int i = 0; i < mapHeight; i++) {
             for (int j = 0; j < mapWidth; j++) {
@@ -888,6 +919,9 @@ public class City {
         }
     }
 
+    /**
+     * This method calculates the data for the electricity label displayed
+     */
     public void electricityStats() {
         this.electricityNeed=0;
         this.electricityProduction=0;
@@ -901,10 +935,12 @@ public class City {
                 }
             }
         }
-
-
     }
 
+    /**
+     * This method handles the upgrade of the three upgradeable zones (residential, industrial, service)
+     * @param coords Coordinates of given building
+     */
     public void upgrade(Coordinates coords){
         if (this.map[coords.getHeight()][coords.getWidth()] instanceof Road) {
 
@@ -956,6 +992,24 @@ public class City {
 
 
         }
+    }
+
+    //forTesting
+    public void printMap() {
+        for (int i = 0; i < mapHeight; i++) {
+            for (int j = 0; j < mapWidth; j++) {
+                if(this.map[i][j] instanceof MainZone || this.map[i][j] instanceof ZonePart
+                        || this.map[i][j] instanceof Road || this.map[i][j] instanceof Pole){
+                    //if(this.map[i][j] instanceof ResidentialZone){
+                    System.out.print("1");
+                }else{
+                    System.out.print("0");
+                }
+                System.out.print(" ");
+            }
+            System.out.println();
+        }
+        System.out.println();
     }
 
     public Tile[][] getMap() {
