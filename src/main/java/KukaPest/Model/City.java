@@ -252,9 +252,10 @@ public class City {
             //ha van free residential zone es van industrial zone is akkor letre kell hozzni egy citizent.
 
             if(Rzone!=null && Wzone!=null){
-                if(citizens.size() > guaranteedCitizens){
+                if(citizens.size() >= guaranteedCitizens){
 
                     if(RzoneWithElectricity != null && satisfaction()>=30){//akkor koltozhet csak  be ha van aram es ha boldogabbak mint 30
+
                         Citizen citizen = new Citizen(new Random().nextInt(42) + 18, RzoneWithElectricity, Wzone, this);
                         citizens.add(citizen);
                         RzoneWithElectricity.addCitizen(citizen);
@@ -838,6 +839,7 @@ public class City {
             for (int j = 0; j < mapWidth; j++) {
                 if(this.map[i][j] instanceof MainZone){
                     ((MainZone) this.map[i][j]).setElectricity(false);
+                    System.out.println(((MainZone) this.map[i][j]).isElectricity());
                 }
             }
         }
@@ -935,13 +937,7 @@ public class City {
                         }
                         else if(this.map[x][y] instanceof MainZone){
                             if(!((MainZone)this.map[x][y]).isElectricity()){
-                                if(this.map[x][y] instanceof Workplace || this.map[x][y] instanceof ResidentialZone){
-                                    if(electricityToGive>=((MainZone)this.map[x][y]).getElectricityNeed() * ((MainZone) this.map[x][y]).getCurrentCapacity()){
-                                        electricityToGive=electricityToGive -((MainZone)this.map[x][y]).getElectricityNeed() * ((MainZone) this.map[x][y]).getCurrentCapacity();
-                                        ((MainZone)this.map[x][y]).setElectricity(true);
-                                    }
-                                }
-                                else if(electricityToGive>=((MainZone)this.map[x][y]).getElectricityNeed()){
+                                if(electricityToGive>=((MainZone)this.map[x][y]).getElectricityNeed()){
                                     electricityToGive=electricityToGive -((MainZone)this.map[x][y]).getElectricityNeed();
                                     ((MainZone)this.map[x][y]).setElectricity(true);
                                 }//itt ne csinalj semmit. A sorbol majd ugyis kijon.
@@ -949,13 +945,7 @@ public class City {
                         }else if(this.map[x][y] instanceof ZonePart) {
                             MainZone mainZone = ((ZonePart)this.map[x][y]).getMainBuilding();
                             if(!mainZone.isElectricity()){
-                                if(mainZone instanceof Workplace){
-                                    if(electricityToGive>=mainZone.getElectricityNeed() * mainZone.getCurrentCapacity()){
-                                        electricityToGive=electricityToGive - mainZone.getElectricityNeed() * mainZone.getCurrentCapacity();
-                                        mainZone.setElectricity(true);
-                                    }
-                                }
-                                else if(electricityToGive>=mainZone.getElectricityNeed()){
+                                if(electricityToGive>=mainZone.getElectricityNeed()){
                                     electricityToGive=electricityToGive -mainZone.getElectricityNeed();
                                     mainZone.setElectricity(true);
                                 }//itt ne csinalj semmit. A sorbol majd ugyis kijon.
@@ -982,9 +972,6 @@ public class City {
             for (int j = 0; j < mapWidth; j++) {
                 if (this.map[i][j] instanceof PowerPlant) {
                     this.electricityProduction = this.electricityProduction + ((PowerPlant) this.map[i][j]).getElectricityProduction();
-                }
-                if (this.map[i][j] instanceof ServiceZone || this.map[i][j] instanceof ResidentialZone || this.map[i][j] instanceof IndustrialZone){
-                    this.electricityNeed = this.electricityNeed + ((MainZone) this.map[i][j]).getElectricityNeed() * ((MainZone)this.map[i][j]).getCurrentCapacity();
                 }
                 else if (this.map[i][j] instanceof MainZone) {
                     this.electricityNeed = this.electricityNeed + ((MainZone) this.map[i][j]).getElectricityNeed();
