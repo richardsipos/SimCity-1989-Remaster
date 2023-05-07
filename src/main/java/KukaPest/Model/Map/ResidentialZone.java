@@ -28,4 +28,13 @@ public class ResidentialZone extends MainZone{
         return ret;
     }
 
+    @Override
+    public int getElectricityNeed() {
+        return switch(level){
+            case 1 -> 20;
+            case 2 -> 60;
+            case 3 -> 120;
+            default -> 180;
+        };
+    }
 }

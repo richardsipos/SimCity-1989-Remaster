@@ -11,6 +11,9 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.image.BufferedImage;
+import java.awt.image.BufferedImageOp;
+import java.awt.image.RescaleOp;
 import java.util.Map;
 
 public class BoardGUI extends JPanel implements MouseListener, MouseMotionListener {
@@ -98,7 +101,7 @@ public class BoardGUI extends JPanel implements MouseListener, MouseMotionListen
      * @param g
      */
     @Override
-    protected void  paintComponent(Graphics g){
+    protected void paintComponent(Graphics g){
         super.paintChildren(g);
         Graphics2D g2 = (Graphics2D)g;
 
@@ -116,52 +119,52 @@ public class BoardGUI extends JPanel implements MouseListener, MouseMotionListen
                 else if (map[i][j] instanceof Road)
                     g2.drawImage(road, j * board.getCellSide(), i * board.getCellSide(),25,25, null);
                 else if (map[i][j] instanceof Police)
-                    g2.drawImage(police, j * board.getCellSide(), i * board.getCellSide(),100,50, null);
+                    g2.drawImage(((Police)map[i][j]).isElectricity() ? police : newBrightness(police, 0.5f), j * board.getCellSide(), i * board.getCellSide(),100,50, null);
                 else if (map[i][j] instanceof Stadium)
-                    g2.drawImage(stadium, j * board.getCellSide(), i * board.getCellSide(),100,100, null);
+                    g2.drawImage(((Stadium)map[i][j]).isElectricity() ? stadium : newBrightness(stadium, 0.5f), j * board.getCellSide(), i * board.getCellSide(),100,100, null);
                 else if (map[i][j] instanceof University)
-                    g2.drawImage(uni, j * board.getCellSide(),i * board.getCellSide(),100,100, null);
+                    g2.drawImage(((University)map[i][j]).isElectricity() ? uni : newBrightness(uni, 0.5f), j * board.getCellSide(),i * board.getCellSide(),100,100, null);
                 else if (map[i][j] instanceof ResidentialZone) {
                     // System.out.println(((ResidentialZone) map[i][j]).getCurrentCapacity());
                     if(((ResidentialZone) map[i][j]).getLevel() == 1){
                         if (((ResidentialZone) map[i][j]).getCurrentCapacity() == 0) {
-                            g2.drawImage(res_zone, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
+                            g2.drawImage(((MainZone)map[i][j]).isElectricity() ? res_zone : newBrightness(res_zone, 0.5f), j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
                         }
                         if (((ResidentialZone) map[i][j]).getCurrentCapacity() <= 2 && ((ResidentialZone) map[i][j]).getCurrentCapacity() >0) {
-                            g2.drawImage(res_zone_1, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
+                            g2.drawImage(((MainZone)map[i][j]).isElectricity() ? res_zone_1 : newBrightness(res_zone_1, 0.5f), j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
                         }
                         if (((ResidentialZone) map[i][j]).getCurrentCapacity() <= 4 && ((ResidentialZone) map[i][j]).getCurrentCapacity() > 2) {
-                            g2.drawImage(res_zone_2, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
+                            g2.drawImage(((MainZone)map[i][j]).isElectricity() ? res_zone_2 : newBrightness(res_zone_2, 0.5f), j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
                         }
                         if (((ResidentialZone) map[i][j]).getCurrentCapacity() <= 6 && ((ResidentialZone) map[i][j]).getCurrentCapacity() > 4) {
-                            g2.drawImage(res_zone_3, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
+                            g2.drawImage(((MainZone)map[i][j]).isElectricity() ? res_zone_3 : newBrightness(res_zone_3, 0.5f), j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
                         }
                         if (((ResidentialZone) map[i][j]).getCurrentCapacity() <= 10 && ((ResidentialZone) map[i][j]).getCurrentCapacity() > 6) {
-                            g2.drawImage(res_zone_max, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
+                            g2.drawImage(((MainZone)map[i][j]).isElectricity() ? res_zone_max : newBrightness(res_zone_max, 0.5f), j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
                         }
 
                     }
                     if(((ResidentialZone) map[i][j]).getLevel() == 2){
                         if (((ResidentialZone) map[i][j]).getCurrentCapacity() == 0) {
-                            g2.drawImage(res_zone, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
+                            g2.drawImage(((MainZone)map[i][j]).isElectricity() ? res_zone : newBrightness(res_zone, 0.5f), j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
                         }
                         if (((ResidentialZone) map[i][j]).getCurrentCapacity() <= 16 && ((ResidentialZone) map[i][j]).getCurrentCapacity() > 0) {
-                            g2.drawImage(res_zone_level2, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
+                            g2.drawImage(((MainZone)map[i][j]).isElectricity() ? res_zone_level2 : newBrightness(res_zone_level2, 0.5f), j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
                         }
                         if (((ResidentialZone) map[i][j]).getCurrentCapacity() <= 25 && ((ResidentialZone) map[i][j]).getCurrentCapacity() > 16) {
-                            g2.drawImage(res_zone_level2_2, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
+                            g2.drawImage(((MainZone)map[i][j]).isElectricity() ? res_zone_level2_2 : newBrightness(res_zone_level2_2, 0.5f), j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
                         }
 
                     }
                     if(((ResidentialZone) map[i][j]).getLevel() == 3){
                         if (((ResidentialZone) map[i][j]).getCurrentCapacity() == 0) {
-                            g2.drawImage(res_zone, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
+                            g2.drawImage(((MainZone)map[i][j]).isElectricity() ? res_zone : newBrightness(res_zone, 0.5f), j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
                         }
                         if (((ResidentialZone) map[i][j]).getCurrentCapacity() <= 32 && ((ResidentialZone) map[i][j]).getCurrentCapacity() > 0) {
-                            g2.drawImage(res_zone_level3, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
+                            g2.drawImage(((MainZone)map[i][j]).isElectricity() ? res_zone_level3 : newBrightness(res_zone_level3, 0.5f), j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
                         }
                         if (((ResidentialZone) map[i][j]).getCurrentCapacity() <= 50 && ((ResidentialZone) map[i][j]).getCurrentCapacity() > 32) {
-                            g2.drawImage(res_zone_level3_2, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
+                            g2.drawImage(((MainZone)map[i][j]).isElectricity() ? res_zone_level3_2 : newBrightness(res_zone_level3_2, 0.5f), j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
                         }
 
                     }
@@ -175,30 +178,30 @@ public class BoardGUI extends JPanel implements MouseListener, MouseMotionListen
 
                     if(((IndustrialZone) map[i][j]).getLevel() == 1) {
                         if (((IndustrialZone) map[i][j]).getCurrentCapacity() == 0) {
-                            g2.drawImage(industrial, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
+                            g2.drawImage(((MainZone)map[i][j]).isElectricity() ? industrial : newBrightness(industrial, 0.5f), j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
                         } else if (((IndustrialZone) map[i][j]).getCurrentCapacity() <= 6 && ((IndustrialZone) map[i][j]).getCurrentCapacity() > 0) {
-                            g2.drawImage(industrial_1, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
+                            g2.drawImage(((MainZone)map[i][j]).isElectricity() ? industrial_1 : newBrightness(industrial_1, 0.5f), j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
                         } else {
-                            g2.drawImage(industrial_2, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
+                            g2.drawImage(((MainZone)map[i][j]).isElectricity() ? industrial_2 : newBrightness(industrial_2, 0.5f), j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
                         }
                     }
                     if(((IndustrialZone) map[i][j]).getLevel() == 2){
                         if (((IndustrialZone) map[i][j]).getCurrentCapacity() == 0) {
-                            g2.drawImage(industrial, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
+                            g2.drawImage(((MainZone)map[i][j]).isElectricity() ? industrial : newBrightness(industrial, 0.5f), j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
                         } else if (((IndustrialZone) map[i][j]).getCurrentCapacity() <= 20 && ((IndustrialZone) map[i][j]).getCurrentCapacity() > 0) {
-                            g2.drawImage(industrial_level2, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
+                            g2.drawImage(((MainZone)map[i][j]).isElectricity() ? industrial_level2 : newBrightness(industrial_level2, 0.5f), j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
                         } else {
-                            g2.drawImage(industrial_level2_2, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
+                            g2.drawImage(((MainZone)map[i][j]).isElectricity() ? industrial_level2_2 : newBrightness(industrial_level2_2, 0.5f), j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
                         }
 
                     }
                     if(((IndustrialZone) map[i][j]).getLevel() == 3){
                         if (((IndustrialZone) map[i][j]).getCurrentCapacity() == 0) {
-                            g2.drawImage(industrial, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
+                            g2.drawImage(((MainZone)map[i][j]).isElectricity() ? industrial : newBrightness(industrial, 0.5f), j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
                         } else if (((IndustrialZone) map[i][j]).getCurrentCapacity() <= 42 && ((IndustrialZone) map[i][j]).getCurrentCapacity() > 0) {
-                            g2.drawImage(industrial_level3, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
+                            g2.drawImage(((MainZone)map[i][j]).isElectricity() ? industrial_level3 : newBrightness(industrial_level3, 0.5f), j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
                         } else {
-                            g2.drawImage(industrial_level3_2, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
+                            g2.drawImage(((MainZone)map[i][j]).isElectricity() ? industrial_level3_2 : newBrightness(industrial_level3_2, 0.5f), j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
                         }
 
                     }
@@ -210,29 +213,29 @@ public class BoardGUI extends JPanel implements MouseListener, MouseMotionListen
 
                     if(((ServiceZone) map[i][j]).getLevel() == 1) {
                         if (((ServiceZone) map[i][j]).getCurrentCapacity() == 0) {
-                            g2.drawImage(service, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
+                            g2.drawImage(((MainZone)map[i][j]).isElectricity() ? service : newBrightness(service, 0.5f), j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
                         } else if (((ServiceZone) map[i][j]).getCurrentCapacity() <= 6 && ((ServiceZone) map[i][j]).getCurrentCapacity() > 0) {
-                            g2.drawImage(service_1, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
+                            g2.drawImage(((MainZone)map[i][j]).isElectricity() ? service_1 : newBrightness(service_1, 0.5f), j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
                         } else {
-                            g2.drawImage(service_2, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
+                            g2.drawImage(((MainZone)map[i][j]).isElectricity() ? service_2 : newBrightness(service_2, 0.5f), j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
                         }
                     }
                     if(((ServiceZone) map[i][j]).getLevel() == 2) {
                         if (((ServiceZone) map[i][j]).getCurrentCapacity() == 0) {
-                            g2.drawImage(service, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
+                            g2.drawImage(((MainZone)map[i][j]).isElectricity() ? service : newBrightness(service, 0.5f), j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
                         } else if (((ServiceZone) map[i][j]).getCurrentCapacity() <= 20 && ((ServiceZone) map[i][j]).getCurrentCapacity() > 0) {
-                            g2.drawImage(service_level2, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
+                            g2.drawImage(((MainZone)map[i][j]).isElectricity() ? service_level2 : newBrightness(service_level2, 0.5f), j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
                         } else {
-                            g2.drawImage(service_level2_2, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
+                            g2.drawImage(((MainZone)map[i][j]).isElectricity() ? service_level2_2 : newBrightness(service_level2_2, 0.5f), j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
                         }
                     }
                     if(((ServiceZone) map[i][j]).getLevel() == 3) {
                         if (((ServiceZone) map[i][j]).getCurrentCapacity() == 0) {
-                            g2.drawImage(service, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
+                            g2.drawImage(((MainZone)map[i][j]).isElectricity() ? service : newBrightness(service, 0.5f), j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
                         } else if (((ServiceZone) map[i][j]).getCurrentCapacity() <= 35 && ((ServiceZone) map[i][j]).getCurrentCapacity() > 0) {
-                            g2.drawImage(service_level3, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
+                            g2.drawImage(((MainZone)map[i][j]).isElectricity() ? service_level3 : newBrightness(service_level3, 0.5f), j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
                         } else {
-                            g2.drawImage(service_level3_2, j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
+                            g2.drawImage(((MainZone)map[i][j]).isElectricity() ? service_level3_2 : newBrightness(service_level3_2, 0.5f), j * board.getCellSide(), i * board.getCellSide(), 50, 50, null);
                         }
                     }
                 }
@@ -365,5 +368,40 @@ public class BoardGUI extends JPanel implements MouseListener, MouseMotionListen
         return game;
     }
 
+    public static Image newBrightness( Image source, float brightnessPercentage ) {
+
+        BufferedImage bi = new BufferedImage(
+                source.getWidth( null ),
+                source.getHeight( null ),
+                BufferedImage.TYPE_INT_ARGB );
+
+        int[] pixel = { 0, 0, 0, 0 };
+        float[] hsbvals = { 0, 0, 0 };
+
+        bi.getGraphics().drawImage( source, 0, 0, null );
+
+        // recalculare every pixel, changing the brightness
+        for ( int i = 0; i < bi.getHeight(); i++ ) {
+            for ( int j = 0; j < bi.getWidth(); j++ ) {
+
+                // get the pixel data
+                bi.getRaster().getPixel( j, i, pixel );
+
+                // converts its data to hsb to change brightness
+                Color.RGBtoHSB( pixel[0], pixel[1], pixel[2], hsbvals );
+
+                // create a new color with the changed brightness
+                Color c = new Color( Color.HSBtoRGB( hsbvals[0], hsbvals[1], hsbvals[2] * brightnessPercentage ) );
+
+                // set the new pixel
+                bi.getRaster().setPixel( j, i, new int[]{ c.getRed(), c.getGreen(), c.getBlue(), pixel[3] } );
+
+            }
+
+        }
+
+        return bi;
+
+    }
 
 }

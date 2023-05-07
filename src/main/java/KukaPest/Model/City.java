@@ -22,7 +22,6 @@ public class City {
     private final int guaranteedCitizens = 50;
     private int electricityProduction=0;
     private int electricityNeed=0;
-
     private int maxSchoolDegrees = 50; //in percentage
     private int maxUniversityDegrees = 20; //in percentage
 
@@ -389,6 +388,7 @@ public class City {
                 }
 
             }
+            // FOR TESTING
             int basic = 0, mid = 0, high = 0;
             for (Citizen c : citizens){
                 if(c.education == EduLevel.BASIC) basic++;
@@ -966,8 +966,8 @@ public class City {
     }
 
     public void electricityStats() {
-        this.electricityNeed=0;
-        this.electricityProduction=0;
+        this.electricityNeed = 0;
+        this.electricityProduction = 0;
         for (int i = 0; i < mapHeight; i++) {
             for (int j = 0; j < mapWidth; j++) {
                 if (this.map[i][j] instanceof PowerPlant) {
@@ -1030,7 +1030,6 @@ public class City {
             if (mainZone instanceof Infrastructure) {
                 // TODO: Ez itt mi?
             }
-
 
         }
     }
