@@ -920,7 +920,7 @@ public class City {
     }
 
     /**
-     * This method calculates the data for the electricity label displayed
+     * This method calculates the data for the electricity produced and used
      */
     public void electricityStats() {
         this.electricityNeed=0;

@@ -154,7 +154,7 @@ public class Game_build_tests {
             g.build(Building.ROAD, new Coordinates(26,i));
         }
         g.build(Building.POLE, new Coordinates(25,0));
-            assertTrue(g.getMap()[26][0] instanceof Road && g.getMap()[25][0] instanceof Pole);
+        assertTrue(g.getMap()[26][0] instanceof Road && g.getMap()[25][0] instanceof Pole);
     }
 
     @Test

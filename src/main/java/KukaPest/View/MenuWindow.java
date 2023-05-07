@@ -40,6 +40,7 @@ public class MenuWindow extends JPanel {
         buttons.setLayout(new GridBagLayout());
         buttons.setOpaque(false);
 
+        //GridBagConstraints for vertical arrangement of buttons
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -78,10 +79,7 @@ public class MenuWindow extends JPanel {
                 }
                 if (name != null) {
                     frame.setVisible(false);
-
                     new MainWindow(name);
-                    /*frame.dispose();
-                    frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));*/
 
                 }
             }
@@ -102,7 +100,6 @@ public class MenuWindow extends JPanel {
         egame.setContentAreaFilled(false);
         egame.setBorderPainted(false);
         egame.setFocusPainted(false);
-        buttons.add(ngame); //setting vertical or horizontal arrangement
 
         egame.addActionListener(new ActionListener() {
             @Override
@@ -111,6 +108,7 @@ public class MenuWindow extends JPanel {
             }
         });
 
+        //setting vertical or horizontal arrangement
         buttons.add(ngame, gbc);
         buttons.add(lgame, gbc2);
         buttons.add(egame, gbc3);
@@ -126,17 +124,5 @@ public class MenuWindow extends JPanel {
         frame.pack();
         frame.setVisible(true);
         frame.setLocationRelativeTo(null);
-
-        egame.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                System.exit(0);
-            }
-        });
-
-        //buttons.add(ngame, gbc);
-        //buttons.add(lgame, gbc2);
-        //buttons.add(egame, gbc3);
-
     }
 }

@@ -24,6 +24,12 @@ public class Graph {
 
     }
 
+    /**
+     * This method creates a node for the graph, and adds it to the adjacency list
+     * @param id Node id
+     * @param isRoad True/false depending on whether node is for a road
+     * @param coordinates Coordinates of given node
+     */
     public void addNode(int id, boolean isRoad, Coordinates coordinates){
 
         nodes_array.add(new Node(id,isRoad,coordinates));
@@ -31,6 +37,11 @@ public class Graph {
         adj[id] = new LinkedList();
     }
 
+    /**
+     * This method creates an Edge between two given nodes.
+     * @param node1 Given node #1
+     * @param node2 Given node #2
+     */
     public void addEdge(int node1, int node2){
         for(Edge edge: edges){
             if(edge.getNode_1() == node1 && edge.getNode_2() == node2){
@@ -62,6 +73,12 @@ public class Graph {
 
     }
 
+    /**
+     * This method executes a Breadth First Search on the Graph, searching from given point to numberBuilding
+     * @param s The index of starting node
+     * @param numberBuilding The building searched
+     * @return True/false, depending on whether building was found from the starting point
+     */
     public boolean BFS(int s, int numberBuilding) {
 
         boolean visited[] = new boolean[nodes];
