@@ -2,6 +2,7 @@ package KukaPest.Model;
 
 import KukaPest.Model.Helper.Building;
 import KukaPest.Model.Helper.Coordinates;
+import KukaPest.Model.Map.ResidentialZone;
 import KukaPest.Model.Map.Tile;
 
 import java.util.UUID;
@@ -59,4 +60,9 @@ public class Game {
     public int getElectricityNeed() {
         return city.getElectricityNeed();
     }
+
+    /**
+     * For Testing purposes
+     */
+    public ResidentialZone getPoweredResZone() {return city.hasFreeResidentialWithElectricity();}
 }
