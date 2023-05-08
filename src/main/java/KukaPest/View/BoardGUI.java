@@ -12,8 +12,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
-import java.awt.image.BufferedImageOp;
-import java.awt.image.RescaleOp;
 import java.util.Map;
 
 public class BoardGUI extends JPanel implements MouseListener, MouseMotionListener {
@@ -41,9 +39,9 @@ public class BoardGUI extends JPanel implements MouseListener, MouseMotionListen
      * @param fieldX map width
      * @param fieldY height
      */
-    public BoardGUI(int fieldX, int fieldY, String cityname){
+    public BoardGUI(int fieldX, int fieldY, String cityName){
         //menuWindow.setVisible(false);
-        game = new Game(cityname);
+        game = new Game(cityName);
 
         this.board = new Board(fieldX,fieldY);
 
@@ -173,7 +171,7 @@ public class BoardGUI extends JPanel implements MouseListener, MouseMotionListen
                 else if (map[i][j] instanceof PowerPlant)
                     g2.drawImage(pp, j * board.getCellSide(), i * board.getCellSide(),100,100, null);
                 else if (map[i][j] instanceof School)
-                    g2.drawImage(school, j * board.getCellSide(), i * board.getCellSide(),100,50, null);
+                    g2.drawImage(((MainZone)map[i][j]).isElectricity() ? school : newBrightness(school, 0.5f), j * board.getCellSide(), i * board.getCellSide(),100,50, null);
                 else if (map[i][j] instanceof IndustrialZone) {
 
                     if(((IndustrialZone) map[i][j]).getLevel() == 1) {

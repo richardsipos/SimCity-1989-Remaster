@@ -367,6 +367,21 @@ public class City {
         return electricityNeed;
     }
 
+    public double[] getEducatedCitizens(){
+        double[] educatedCitizens = {0, 0, 0};
+        for (Citizen c : citizens){
+            if(c.education == EduLevel.BASIC) educatedCitizens[0]++;
+            if(c.education == EduLevel.MID) educatedCitizens[1]++;
+            if(c.education == EduLevel.HIGH) educatedCitizens[2]++;
+        }
+        if(citizens.size() > 0) {
+            educatedCitizens[0] = educatedCitizens[0] / citizens.size() * 100;
+            educatedCitizens[1] = educatedCitizens[1] / citizens.size() * 100;
+            educatedCitizens[2] = educatedCitizens[2] / citizens.size() * 100;
+        }
+        return educatedCitizens;
+    }
+
     public void timePassed(int days){
         int dateChange = date.DaysPassed(days);
 
@@ -388,17 +403,6 @@ public class City {
                 }
 
             }
-            // FOR TESTING
-            int basic = 0, mid = 0, high = 0;
-            for (Citizen c : citizens){
-                if(c.education == EduLevel.BASIC) basic++;
-                if(c.education == EduLevel.MID) mid++;
-                if(c.education == EduLevel.HIGH) high++;
-            }
-            System.out.println("Oktatási százalákok: ");
-            System.out.println("\tAlap " + basic * 100d / citizens.size());
-            System.out.println("\tKözép " + mid * 100d / citizens.size());
-            System.out.println("\tFelső " + high * 100d / citizens.size());
         }
         System.out.println("Elégedettség: " + satisfaction()); //debug
     }
