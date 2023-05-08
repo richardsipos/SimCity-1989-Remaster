@@ -317,7 +317,10 @@ public class BoardGUI extends JPanel implements MouseListener, MouseMotionListen
             int y = e.getPoint().y;
             int row = (y  / board.getCellSide());
 
-            game.build(selectedBuilding, new Coordinates(row, col));
+            if(build){
+                game.build(selectedBuilding, new Coordinates(row, col));
+            }
+
             repaint();
         }
     }

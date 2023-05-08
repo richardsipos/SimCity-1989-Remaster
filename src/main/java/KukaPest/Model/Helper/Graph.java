@@ -1,6 +1,9 @@
 package KukaPest.Model.Helper;
 
 
+import KukaPest.Model.Map.ResidentialZone;
+import KukaPest.Model.Map.Workplace;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -27,7 +30,10 @@ public class Graph {
     public void addNode(int id, boolean isRoad, Coordinates coordinates){
 
         nodes_array.add(new Node(id,isRoad,coordinates));
-        nodes = nodes + 1;
+        if(id > nodes){
+            nodes = nodes + 1;
+        }
+
         adj[id] = new LinkedList();
     }
 
@@ -65,6 +71,7 @@ public class Graph {
     public boolean BFS(int s, int numberBuilding) {
 
         boolean visited[] = new boolean[nodes];
+        System.out.println("Node száma: " + nodes);
 
         LinkedList<Integer> queue
                 = new LinkedList<Integer>();
@@ -84,7 +91,7 @@ public class Graph {
             while (i.hasNext()) {
                 int n = i.next();
                 if (!visited[n]) {
-                    System.out.println(n + " " + visited[n] + " ");
+                    //System.out.println(n + " " + visited[n] + " ");
                     visited[n] = true;
                     queue.add(n);
                 }
@@ -105,6 +112,62 @@ public class Graph {
             return true;
 
         }
+        return false;
+    }
+
+    public boolean BFS_movein(int s, int numberBuilding, ResidentialZone res, Workplace work) {
+
+        boolean visited[] = new boolean[nodes];
+        System.out.println("Node száma: " + nodes);
+
+        LinkedList<Integer> queue
+                = new LinkedList<Integer>();
+
+        visited[s] = true;
+        queue.add(s);
+
+        while (queue.size() != 0) {
+
+            s = queue.poll();
+            System.out.print(s + " ");
+            if(getNodeRoad(s) == false){
+                continue;
+            }
+
+            Iterator<Integer> i = adj[s].listIterator();
+            while (i.hasNext()) {
+                int n = i.next();
+                if (!visited[n]) {
+                    //System.out.println(n + " " + visited[n] + " ");
+                    visited[n] = true;
+                    queue.add(n);
+                }
+            }
+        }
+
+        System.out.println("\n");
+        System.out.println(numberBuilding);
+
+        int visit = 0;
+
+        for(int i = 0; i < visited.length; i++){
+
+            if(visited[i] == true) {
+                if (nodes_array.get(i).getCoordinates().getHeight() == work.getCoordinates().getHeight()
+                        && nodes_array.get(i).getCoordinates().getWidth() == work.getCoordinates().getWidth()) {
+                    visit = visit + 1;
+                    System.out.println("OK");
+                } else if (nodes_array.get(i).getCoordinates().getHeight() == res.getCoordinates().getHeight()
+                        && nodes_array.get(i).getCoordinates().getWidth() == res.getCoordinates().getWidth()) {
+                    visit = visit + 1;
+                    System.out.println("OK");
+                }
+            }
+        }
+        if(visit == 2){
+            return true;
+        }
+
         return false;
     }
 
