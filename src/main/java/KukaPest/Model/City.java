@@ -944,7 +944,10 @@ public class City {
                             }
                         }else if(this.map[x][y] instanceof ZonePart) {
                             MainZone mainZone = ((ZonePart)this.map[x][y]).getMainBuilding();
+//                            currentCoords.add(mainZone.getCoordinates());
                             if(!mainZone.isElectricity()){
+                                //ez selytes
+
                                 if(electricityToGive>=mainZone.getElectricityNeed()){
                                     electricityToGive=electricityToGive -mainZone.getElectricityNeed();
                                     mainZone.setElectricity(true);
