@@ -837,9 +837,11 @@ public class City {
     public void electricitySupply(){
         for (int i = 0; i < mapHeight; i++) {
             for (int j = 0; j < mapWidth; j++) {
-                if(this.map[i][j] instanceof MainZone){
+                if(this.map[i][j] instanceof PowerPlant){
+                    ((MainZone) this.map[i][j]).setElectricity(true);
+                }
+                else if(this.map[i][j] instanceof MainZone){
                     ((MainZone) this.map[i][j]).setElectricity(false);
-                    System.out.println(((MainZone) this.map[i][j]).isElectricity());
                 }
             }
         }
@@ -851,6 +853,7 @@ public class City {
                     //preparations for the algorithm
                     Queue<Coordinates> visitedCoords = new LinkedList<>();
                     Queue<Coordinates> currentCoords = new LinkedList<>();
+//                    System.out.println(visitedCoords.size());
 
                     currentCoords.add(new Coordinates(i,j));
                     currentCoords.add(new Coordinates(i,j+1));
@@ -873,18 +876,20 @@ public class City {
                     visitedCoords.add(new Coordinates(i+2,j+1));
                     visitedCoords.add(new Coordinates(i+2,j+2));
 
-                    visitedCoords.add(new Coordinates(i,j));
-                    visitedCoords.add(new Coordinates(i,j+1));
-                    visitedCoords.add(new Coordinates(i,j+2));
-                    visitedCoords.add(new Coordinates(i,j+3));
-                    visitedCoords.add(new Coordinates(i+1,j+3));
-                    visitedCoords.add(new Coordinates(i+2,j+3));
-                    visitedCoords.add(new Coordinates(i+3,j+3));
-                    visitedCoords.add(new Coordinates(i+3,j+1));
-                    visitedCoords.add(new Coordinates(i+3,j+2));
-                    visitedCoords.add(new Coordinates(i+1,j));
-                    visitedCoords.add(new Coordinates(i+2,j));
-                    visitedCoords.add(new Coordinates(i+3,j));
+//                    visitedCoords.add(new Coordinates(i,j));
+//                    visitedCoords.add(new Coordinates(i,j+1));
+//                    visitedCoords.add(new Coordinates(i,j+2));
+//                    visitedCoords.add(new Coordinates(i,j+3));
+//                    visitedCoords.add(new Coordinates(i+1,j+3));
+//                    visitedCoords.add(new Coordinates(i+2,j+3));
+//                    visitedCoords.add(new Coordinates(i+3,j+3));
+//                    visitedCoords.add(new Coordinates(i+3,j+2));
+//                    visitedCoords.add(new Coordinates(i+3,j+1));
+//                    visitedCoords.add(new Coordinates(i+3,j));
+//                    visitedCoords.add(new Coordinates(i+2,j));
+//                    visitedCoords.add(new Coordinates(i+1,j));
+
+
 
 
                     //start of the algorithm
@@ -905,38 +910,41 @@ public class City {
                         boolean down = false;
                         boolean right = false;
                         boolean left = false;
-                        if(visitedCoords.size() == mapHeight*mapWidth){
-                            break;
+                        //it volt a gond, figyeld meg (most jo kell legyen)
+                        if(visitedCoords.size() >= mapHeight*mapWidth*20){
+//                            break;
                         }
+
                         for (Coordinates visitedCoordinate : visitedCoords) {
                             if(x-1 == visitedCoordinate.getHeight() && y == visitedCoordinate.getWidth() ){
                                 up = true;
-                            }else if(x+1 == visitedCoordinate.getHeight() && y == visitedCoordinate.getWidth()  ) {
+                            }if(x+1 == visitedCoordinate.getHeight() && y == visitedCoordinate.getWidth()  ) {
                                 down = true;
-                            }else if(x == visitedCoordinate.getHeight() && y-1 == visitedCoordinate.getWidth()  ){
+                            }if(x == visitedCoordinate.getHeight() && y-1 == visitedCoordinate.getWidth()  ){
                                 left = true;
-                            }else if(x == visitedCoordinate.getHeight() && y+1 == visitedCoordinate.getWidth() ){
+                            }if(x == visitedCoordinate.getHeight() && y+1 == visitedCoordinate.getWidth() ){
                                 right = true;
                             }
                         }
-                        if(!up && x>=1 && (this.map[x-1][y] instanceof MainZone || this.map[x-1][y] instanceof Pole || this.map[x-1][y] instanceof ZonePart)){
+                        if(!up && x>=1 && y>=0 && y<mapWidth && x<mapHeight && (this.map[x-1][y] instanceof MainZone || this.map[x-1][y] instanceof Pole || this.map[x-1][y] instanceof ZonePart)){
                             currentCoords.add(new Coordinates(x-1,y));
-                        }if(!right && y<mapWidth-1 && (this.map[x][y+1] instanceof MainZone || this.map[x][y+1] instanceof Pole || this.map[x][y+1] instanceof ZonePart)){
+                        }if(!right && y<mapWidth-1 && y>=0 && x>=0 && x<mapHeight && (this.map[x][y+1] instanceof MainZone || this.map[x][y+1] instanceof Pole || this.map[x][y+1] instanceof ZonePart)){
                             currentCoords.add(new Coordinates(x,y+1));
-                        }if(!down && x<mapHeight-1 && (this.map[x+1][y] instanceof MainZone || this.map[x+1][y] instanceof Pole || this.map[x+1][y] instanceof ZonePart)){
+                        }if(!down && x<mapHeight-1 &&  y<mapWidth && y>=0 && x>=0 &&  (this.map[x+1][y] instanceof MainZone || this.map[x+1][y] instanceof Pole || this.map[x+1][y] instanceof ZonePart)){
                             currentCoords.add(new Coordinates(x+1,y));
-                        }if(!left && y>=1 && (this.map[x][y-1] instanceof MainZone || this.map[x][y-1] instanceof Pole || this.map[x][y-1] instanceof ZonePart)){
+                        }if(!left && y>=1 && y<mapWidth && x>=0 && x<mapHeight && (this.map[x][y-1] instanceof MainZone || this.map[x][y-1] instanceof Pole || this.map[x][y-1] instanceof ZonePart)){
                             currentCoords.add(new Coordinates(x,y-1));
                         }
 
 
                         //dealing with the current Tile
-                        if(this.map[x][y] instanceof PowerPlant){
-                            //do nothing. but it enter in statement (because of the following else if conditions)
-                            continue;
-                        }
-                        else if(this.map[x][y] instanceof MainZone){
-                            if(!((MainZone)this.map[x][y]).isElectricity()){
+//                        if(this.map[x][y] instanceof PowerPlant){
+//                            //do nothing. but it enter in statement (because of the following else if conditions)
+////                            continue;
+////                            ((MainZone)this.map[x][y]).setElectricity(true);
+//                        }
+                        if(this.map[x][y] instanceof MainZone){
+                            if(!(((MainZone)this.map[x][y]).isElectricity())){
                                 if(electricityToGive>=((MainZone)this.map[x][y]).getElectricityNeed()){
                                     electricityToGive=electricityToGive -((MainZone)this.map[x][y]).getElectricityNeed();
                                     ((MainZone)this.map[x][y]).setElectricity(true);
@@ -944,24 +952,52 @@ public class City {
                             }
                         }else if(this.map[x][y] instanceof ZonePart) {
                             MainZone mainZone = ((ZonePart)this.map[x][y]).getMainBuilding();
-//                            currentCoords.add(mainZone.getCoordinates());
-                            if(!mainZone.isElectricity()){
-                                //ez selytes
 
-                                if(electricityToGive>=mainZone.getElectricityNeed()){
-                                    electricityToGive=electricityToGive -mainZone.getElectricityNeed();
-                                    mainZone.setElectricity(true);
-                                }//itt ne csinalj semmit. A sorbol majd ugyis kijon.
+                            boolean alreadyVisited = false;
+                            boolean alreadyInQueue = false;
+                            for (Coordinates visitedCord : visitedCoords) {
+                                if(visitedCord.getHeight() == mainZone.getHeight() && visitedCord.getWidth() == mainZone.getWidth()){
+                                    alreadyVisited = true;
+                                }
+
                             }
+                            for (Coordinates currCord : currentCoords) {
+                                if(currCord.getHeight() == mainZone.getHeight() && currCord.getWidth() == mainZone.getWidth()){
+                                    alreadyInQueue = true;
+                                    currentCoords.remove(currCord);
+                                }
+
+                            }
+
+                            if(alreadyInQueue == true || alreadyVisited == false){
+                                visitedCoords.add(mainZone.getCoordinates());
+
+                                if(!(mainZone.isElectricity())){
+                                    if(electricityToGive>=mainZone.getElectricityNeed()){
+                                        electricityToGive=electricityToGive -mainZone.getElectricityNeed();
+                                        mainZone.setElectricity(true);
+                                    }//itt ne csinalj semmit. A sorbol majd ugyis kijon.
+                                }
+
+                            }
+
+
 
                         }
 
 
 
+
+
                     }
-
+//                    for (Coordinates visitedCord : visitedCoords) {
+//                        System.out.println(visitedCord.getWidth());
+//                        System.out.println(visitedCord.getHeight());
+//                        System.out.println();
+//
+//                    }
+//                    System.out.println(visitedCoords.size());
                     System.out.println("Ennyi aram maradt: "+electricityToGive);
-
 
                 }
             }
