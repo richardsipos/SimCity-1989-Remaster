@@ -876,20 +876,6 @@ public class City {
                     visitedCoords.add(new Coordinates(i+2,j+1));
                     visitedCoords.add(new Coordinates(i+2,j+2));
 
-//                    visitedCoords.add(new Coordinates(i,j));
-//                    visitedCoords.add(new Coordinates(i,j+1));
-//                    visitedCoords.add(new Coordinates(i,j+2));
-//                    visitedCoords.add(new Coordinates(i,j+3));
-//                    visitedCoords.add(new Coordinates(i+1,j+3));
-//                    visitedCoords.add(new Coordinates(i+2,j+3));
-//                    visitedCoords.add(new Coordinates(i+3,j+3));
-//                    visitedCoords.add(new Coordinates(i+3,j+2));
-//                    visitedCoords.add(new Coordinates(i+3,j+1));
-//                    visitedCoords.add(new Coordinates(i+3,j));
-//                    visitedCoords.add(new Coordinates(i+2,j));
-//                    visitedCoords.add(new Coordinates(i+1,j));
-
-
 
 
                     //start of the algorithm
@@ -905,44 +891,21 @@ public class City {
                         int y = currentTileCoords.getWidth();
                         // System.out.println(x+" "+y);
 
-                        //add neighbours to the queue.
-                        boolean up = false;
-                        boolean down = false;
-                        boolean right = false;
-                        boolean left = false;
                         //it volt a gond, figyeld meg (most jo kell legyen)
-                        if(visitedCoords.size() >= mapHeight*mapWidth*20){
+                        if(visitedCoords.size() >= mapHeight*mapWidth+100){
 //                            break;
                         }
 
-                        for (Coordinates visitedCoordinate : visitedCoords) {
-                            if(x-1 == visitedCoordinate.getHeight() && y == visitedCoordinate.getWidth() ){
-                                up = true;
-                            }if(x+1 == visitedCoordinate.getHeight() && y == visitedCoordinate.getWidth()  ) {
-                                down = true;
-                            }if(x == visitedCoordinate.getHeight() && y-1 == visitedCoordinate.getWidth()  ){
-                                left = true;
-                            }if(x == visitedCoordinate.getHeight() && y+1 == visitedCoordinate.getWidth() ){
-                                right = true;
-                            }
-                        }
-                        if(!up && x>=1 && y>=0 && y<mapWidth && x<mapHeight && (this.map[x-1][y] instanceof MainZone || this.map[x-1][y] instanceof Pole || this.map[x-1][y] instanceof ZonePart)){
+                        if(!visitedCoords.contains(new Coordinates(x-1,y)) && !currentCoords.contains(new Coordinates(x-1,y)) && x>=1 && y>=0 && y<mapWidth && x<mapHeight && (this.map[x-1][y] instanceof MainZone || this.map[x-1][y] instanceof Pole || this.map[x-1][y] instanceof ZonePart)){
                             currentCoords.add(new Coordinates(x-1,y));
-                        }if(!right && y<mapWidth-1 && y>=0 && x>=0 && x<mapHeight && (this.map[x][y+1] instanceof MainZone || this.map[x][y+1] instanceof Pole || this.map[x][y+1] instanceof ZonePart)){
+                        }if(!visitedCoords.contains(new Coordinates(x,y+1)) && !currentCoords.contains(new Coordinates(x,y+1)) && y<mapWidth-1 && y>=0 && x>=0 && x<mapHeight && (this.map[x][y+1] instanceof MainZone || this.map[x][y+1] instanceof Pole || this.map[x][y+1] instanceof ZonePart)){
                             currentCoords.add(new Coordinates(x,y+1));
-                        }if(!down && x<mapHeight-1 &&  y<mapWidth && y>=0 && x>=0 &&  (this.map[x+1][y] instanceof MainZone || this.map[x+1][y] instanceof Pole || this.map[x+1][y] instanceof ZonePart)){
+                        }if(!visitedCoords.contains(new Coordinates(x+1,y)) && !currentCoords.contains(new Coordinates(x+1,y)) && x<mapHeight-1 &&  y<mapWidth && y>=0 && x>=0 &&  (this.map[x+1][y] instanceof MainZone || this.map[x+1][y] instanceof Pole || this.map[x+1][y] instanceof ZonePart)){
                             currentCoords.add(new Coordinates(x+1,y));
-                        }if(!left && y>=1 && y<mapWidth && x>=0 && x<mapHeight && (this.map[x][y-1] instanceof MainZone || this.map[x][y-1] instanceof Pole || this.map[x][y-1] instanceof ZonePart)){
+                        }if(!visitedCoords.contains(new Coordinates(x,y-1)) && !currentCoords.contains(new Coordinates(x,y-1)) && y>=1 && y<mapWidth && x>=0 && x<mapHeight && (this.map[x][y-1] instanceof MainZone || this.map[x][y-1] instanceof Pole || this.map[x][y-1] instanceof ZonePart)){
                             currentCoords.add(new Coordinates(x,y-1));
                         }
 
-
-                        //dealing with the current Tile
-//                        if(this.map[x][y] instanceof PowerPlant){
-//                            //do nothing. but it enter in statement (because of the following else if conditions)
-////                            continue;
-////                            ((MainZone)this.map[x][y]).setElectricity(true);
-//                        }
                         if(this.map[x][y] instanceof MainZone){
                             if(!(((MainZone)this.map[x][y]).isElectricity())){
                                 if(electricityToGive>=((MainZone)this.map[x][y]).getElectricityNeed()){
@@ -952,37 +915,12 @@ public class City {
                             }
                         }else if(this.map[x][y] instanceof ZonePart) {
                             MainZone mainZone = ((ZonePart)this.map[x][y]).getMainBuilding();
-
-                            boolean alreadyVisited = false;
-                            boolean alreadyInQueue = false;
-                            for (Coordinates visitedCord : visitedCoords) {
-                                if(visitedCord.getHeight() == mainZone.getHeight() && visitedCord.getWidth() == mainZone.getWidth()){
-                                    alreadyVisited = true;
-                                }
-
+                            if(!(mainZone.isElectricity())){
+                                if(electricityToGive>=mainZone.getElectricityNeed()){
+                                    electricityToGive=electricityToGive -mainZone.getElectricityNeed();
+                                    mainZone.setElectricity(true);
+                                }//itt ne csinalj semmit. A sorbol majd ugyis kijon.
                             }
-                            for (Coordinates currCord : currentCoords) {
-                                if(currCord.getHeight() == mainZone.getHeight() && currCord.getWidth() == mainZone.getWidth()){
-                                    alreadyInQueue = true;
-                                    currentCoords.remove(currCord);
-                                }
-
-                            }
-
-                            if(alreadyInQueue == true || alreadyVisited == false){
-                                visitedCoords.add(mainZone.getCoordinates());
-
-                                if(!(mainZone.isElectricity())){
-                                    if(electricityToGive>=mainZone.getElectricityNeed()){
-                                        electricityToGive=electricityToGive -mainZone.getElectricityNeed();
-                                        mainZone.setElectricity(true);
-                                    }//itt ne csinalj semmit. A sorbol majd ugyis kijon.
-                                }
-
-                            }
-
-
-
                         }
 
 
@@ -990,13 +928,9 @@ public class City {
 
 
                     }
-//                    for (Coordinates visitedCord : visitedCoords) {
-//                        System.out.println(visitedCord.getWidth());
-//                        System.out.println(visitedCord.getHeight());
-//                        System.out.println();
-//
-//                    }
-//                    System.out.println(visitedCoords.size());
+
+
+                    System.out.println(visitedCoords.size());
                     System.out.println("Ennyi aram maradt: "+electricityToGive);
 
                 }
