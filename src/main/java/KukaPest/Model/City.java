@@ -252,11 +252,8 @@ public class City {
             //ha van free residential zone es van industrial zone is akkor letre kell hozzni egy citizent.
 
             if(Rzone!=null && Wzone!=null){
-                System.out.println("Node a gráfnak: " + destroynodes);
-                moveInGraph = new Graph(destroynodes);
-                Coordinates coords = new Coordinates(mapHeight,mapWidth);
-                buildingsAvailable(coords,moveInGraph);
-                if(moveInGraph.BFS_movein(0,numberBuilding,Rzone,Wzone)) {
+
+
                     if (citizens.size() > guaranteedCitizens) {
 
                         if (RzoneWithElectricity != null && satisfaction() >= 30) {//akkor koltozhet csak  be ha van aram es ha boldogabbak mint 30
@@ -271,7 +268,7 @@ public class City {
                         Rzone.addCitizen(citizen);
                         Wzone.addCitizen(citizen);
                     }
-                }
+
 
 
             }
@@ -298,11 +295,19 @@ public class City {
     }
 
     ResidentialZone hasFreeResidential(){
+        Coordinates coords;
+        System.out.println("Node a gráfnak: " + destroynodes);
+        moveInGraph = new Graph(destroynodes);
+        Coordinates coords2 = new Coordinates(mapHeight,mapWidth);
+        buildingsAvailable(coords2,moveInGraph);
         for (int i = 0; i < mapHeight; i++) {
             for (int j = 0; j < mapWidth; j++) {
                 if(this.map[i][j] instanceof ResidentialZone){
-                    if(((MainZone)this.map[i][j]).getCurrentCapacity() < ((MainZone)this.map[i][j]).getMaxCapacity()){
-                        return ((ResidentialZone) this.map[i][j]);
+                    coords = new Coordinates(i,j);
+                    if(moveInGraph.BFS_movein(0,numberBuilding,coords)) {
+                        if (((MainZone) this.map[i][j]).getCurrentCapacity() < ((MainZone) this.map[i][j]).getMaxCapacity()) {
+                            return ((ResidentialZone) this.map[i][j]);
+                        }
                     }
                 }
             }
@@ -312,12 +317,20 @@ public class City {
     }
 
     ResidentialZone hasFreeResidentialWithElectricity(){
+        Coordinates coords;
+        System.out.println("Node a gráfnak: " + destroynodes);
+        moveInGraph = new Graph(destroynodes);
+        Coordinates coords2 = new Coordinates(mapHeight,mapWidth);
+        buildingsAvailable(coords2,moveInGraph);
         for (int i = 0; i < mapHeight; i++) {
             for (int j = 0; j < mapWidth; j++) {
                 if(this.map[i][j] instanceof ResidentialZone){
-                    if( ((MainZone)this.map[i][j]).isElectricity()
-                          && ((MainZone)this.map[i][j]).getCurrentCapacity() < ((MainZone)this.map[i][j]).getMaxCapacity()){
-                        return ((ResidentialZone) this.map[i][j]);
+                    coords = new Coordinates(i,j);
+                    if(moveInGraph.BFS_movein(0,numberBuilding,coords)) {
+                        if (((MainZone) this.map[i][j]).isElectricity()
+                                && ((MainZone) this.map[i][j]).getCurrentCapacity() < ((MainZone) this.map[i][j]).getMaxCapacity()) {
+                            return ((ResidentialZone) this.map[i][j]);
+                        }
                     }
                 }
             }
@@ -327,6 +340,11 @@ public class City {
     }
 
     Workplace hasFreeWorkplace(){
+        Coordinates coords;
+        System.out.println("Node a gráfnak: " + destroynodes);
+        moveInGraph = new Graph(destroynodes);
+        Coordinates coords2 = new Coordinates(mapHeight,mapWidth);
+        buildingsAvailable(coords2,moveInGraph);
         Workplace industrialWorkplace = null;
         int workersInIndustrialZones = 0;
         Workplace serviceWorkplace = null;
@@ -335,14 +353,20 @@ public class City {
             for (int j = 0; j < mapWidth; j++) {
                 if( (this.map[i][j] instanceof IndustrialZone) ) {
                     workersInIndustrialZones = workersInIndustrialZones + ((MainZone)this.map[i][j]).getCurrentCapacity();
-                    if(  ((MainZone)this.map[i][j]).getCurrentCapacity() < ((MainZone)this.map[i][j]).getMaxCapacity()  ){
-                        industrialWorkplace = ((Workplace) this.map[i][j]);
+                    coords = new Coordinates(i,j);
+                    if(moveInGraph.BFS_movein(0,numberBuilding,coords)) {
+                        if (((MainZone) this.map[i][j]).getCurrentCapacity() < ((MainZone) this.map[i][j]).getMaxCapacity()) {
+                            industrialWorkplace = ((Workplace) this.map[i][j]);
+                        }
                     }
                 }
                 if( (this.map[i][j] instanceof ServiceZone) ) {
                     workersInServiceZones = workersInServiceZones + ((MainZone)this.map[i][j]).getCurrentCapacity();
-                    if(  ((MainZone)this.map[i][j]).getCurrentCapacity() < ((MainZone)this.map[i][j]).getMaxCapacity()  ){
-                        serviceWorkplace = ((Workplace) this.map[i][j]);
+                    coords = new Coordinates(i,j);
+                    if(moveInGraph.BFS_movein(0,numberBuilding,coords)) {
+                        if (((MainZone) this.map[i][j]).getCurrentCapacity() < ((MainZone) this.map[i][j]).getMaxCapacity()) {
+                            serviceWorkplace = ((Workplace) this.map[i][j]);
+                        }
                     }
                 }
             }

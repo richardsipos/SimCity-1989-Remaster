@@ -115,7 +115,7 @@ public class Graph {
         return false;
     }
 
-    public boolean BFS_movein(int s, int numberBuilding, ResidentialZone res, Workplace work) {
+    public boolean BFS_movein(int s, int numberBuilding, Coordinates coords) {
 
         boolean visited[] = new boolean[nodes];
         System.out.println("Node száma: " + nodes);
@@ -150,21 +150,17 @@ public class Graph {
 
         int visit = 0;
 
-        for(int i = 0; i < visited.length; i++){
+        for(int i = 0; i < visited.length; i++) {
 
-            if(visited[i] == true) {
-                if (nodes_array.get(i).getCoordinates().getHeight() == work.getCoordinates().getHeight()
-                        && nodes_array.get(i).getCoordinates().getWidth() == work.getCoordinates().getWidth()) {
-                    visit = visit + 1;
-                    System.out.println("OK");
-                } else if (nodes_array.get(i).getCoordinates().getHeight() == res.getCoordinates().getHeight()
-                        && nodes_array.get(i).getCoordinates().getWidth() == res.getCoordinates().getWidth()) {
+            if (visited[i] == true) {
+                if (nodes_array.get(i).getCoordinates().getHeight() == coords.getHeight()
+                        && nodes_array.get(i).getCoordinates().getWidth() == coords.getWidth()) {
                     visit = visit + 1;
                     System.out.println("OK");
                 }
             }
         }
-        if(visit == 2){
+        if(visit == 1){
             return true;
         }
 
