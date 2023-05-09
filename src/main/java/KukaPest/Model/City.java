@@ -243,37 +243,29 @@ public class City {
 
         for(int i=1;i<=randomNumber;i++){
             ResidentialZone Rzone = hasFreeResidential();
-            ResidentialZone RzoneWithElectricity = hasFreeResidentialWithElectricity();
             Workplace Wzone = hasFreeWorkplace();
 
             //satisfaction miatt nem koltozhet be <30  akkor nem koltozhet be. Eloszor lesz biztosan 50 szemely aki barhogy bekoltozik
 
             //ha van free residential zone es van industrial zone is akkor letre kell hozzni egy citizent.
 
-            if(Rzone!=null && Wzone!=null){
-                if(citizens.size() >= guaranteedCitizens){
-
-                    if(RzoneWithElectricity != null && satisfaction()>=30){//akkor koltozhet csak  be ha van aram es ha boldogabbak mint 30
-
-                        Citizen citizen = new Citizen(new Random().nextInt(42) + 18, RzoneWithElectricity, Wzone, this);
-                        citizens.add(citizen);
-                        RzoneWithElectricity.addCitizen(citizen);
-                        Wzone.addCitizen(citizen);
-                    }
-                }else{
-                    Citizen citizen = new Citizen(new Random().nextInt(42) + 18, Rzone, Wzone, this);
-                    citizens.add(citizen);
-                    Rzone.addCitizen(citizen);
-                    Wzone.addCitizen(citizen);
-                }
-
+            if(Rzone!=null && Wzone!=null && canMoveIn()){
+                Citizen citizen = new Citizen(new Random().nextInt(42) + 18, Rzone, Wzone, this);
+                citizens.add(citizen);
+                Rzone.addCitizen(citizen);
+                Wzone.addCitizen(citizen);
             }
         }
-        //amugy meg nem tortenik semmi.
-
-
-
     }
+    private boolean canMoveIn(){
+        if (citizens.size() < guaranteedCitizens){
+            return true;
+        }
+        else{
+            return satisfaction() >= 30;
+        }
+    }
+
     void updateBalance(){
         int[] balance = {0 , 0};
         for (int i = 0; i < mapHeight; i++) {
@@ -295,22 +287,14 @@ public class City {
             for (int j = 0; j < mapWidth; j++) {
                 if(this.map[i][j] instanceof ResidentialZone){
                     if(((MainZone)this.map[i][j]).getCurrentCapacity() < ((MainZone)this.map[i][j]).getMaxCapacity()){
-                        return ((ResidentialZone) this.map[i][j]);
-                    }
-                }
-            }
-        }
-        // System.out.println("residential");
-        return null;
-    }
-
-    ResidentialZone hasFreeResidentialWithElectricity(){
-        for (int i = 0; i < mapHeight; i++) {
-            for (int j = 0; j < mapWidth; j++) {
-                if(this.map[i][j] instanceof ResidentialZone){
-                    if( ((MainZone)this.map[i][j]).isElectricity()
-                          && ((MainZone)this.map[i][j]).getCurrentCapacity() < ((MainZone)this.map[i][j]).getMaxCapacity()){
-                        return ((ResidentialZone) this.map[i][j]);
+                        if(citizens.size() > guaranteedCitizens) {
+                            if (((ResidentialZone) this.map[i][j]).isElectricity()) {
+                                return (ResidentialZone) this.map[i][j];
+                            }
+                        }
+                        else{
+                            return ((ResidentialZone) this.map[i][j]);
+                        }
                     }
                 }
             }
@@ -401,7 +385,6 @@ public class City {
                 for (int i = 0; i < citizens.size(); i++){
                     citizens.get(i).yearPassed();
                 }
-
             }
         }
         System.out.println("Elégedettség: " + satisfaction()); //debug
@@ -1032,7 +1015,7 @@ public class City {
                 }
             }
             if (mainZone instanceof Infrastructure) {
-                // TODO: Ez itt mi?
+
             }
 
         }
