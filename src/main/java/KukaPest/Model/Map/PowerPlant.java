@@ -2,7 +2,7 @@ package KukaPest.Model.Map;
 
 import KukaPest.Model.Helper.Coordinates;
 
-public class PowerPlant extends Infrastructure {
+public class PowerPlant extends Infrastructure implements java.io.Serializable{
     private int electricityProduction = 300;
     public PowerPlant(Coordinates coordinates) {
         super(4,4,30,3000, coordinates, 30,0);

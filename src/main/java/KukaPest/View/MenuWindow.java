@@ -1,9 +1,13 @@
 package KukaPest.View;
 
+import KukaPest.Model.Game;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
 
 public class MenuWindow extends JPanel {
     JFrame frame;
@@ -134,9 +138,22 @@ public class MenuWindow extends JPanel {
             }
         });
 
+        lgame.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.setVisible(false);
+                //loadGame();
+
+
+
+            }
+        });
+
         //buttons.add(ngame, gbc);
         //buttons.add(lgame, gbc2);
         //buttons.add(egame, gbc3);
 
     }
+
+
 }

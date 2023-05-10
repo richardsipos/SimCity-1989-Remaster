@@ -2,7 +2,7 @@ package KukaPest.Model.Map;
 
 import KukaPest.Model.Helper.Coordinates;
 
-public class ResidentialZone extends MainZone{
+public class ResidentialZone extends MainZone implements java.io.Serializable{
     private int level = 1;
     public ResidentialZone(Coordinates coordinates) {
         super(2,2,10, 500, coordinates, 0,5);

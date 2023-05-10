@@ -7,12 +7,13 @@ import KukaPest.Model.Helper.Graph;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.Serializable;
 import java.security.InvalidParameterException;
 import java.util.*;
 
 //import java.util.Date;
 
-public class City {
+public class City implements java.io.Serializable {
     private final String name;
     final ArrayList<Citizen> citizens;
     private int funds = 10000;

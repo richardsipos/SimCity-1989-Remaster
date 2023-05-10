@@ -1,5 +1,6 @@
 package KukaPest.View;
 
+import KukaPest.Model.Game;
 import KukaPest.Model.Helper.Building;
 
 import javax.swing.*;
@@ -7,11 +8,20 @@ import javax.swing.border.EtchedBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 public class MainWindow extends JFrame{
     private static final int INITIAL_BOARD_X = 48;
     private static final int INITIAL_BOARD_Y = 27;
     private BoardGUI BoardPanel;
+
+    public BoardGUI getBoardPanel() {
+        return BoardPanel;
+    }
+
     JLabel populationlabel = new JLabel();
     JProgressBar b;
     JToolBar statBar = new JToolBar();
@@ -34,6 +44,7 @@ public class MainWindow extends JFrame{
         gameTime = new Timer(1000,new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e){
+                BoardPanel.repaint();
                 BoardPanel.getGame().stepGame();
                 System.out.println("Lakók: " + BoardPanel.getGame().getPopulation() + "\nPézz: " + BoardPanel.getGame().getFunds()+ "\n\n");
                 refreshGameStatLabel();
@@ -775,6 +786,22 @@ public class MainWindow extends JFrame{
                 BoardPanel.upgrade = true;
             }
         });
+        sgMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                saveGame();
+            }
+        });
+        lgMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                loadGame();
+                BoardPanel.printMap();
+                repaint();
+                pack();
+
+            }
+        });
     }
 
     /**
@@ -785,6 +812,45 @@ public class MainWindow extends JFrame{
         populationlabel.setText(BoardPanel.getGame().getPopulation() + " people");
         fundslabel.setText(BoardPanel.getGame().getFunds()+ " $");
         balancelabel.setText((BoardPanel.getGame().getLastBalance()[0] + BoardPanel.getGame().getLastBalance()[1]) + " $");
+    }
+
+    void loadGame(){
+
+        Game game;
+        try{
+            FileInputStream fis = new FileInputStream("Adv.dat");
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            game = (Game)ois.readObject();
+            BoardPanel = null;
+            BoardPanel = new BoardGUI(INITIAL_BOARD_X, INITIAL_BOARD_Y,game);
+            //BoardPanel.setMap(((Game) ois.readObject()).getMap());
+
+            ois.close();
+            //ois.close();
+            System.out.println("Game loaded");
+            BoardPanel.getGame().getCity().printMap();
+
+        }catch(Exception e){
+            System.out.println("Serialization Error! Can't load data."
+                    + e.getClass() + ":" + e.getMessage());
+
+        }
+    }
+
+    void saveGame(){
+        try{
+            FileOutputStream fos = new FileOutputStream("Adv.dat");
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(BoardPanel.getGame());
+            oos.flush();
+            oos.close();
+            System.out.println("Game saved");
+
+        }catch(Exception e){
+            System.out.println("Serialization Error! Can't save data."
+                    + e.getClass() + ":" + e.getMessage());
+
+        }
     }
 
 

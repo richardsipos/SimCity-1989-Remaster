@@ -1,6 +1,6 @@
 package KukaPest.Model.Map;
 
-public class ZonePart extends Tile{
+public class ZonePart extends Tile implements java.io.Serializable{
 
     public MainZone mainBuilding;
 
