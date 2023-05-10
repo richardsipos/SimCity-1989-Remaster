@@ -44,6 +44,7 @@ public class MainWindow extends JFrame{
         }
         else{
             BoardPanel = new BoardGUI(INITIAL_BOARD_X, INITIAL_BOARD_Y, cityName);
+
         }
 
 
