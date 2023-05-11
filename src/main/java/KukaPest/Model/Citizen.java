@@ -45,6 +45,10 @@ public class Citizen {
                 total += workPlace.getSatisfactionBoost()/2;
             }
         }
+
+        if (tax() == 7) total -= 10;
+        else if (tax() == 5) total -= 5;
+
         total += home.getSatisfactionBoost();
         if (!isPensioner) total += workPlace.getSatisfactionBoost();
         if (total < 0) total = 0;

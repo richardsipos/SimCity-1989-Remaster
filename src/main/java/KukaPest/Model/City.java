@@ -422,44 +422,6 @@ public class City {
     }
 
     /**
-     * This method calculates the radii of service buildings, in which satisfaction of resi/industrial zones are boosted
-     * and then executes the satisfaction boost.
-     * @param coords Coordinates of the given service building
-     * @param radius Radius of given service building
-     * @param value Value of satisfaction boost
-     * @param b Given service building
-     */
-    public void modifySatisfactionBoost(Coordinates coords, int radius, int value, Constructable b){
-        MainZone mz = (MainZone)b;
-        int left, right, top, bottom;
-
-        if (coords.getWidth() - radius < 0) { // check if radius is too big for the left side
-            left = 0;
-        } else left = coords.getWidth() - radius;
-        if ((coords.getWidth()+mz.getWidth()+radius) >= mapWidth) { // check if radius is too big for the right side
-            right = mapWidth-1;
-        } else right = coords.getWidth()+mz.getWidth() + radius;
-        if (coords.getHeight() - radius < 0) { // check if radius is too big for top
-            top = 0;
-        } else top = coords.getHeight() - radius;
-        if ((coords.getHeight()+mz.getHeight()+radius) >= mapHeight) { // check if radius is too big for bottom
-            bottom = mapHeight-1;
-        } else bottom = (coords.getHeight()+mz.getHeight()) + radius;
-        for (int i = top; i < bottom; ++i) {
-            for (int j = left; j < right; ++j) {
-                if(this.map[i][j] instanceof ResidentialZone || this.map[i][j] instanceof IndustrialZone){
-                    ((MainZone) this.map[i][j]).setSatisfactionBoost(value);
-                } /*else if (this.map[i][j] instanceof ZonePart){ //zonepart check, NOT usable
-                    if (((ZonePart) this.map[i][j]).mainBuilding instanceof ResidentialZone
-                            || ((ZonePart) this.map[i][j]).mainBuilding instanceof IndustrialZone){
-                        ((ZonePart) this.map[i][j]).mainBuilding.setSatisfactionBoost(value);
-                    }
-                }*/
-            }
-        }
-    }
-
-    /**
      * This method handles the destruction of a building, spawning a grassy area in its place
      * @param coords The top left coords of the building destroyed
      * @return True/false depending on the success of destruction
@@ -753,6 +715,49 @@ public class City {
         }
     }
 
+
+    /**
+     * This method calculates the radii of service buildings, in which satisfaction of resi/industrial zones are boosted
+     * and then executes the satisfaction boost.
+     * @param coords Coordinates of the given service building
+     * @param radius Radius of given service building
+     * @param value Value of satisfaction boost
+     * @param b Given service building
+     */
+    public void modifySatisfactionBoost(Coordinates coords, int radius, int value, Constructable b){
+        MainZone mz = (MainZone)b;
+        int left, right, top, bottom;
+        ArrayList<MainZone> boosted = new ArrayList<>();
+
+        if (coords.getWidth() - radius < 0) { // check if radius is too big for the left side
+            left = 0;
+        } else left = coords.getWidth() - radius;
+        if ((coords.getWidth()+mz.getWidth()+radius) >= mapWidth) { // check if radius is too big for the right side
+            right = mapWidth-1;
+        } else right = coords.getWidth()+mz.getWidth() + radius;
+        if (coords.getHeight() - radius < 0) { // check if radius is too big for top
+            top = 0;
+        } else top = coords.getHeight() - radius;
+        if ((coords.getHeight()+mz.getHeight()+radius) >= mapHeight) { // check if radius is too big for bottom
+            bottom = mapHeight-1;
+        } else bottom = (coords.getHeight()+mz.getHeight()) + radius;
+        for (int i = top; i < bottom; ++i) {
+            for (int j = left; j < right; ++j) {
+                if(this.map[i][j] instanceof ResidentialZone || this.map[i][j] instanceof IndustrialZone || this.map[i][j] instanceof ServiceZone){
+                    ((MainZone) this.map[i][j]).setSatisfactionBoost(value);
+                    boosted.add((MainZone) this.map[i][j]);
+                } else if (this.map[i][j] instanceof ZonePart){ //zonepart check, NOT usable
+                    if (((ZonePart) this.map[i][j]).mainBuilding instanceof ResidentialZone
+                            || ((ZonePart) this.map[i][j]).mainBuilding instanceof IndustrialZone || ((ZonePart) this.map[i][j]).mainBuilding instanceof ServiceZone) {
+                        if (!boosted.contains(((ZonePart) this.map[i][j]).mainBuilding)) {
+                            ((ZonePart) this.map[i][j]).mainBuilding.setSatisfactionBoost(value);
+                            boosted.add(((ZonePart) this.map[i][j]).mainBuilding);
+                        }
+                    }
+                }
+            }
+        }
+    }
 
 
     /**
