@@ -1024,5 +1024,7 @@ public class City {
 
     public int getCitizenslength(){return citizens.size();}
 
-
+    public ArrayList<Citizen> getCitizens() {
+        return citizens;
+    }
 }

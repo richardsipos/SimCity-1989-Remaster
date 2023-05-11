@@ -5,6 +5,7 @@ import KukaPest.Model.Helper.Coordinates;
 import KukaPest.Model.Map.ResidentialZone;
 import KukaPest.Model.Map.Tile;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 public class Game {
@@ -48,6 +49,7 @@ public class Game {
         return city.getLastBalance();
     }
     public int getCitizenslength(){return city.getCitizenslength();}
+    public ArrayList<Citizen> getCitizens() {return city.getCitizens();}
     public City getCity() {
         return city;
     }
