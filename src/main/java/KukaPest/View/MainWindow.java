@@ -23,6 +23,7 @@ public class MainWindow extends JFrame{
     JLabel citizens = new JLabel();
     Timer gameTime;
     String cityname;
+    ImageIcon credits;
 
 
 
@@ -89,6 +90,7 @@ public class MainWindow extends JFrame{
         Icon firstspeedicon = new ImageIcon("src/main/java/KukaPest/Assets/speed-icon.png");
         Icon secondspeedicon = new ImageIcon("src/main/java/KukaPest/Assets/speed-3x-icon.png");
         Icon thirdspeedicon = new ImageIcon("src/main/java/KukaPest/Assets/speed-5x-icon.png");
+        credits = new ImageIcon("src/main/java/KukaPest/Assets/credits.jpg");
 
         JButton firstspeed = new JButton(firstspeedicon);
         firstspeed.setBackground(Color.WHITE);
@@ -557,7 +559,21 @@ public class MainWindow extends JFrame{
         setResizable(false);
         setVisible(true);
 
-
+        crMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                JFrame f = new JFrame("Credits");
+                f.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+                JLabel contentPane = new JLabel();
+                contentPane.setIcon(credits);
+                f.setContentPane( contentPane );
+                f.setSize(1280,720);
+                f.setResizable(false);
+                f.pack();
+                f.setVisible(true);
+                f.setLocationRelativeTo(null);
+            }
+        });
 
         exitMenuItem.addActionListener(new ActionListener() {
             @Override

@@ -73,15 +73,12 @@ public class MenuWindow extends JPanel {
         ngame.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-
-                while (name.equals("")) {
-                    name = JOptionPane.showInputDialog(null, "Your city's name:");
-                }
+                name = JOptionPane.showInputDialog(null, "Your city's name:", "");
                 if (name != null) {
+                    if (!name.equals("")){
                     frame.setVisible(false);
-                    new MainWindow(name);
-
-                }
+                    new MainWindow(name);}
+                } else name = "";
             }
         });
 
