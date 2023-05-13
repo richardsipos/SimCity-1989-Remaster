@@ -1,5 +1,6 @@
 package KukaPest.Model;
 
+import KukaPest.Model.Helper.EduLevel;
 import KukaPest.Model.Map.*;
 import KukaPest.Model.Helper.Building;
 import KukaPest.Model.Helper.Coordinates;
@@ -18,9 +19,11 @@ public class City {
     private int funds = 10000;
     private int[] lastBalance = {0 , 0};
     private KukaPest.Model.Date date;
-    private int guaranteedCitizens = 50;
+    private final int guaranteedCitizens = 50;
     private int electricityProduction=0;
     private int electricityNeed=0;
+    private int maxSchoolDegrees = 50; //in percentage
+    private int maxUniversityDegrees = 20; //in percentage
 
     //Map dimensions:
     private final int mapHeight = 27;
@@ -240,36 +243,29 @@ public class City {
 
         for(int i=1;i<=randomNumber;i++){
             ResidentialZone Rzone = hasFreeResidential();
-            ResidentialZone RzoneWithElectricity = hasFreeResidentialWithElectricity();
             Workplace Wzone = hasFreeWorkplace();
 
             //satisfaction miatt nem koltozhet be <30  akkor nem koltozhet be. Eloszor lesz biztosan 50 szemely aki barhogy bekoltozik
 
             //ha van free residential zone es van industrial zone is akkor letre kell hozzni egy citizent.
 
-            if(Rzone!=null && Wzone!=null){
-                if(citizens.size() > guaranteedCitizens){
-
-                    if(RzoneWithElectricity != null && satisfaction()>=30){//akkor koltozhet csak  be ha van aram es ha boldogabbak mint 30
-                        Citizen citizen = new Citizen(new Random().nextInt(42) + 18, RzoneWithElectricity, Wzone, this);
-                        citizens.add(citizen);
-                        RzoneWithElectricity.addCitizen(citizen);
-                        Wzone.addCitizen(citizen);
-                    }
-                }else{
-                    Citizen citizen = new Citizen(new Random().nextInt(42) + 18, Rzone, Wzone, this);
-                    citizens.add(citizen);
-                    Rzone.addCitizen(citizen);
-                    Wzone.addCitizen(citizen);
-                }
-
+            if(Rzone!=null && Wzone!=null && canMoveIn()){
+                Citizen citizen = new Citizen(new Random().nextInt(42) + 18, Rzone, Wzone, this);
+                citizens.add(citizen);
+                Rzone.addCitizen(citizen);
+                Wzone.addCitizen(citizen);
             }
         }
-        //amugy meg nem tortenik semmi.
-
-
-
     }
+    private boolean canMoveIn(){
+        if (citizens.size() < guaranteedCitizens){
+            return true;
+        }
+        else{
+            return satisfaction() >= 30;
+        }
+    }
+
     void updateBalance(){
         int[] balance = {0 , 0};
         for (int i = 0; i < mapHeight; i++) {
@@ -291,22 +287,14 @@ public class City {
             for (int j = 0; j < mapWidth; j++) {
                 if(this.map[i][j] instanceof ResidentialZone){
                     if(((MainZone)this.map[i][j]).getCurrentCapacity() < ((MainZone)this.map[i][j]).getMaxCapacity()){
-                        return ((ResidentialZone) this.map[i][j]);
-                    }
-                }
-            }
-        }
-        // System.out.println("residential");
-        return null;
-    }
-
-    ResidentialZone hasFreeResidentialWithElectricity(){
-        for (int i = 0; i < mapHeight; i++) {
-            for (int j = 0; j < mapWidth; j++) {
-                if(this.map[i][j] instanceof ResidentialZone){
-                    if( ((MainZone)this.map[i][j]).isElectricity()
-                          && ((MainZone)this.map[i][j]).getCurrentCapacity() < ((MainZone)this.map[i][j]).getMaxCapacity()){
-                        return ((ResidentialZone) this.map[i][j]);
+                        if(citizens.size() > guaranteedCitizens) {
+                            if (((ResidentialZone) this.map[i][j]).isElectricity()) {
+                                return (ResidentialZone) this.map[i][j];
+                            }
+                        }
+                        else{
+                            return ((ResidentialZone) this.map[i][j]);
+                        }
                     }
                 }
             }
@@ -363,10 +351,27 @@ public class City {
         return electricityNeed;
     }
 
+    public double[] getEducatedCitizens(){
+        double[] educatedCitizens = {0, 0, 0};
+        for (Citizen c : citizens){
+            if(c.education == EduLevel.BASIC) educatedCitizens[0]++;
+            if(c.education == EduLevel.MID) educatedCitizens[1]++;
+            if(c.education == EduLevel.HIGH) educatedCitizens[2]++;
+        }
+        if(citizens.size() > 0) {
+            educatedCitizens[0] = educatedCitizens[0] / citizens.size() * 100;
+            educatedCitizens[1] = educatedCitizens[1] / citizens.size() * 100;
+            educatedCitizens[2] = educatedCitizens[2] / citizens.size() * 100;
+        }
+        return educatedCitizens;
+    }
+
     public void timePassed(int days){
         int dateChange = date.DaysPassed(days);
+
         electricitySupply();
         electricityStats();
+
         calculateSatisfaction();
         for (int i = 0; i < days; i++) {
             // One day Passed!
@@ -375,6 +380,7 @@ public class City {
         }
         if(dateChange > 0){
              //A month has passed!
+            handleGraduation(); //ezt majd rakd eggyel lejjeb legyen evrol evre, igy csak khonaprol honapra
             if(dateChange > 1){
                 for (int i = 0; i < citizens.size(); i++){
                     citizens.get(i).yearPassed();
@@ -382,6 +388,75 @@ public class City {
             }
         }
         System.out.println("Elégedettség: " + satisfaction()); //debug
+    }
+
+    private void handleGraduation() {
+        // Valahogy meghívja az egyetemek és ikolák handleGraduate metódusát random emberekkel, úgy hogy figyel a max %-ra
+
+        ArrayList<Citizen> inNeedOfSchoolDegree = new ArrayList<>();
+        ArrayList<Citizen> inNeedOfUniversitylDegree = new ArrayList<>();
+        ArrayList<Citizen> hasAlreadyUniversityDegree = new ArrayList<>();
+        for (Citizen citizen : this.citizens)
+        {
+            if(citizen.education == EduLevel.BASIC){
+                inNeedOfSchoolDegree.add(citizen);
+            }
+            else if(citizen.education == EduLevel.MID){
+                inNeedOfUniversitylDegree.add(citizen);
+            }else if(citizen.education == EduLevel.HIGH){
+                hasAlreadyUniversityDegree.add(citizen);
+            }
+        }
+
+
+        if(citizens.size() > 0){
+            double oneCitizenPercentage = 100d / citizens.size();
+            for (int i = 0; i < mapHeight; i++) {
+                for (int j = 0; j < mapWidth; j++) {
+                    if(this.map[i][j] instanceof School){
+
+                        double percentageWithSchoolDegree = (inNeedOfUniversitylDegree.size() * 100d) / citizens.size();
+                        //check if percentage is alright
+                        if(percentageWithSchoolDegree < maxSchoolDegrees){
+
+                            ArrayList<Citizen> graduatedFromSchool = new ArrayList<>();
+                            while((graduatedFromSchool.size() <= (((School) this.map[i][j]).getMaxCapacity())) && (Math.ceil(percentageWithSchoolDegree) < maxSchoolDegrees)){
+
+                                graduatedFromSchool.add(inNeedOfSchoolDegree.get(0));
+                                inNeedOfSchoolDegree.remove(0);
+                                percentageWithSchoolDegree = percentageWithSchoolDegree + oneCitizenPercentage;
+
+                            }
+                            System.out.println("Ennyi szemely fog az iskolabol grarudalni");
+                            System.out.println(graduatedFromSchool.size());
+                            ((School)this.map[i][j]).handleGraduation(graduatedFromSchool);
+                        }
+
+                    }else if(this.map[i][j] instanceof University){
+                        double percentageWithUniversityDegree = (hasAlreadyUniversityDegree.size() * 100d) / citizens.size();
+
+                        if(percentageWithUniversityDegree < maxUniversityDegrees){
+                            ArrayList<Citizen> graduatedFromUniversity = new ArrayList<>();
+                            while((graduatedFromUniversity.size() <= ((University) this.map[i][j]).getMaxCapacity()) && (Math.ceil(percentageWithUniversityDegree)<maxUniversityDegrees)){
+                                if(inNeedOfUniversitylDegree.size() == 0){
+                                    break;
+                                }else{
+                                    graduatedFromUniversity.add(inNeedOfUniversitylDegree.get(0));
+                                    inNeedOfUniversitylDegree.remove(0);
+                                    percentageWithUniversityDegree = percentageWithUniversityDegree + oneCitizenPercentage;
+                                }
+
+
+                            }
+                            System.out.println("Ennyi szemely fog az egyetemrol gradualni");
+                            System.out.println(graduatedFromUniversity.size());
+                            ((University)this.map[i][j]).handleGraduation(graduatedFromUniversity);
+                        }
+                    }
+                }
+            }
+        }
+
     }
 
     /**
@@ -749,7 +824,10 @@ public class City {
     public void electricitySupply(){
         for (int i = 0; i < mapHeight; i++) {
             for (int j = 0; j < mapWidth; j++) {
-                if(this.map[i][j] instanceof MainZone){
+                if(this.map[i][j] instanceof PowerPlant){
+                    ((MainZone) this.map[i][j]).setElectricity(true);
+                }
+                else if(this.map[i][j] instanceof MainZone){
                     ((MainZone) this.map[i][j]).setElectricity(false);
                 }
             }
@@ -762,6 +840,7 @@ public class City {
                     //preparations for the algorithm
                     Queue<Coordinates> visitedCoords = new LinkedList<>();
                     Queue<Coordinates> currentCoords = new LinkedList<>();
+//                    System.out.println(visitedCoords.size());
 
                     currentCoords.add(new Coordinates(i,j));
                     currentCoords.add(new Coordinates(i,j+1));
@@ -784,18 +863,6 @@ public class City {
                     visitedCoords.add(new Coordinates(i+2,j+1));
                     visitedCoords.add(new Coordinates(i+2,j+2));
 
-                    visitedCoords.add(new Coordinates(i,j));
-                    visitedCoords.add(new Coordinates(i,j+1));
-                    visitedCoords.add(new Coordinates(i,j+2));
-                    visitedCoords.add(new Coordinates(i,j+3));
-                    visitedCoords.add(new Coordinates(i+1,j+3));
-                    visitedCoords.add(new Coordinates(i+2,j+3));
-                    visitedCoords.add(new Coordinates(i+3,j+3));
-                    visitedCoords.add(new Coordinates(i+3,j+1));
-                    visitedCoords.add(new Coordinates(i+3,j+2));
-                    visitedCoords.add(new Coordinates(i+1,j));
-                    visitedCoords.add(new Coordinates(i+2,j));
-                    visitedCoords.add(new Coordinates(i+3,j));
 
 
                     //start of the algorithm
@@ -809,79 +876,49 @@ public class City {
 
                         int x = currentTileCoords.getHeight();
                         int y = currentTileCoords.getWidth();
-                        System.out.println(x+" "+y);
+                        // System.out.println(x+" "+y);
 
-                        //add neighbours to the queue.
-                        boolean up = false;
-                        boolean down = false;
-                        boolean right = false;
-                        boolean left = false;
-                        if(visitedCoords.size() == mapHeight*mapWidth){
-                            break;
+                        //it volt a gond, figyeld meg (most jo kell legyen)
+                        if(visitedCoords.size() >= mapHeight*mapWidth+100){
+//                            break;
                         }
-                        for (Coordinates visitedCoordinate : visitedCoords) {
-                            if(x-1 == visitedCoordinate.getHeight() && y == visitedCoordinate.getWidth() ){
-                                up = true;
-                            }else if(x+1 == visitedCoordinate.getHeight() && y == visitedCoordinate.getWidth()  ) {
-                                down = true;
-                            }else if(x == visitedCoordinate.getHeight() && y-1 == visitedCoordinate.getWidth()  ){
-                                left = true;
-                            }else if(x == visitedCoordinate.getHeight() && y+1 == visitedCoordinate.getWidth() ){
-                                right = true;
-                            }
-                        }
-                        if(!up && x>=1 && (this.map[x-1][y] instanceof MainZone || this.map[x-1][y] instanceof Pole || this.map[x-1][y] instanceof ZonePart)){
+
+                        if(!visitedCoords.contains(new Coordinates(x-1,y)) && !currentCoords.contains(new Coordinates(x-1,y)) && x>=1 && y>=0 && y<mapWidth && x<mapHeight && (this.map[x-1][y] instanceof MainZone || this.map[x-1][y] instanceof Pole || this.map[x-1][y] instanceof ZonePart)){
                             currentCoords.add(new Coordinates(x-1,y));
-                        }if(!right && y<mapWidth-1 && (this.map[x][y+1] instanceof MainZone || this.map[x][y+1] instanceof Pole || this.map[x][y+1] instanceof ZonePart)){
+                        }if(!visitedCoords.contains(new Coordinates(x,y+1)) && !currentCoords.contains(new Coordinates(x,y+1)) && y<mapWidth-1 && y>=0 && x>=0 && x<mapHeight && (this.map[x][y+1] instanceof MainZone || this.map[x][y+1] instanceof Pole || this.map[x][y+1] instanceof ZonePart)){
                             currentCoords.add(new Coordinates(x,y+1));
-                        }if(!down && x<mapHeight-1 && (this.map[x+1][y] instanceof MainZone || this.map[x+1][y] instanceof Pole || this.map[x+1][y] instanceof ZonePart)){
+                        }if(!visitedCoords.contains(new Coordinates(x+1,y)) && !currentCoords.contains(new Coordinates(x+1,y)) && x<mapHeight-1 &&  y<mapWidth && y>=0 && x>=0 &&  (this.map[x+1][y] instanceof MainZone || this.map[x+1][y] instanceof Pole || this.map[x+1][y] instanceof ZonePart)){
                             currentCoords.add(new Coordinates(x+1,y));
-                        }if(!left && y>=1 && (this.map[x][y-1] instanceof MainZone || this.map[x][y-1] instanceof Pole || this.map[x][y-1] instanceof ZonePart)){
+                        }if(!visitedCoords.contains(new Coordinates(x,y-1)) && !currentCoords.contains(new Coordinates(x,y-1)) && y>=1 && y<mapWidth && x>=0 && x<mapHeight && (this.map[x][y-1] instanceof MainZone || this.map[x][y-1] instanceof Pole || this.map[x][y-1] instanceof ZonePart)){
                             currentCoords.add(new Coordinates(x,y-1));
                         }
 
-
-                        //dealing with the current Tile
-                        if(this.map[x][y] instanceof PowerPlant){
-                            //do nothing. but it enter in statement (because of the following else if conditions)
-                            continue;
-                        }
-                        else if(this.map[x][y] instanceof MainZone){
-                            if(!((MainZone)this.map[x][y]).isElectricity()){
-                                if(this.map[x][y] instanceof Workplace){
-                                    if(electricityToGive>=((MainZone)this.map[x][y]).getElectricityNeed() * ((MainZone) this.map[x][y]).getCurrentCapacity()){
-                                        electricityToGive=electricityToGive -((MainZone)this.map[x][y]).getElectricityNeed() * ((MainZone) this.map[x][y]).getCurrentCapacity();
-                                        ((MainZone)this.map[x][y]).setElectricity(true);
-                                    }
-                                }
-                                else if(electricityToGive>=((MainZone)this.map[x][y]).getElectricityNeed()){
+                        if(this.map[x][y] instanceof MainZone){
+                            if(!(((MainZone)this.map[x][y]).isElectricity())){
+                                if(electricityToGive>=((MainZone)this.map[x][y]).getElectricityNeed()){
                                     electricityToGive=electricityToGive -((MainZone)this.map[x][y]).getElectricityNeed();
                                     ((MainZone)this.map[x][y]).setElectricity(true);
                                 }//itt ne csinalj semmit. A sorbol majd ugyis kijon.
                             }
                         }else if(this.map[x][y] instanceof ZonePart) {
                             MainZone mainZone = ((ZonePart)this.map[x][y]).getMainBuilding();
-                            if(!mainZone.isElectricity()){
-                                if(mainZone instanceof Workplace){
-                                    if(electricityToGive>=mainZone.getElectricityNeed() * mainZone.getCurrentCapacity()){
-                                        electricityToGive=electricityToGive - mainZone.getElectricityNeed() * mainZone.getCurrentCapacity();
-                                        mainZone.setElectricity(true);
-                                    }
-                                }
-                                else if(electricityToGive>=mainZone.getElectricityNeed()){
+                            if(!(mainZone.isElectricity())){
+                                if(electricityToGive>=mainZone.getElectricityNeed()){
                                     electricityToGive=electricityToGive -mainZone.getElectricityNeed();
                                     mainZone.setElectricity(true);
                                 }//itt ne csinalj semmit. A sorbol majd ugyis kijon.
                             }
-
                         }
+
+
 
 
 
                     }
 
-                    System.out.println("Ennyi aram maradt: "+electricityToGive);
 
+                    System.out.println(visitedCoords.size());
+                    System.out.println("Ennyi aram maradt: "+electricityToGive);
 
                 }
             }
@@ -889,14 +926,14 @@ public class City {
     }
 
     public void electricityStats() {
-        this.electricityNeed=0;
-        this.electricityProduction=0;
+        this.electricityNeed = 0;
+        this.electricityProduction = 0;
         for (int i = 0; i < mapHeight; i++) {
             for (int j = 0; j < mapWidth; j++) {
                 if (this.map[i][j] instanceof PowerPlant) {
                     this.electricityProduction = this.electricityProduction + ((PowerPlant) this.map[i][j]).getElectricityProduction();
                 }
-                if (this.map[i][j] instanceof MainZone) {
+                else if (this.map[i][j] instanceof MainZone) {
                     this.electricityNeed = this.electricityNeed + ((MainZone) this.map[i][j]).getElectricityNeed();
                 }
             }
@@ -924,7 +961,7 @@ public class City {
             if (mainZone instanceof ResidentialZone) {
                 if(((ResidentialZone) mainZone).getLevel() == 1){
                     ((ResidentialZone) mainZone).setLevel(2);
-                    System.out.println(((ResidentialZone) mainZone).getLevel());
+                    // System.out.println(((ResidentialZone) mainZone).getLevel());
                     ((ResidentialZone) mainZone).setCapacity(25);
                     funds = funds - 3000;
                 }
@@ -938,7 +975,7 @@ public class City {
                 if(mainZone instanceof IndustrialZone || mainZone instanceof ServiceZone){
                     if(((Workplace) mainZone).getLevel() == 1){
                         ((Workplace) mainZone).setLevel(2);
-                        System.out.println(((Workplace) mainZone).getLevel());
+                        // System.out.println(((Workplace) mainZone).getLevel());
                         ((Workplace) mainZone).setCapacity(30);
                         funds = funds - 5000;
                     }
@@ -953,7 +990,6 @@ public class City {
             if (mainZone instanceof Infrastructure) {
 
             }
-
 
         }
     }

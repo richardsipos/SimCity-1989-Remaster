@@ -2,6 +2,8 @@ package KukaPest.Model.Map;
 
 import KukaPest.Model.Helper.Coordinates;
 
+import java.util.HashMap;
+
 public class PowerPlant extends Infrastructure {
     private int electricityProduction = 300;
     public PowerPlant(Coordinates coordinates) {
@@ -10,5 +12,13 @@ public class PowerPlant extends Infrastructure {
 
     public int getElectricityProduction() {
         return electricityProduction;
+    }
+
+    @Override
+    public HashMap<String, String> getStats(){
+        HashMap<String, String> ret = new HashMap<>();
+        ret.put("Termelt áram", "" + electricityProduction);
+        ret.put("Fenntartási költség", "" + super.getUpKeep());
+        return ret;
     }
 }
