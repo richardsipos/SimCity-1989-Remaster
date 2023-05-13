@@ -13,6 +13,11 @@ public class Date implements java.io.Serializable {
         this.day = day;
     }
 
+    /**
+     * This method handles the passgae of time
+     * @param days number of days passed, depending on the gamespeed
+     * @return returns with a number, signalling passage of days, a month or a year
+     */
     public int DaysPassed(int days){
         if(days+this.day>30){
             this.day=((this.day+days)%30);

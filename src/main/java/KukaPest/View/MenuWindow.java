@@ -46,6 +46,7 @@ public class MenuWindow extends JPanel {
         buttons.setLayout(new GridBagLayout());
         buttons.setOpaque(false);
 
+        //GridBagConstraints for vertical arrangement of buttons
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -78,12 +79,13 @@ public class MenuWindow extends JPanel {
         ngame.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-
-                while (name.equals("")) {
-                    name = JOptionPane.showInputDialog(null, "Your city's name:");
-                }
+                name = JOptionPane.showInputDialog(null, "Your city's name:", "");
                 if (name != null) {
+                    if (!name.equals("")){
                     frame.setVisible(false);
+                    new MainWindow(name);}
+                } else 
+                    name = "";
                     try {
                         FileWriter myWriter = new FileWriter("citysname.txt");
                         myWriter.write(name + "\n");
@@ -117,7 +119,6 @@ public class MenuWindow extends JPanel {
         egame.setContentAreaFilled(false);
         egame.setBorderPainted(false);
         egame.setFocusPainted(false);
-        buttons.add(ngame); //setting vertical or horizontal arrangement
 
         egame.addActionListener(new ActionListener() {
             @Override
@@ -126,6 +127,7 @@ public class MenuWindow extends JPanel {
             }
         });
 
+        //setting vertical or horizontal arrangement
         buttons.add(ngame, gbc);
         buttons.add(lgame, gbc2);
         buttons.add(egame, gbc3);

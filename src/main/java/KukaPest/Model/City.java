@@ -32,6 +32,10 @@ public class City implements java.io.Serializable {
 
     private final Tile[][] map;
 
+    /**
+     * This method calculates the city's total satisfaction
+     * @return the overall satisfaction
+     */
     public int satisfaction(){
         int total = 0;
         for (Citizen c : this.citizens) {
@@ -63,6 +67,7 @@ public class City implements java.io.Serializable {
     public int numberBuilding = 0;
 
     public Coordinates startRoad;
+
 
     public City(String cityName) {
         this.name = cityName;
@@ -96,6 +101,12 @@ public class City implements java.io.Serializable {
         }
     }
 
+    /**
+     * This method handles the building process, calling upon checking methods to decide whether the construction is feasible
+     * @param toBuild The building to be constructed
+     * @param coords The top left coordinates of given building
+     * @return True/false depending on the state of construction
+     */
     boolean build(Building toBuild, Coordinates coords){
         Environment enviroment;
         if(this.map[coords.getHeight()][coords.getWidth()] instanceof Grass){
@@ -141,11 +152,17 @@ public class City implements java.io.Serializable {
             }
             this.map[coords.getHeight()][coords.getWidth()] = toBeBuilt;
             this.funds -= (toBeBuilt.getPrice());
-            //calculateSatisfaction();
             return true;
         }
         return false;
     }
+
+    /**
+     * This method checks if building requirements are met or not (road nearby and empty space)
+     * @param toBuild Building to be built
+     * @param coords Top left coordinates of given building
+     * @return True if a nearby road exists and space is available, else false
+     */
     boolean canBeBuilt(Constructable toBuild, Coordinates coords){
         if(toBuild instanceof Road){
             return (map[coords.getHeight()][coords.getWidth()] instanceof Environment
@@ -241,6 +258,9 @@ public class City implements java.io.Serializable {
         }
     }
 
+    /**
+     * This method calls upon methods checking reqs of move in, if they are met, handles the creation of new citizen
+     */
 //    ezt hivja majd a TimePassed es intezzi majd a Citizenet bekoltozeset.
     void handleMoveIn(){
         //random people will come to the city (bebtween 1-4 bot ends included)
@@ -287,6 +307,10 @@ public class City implements java.io.Serializable {
         lastBalance = balance;
     }
 
+    /**
+     * Helper method for move in, checks for available residential zones
+     * @return A free residential zone, if available
+     */
     ResidentialZone hasFreeResidential(){
         Coordinates coords;
         System.out.println("Node a gráfnak: " + destroynodes);
@@ -313,6 +337,10 @@ public class City implements java.io.Serializable {
         return null;
     }
 
+    /**
+     * Helper method for move in, checks for available workplace
+     * @return A free workplace, if available
+     */
     Workplace hasFreeWorkplace(){
         Coordinates coords;
         System.out.println("Node a gráfnak: " + destroynodes);
@@ -481,43 +509,10 @@ public class City implements java.io.Serializable {
     }
 
     /**
-     * This method calculates the radii of service buildings, in which satisfaction of resi/industrial zones are boosted
-     * and then executes the satisfaction boost.
-     * @param coords Coordinates of the given service building
-     * @param radius Radius of given service building
-     * @param value Value of satisfaction boost
-     * @param b Given service building
+     * This method handles the destruction of a building, spawning a grassy area in its place
+     * @param coords The top left coords of the building destroyed
+     * @return True/false depending on the success of destruction
      */
-    public void modifySatisfactionBoost(Coordinates coords, int radius, int value, Constructable b){
-        MainZone mz = (MainZone)b;
-        int left, right, top, bottom;
-
-        if (coords.getWidth() - radius < 0) { // check if radius is too big for the left side
-            left = 0;
-        } else left = coords.getWidth() - radius;
-        if ((coords.getWidth()+mz.getWidth()+radius) >= mapWidth) { // check if radius is too big for the right side
-            right = mapWidth-1;
-        } else right = coords.getWidth()+mz.getWidth() + radius;
-        if (coords.getHeight() - radius < 0) { // check if radius is too big for top
-            top = 0;
-        } else top = coords.getHeight() - radius;
-        if ((coords.getHeight()+mz.getHeight()+radius) >= mapHeight) { // check if radius is too big for bottom
-            bottom = mapHeight-1;
-        } else bottom = (coords.getHeight()+mz.getHeight()) + radius;
-        for (int i = top; i < bottom; ++i) {
-            for (int j = left; j < right; ++j) {
-                if(this.map[i][j] instanceof ResidentialZone || this.map[i][j] instanceof IndustrialZone){
-                    ((MainZone) this.map[i][j]).setSatisfactionBoost(value);
-                } /*else if (this.map[i][j] instanceof ZonePart){ //zonepart check, NOT usable
-                    if (((ZonePart) this.map[i][j]).mainBuilding instanceof ResidentialZone
-                            || ((ZonePart) this.map[i][j]).mainBuilding instanceof IndustrialZone){
-                        ((ZonePart) this.map[i][j]).mainBuilding.setSatisfactionBoost(value);
-                    }
-                }*/
-            }
-        }
-    }
-
     public boolean destroy(Coordinates coords) {
         if (this.map[coords.getHeight()][coords.getWidth()] instanceof Road) {
             if(coords.getHeight() == startRoad.getHeight() && coords.getWidth() == startRoad.getWidth()){
@@ -804,6 +799,49 @@ public class City implements java.io.Serializable {
     }
 
 
+    /**
+     * This method calculates the radii of service buildings, in which satisfaction of resi/industrial zones are boosted
+     * and then executes the satisfaction boost.
+     * @param coords Coordinates of the given service building
+     * @param radius Radius of given service building
+     * @param value Value of satisfaction boost
+     * @param b Given service building
+     */
+    public void modifySatisfactionBoost(Coordinates coords, int radius, int value, Constructable b){
+        MainZone mz = (MainZone)b;
+        int left, right, top, bottom;
+        ArrayList<MainZone> boosted = new ArrayList<>();
+
+        if (coords.getWidth() - radius < 0) { // check if radius is too big for the left side
+            left = 0;
+        } else left = coords.getWidth() - radius;
+        if ((coords.getWidth()+mz.getWidth()+radius) >= mapWidth) { // check if radius is too big for the right side
+            right = mapWidth-1;
+        } else right = coords.getWidth()+mz.getWidth() + radius;
+        if (coords.getHeight() - radius < 0) { // check if radius is too big for top
+            top = 0;
+        } else top = coords.getHeight() - radius;
+        if ((coords.getHeight()+mz.getHeight()+radius) >= mapHeight) { // check if radius is too big for bottom
+            bottom = mapHeight-1;
+        } else bottom = (coords.getHeight()+mz.getHeight()) + radius;
+        for (int i = top; i < bottom; ++i) {
+            for (int j = left; j < right; ++j) {
+                if(this.map[i][j] instanceof ResidentialZone || this.map[i][j] instanceof IndustrialZone || this.map[i][j] instanceof ServiceZone){
+                    ((MainZone) this.map[i][j]).setSatisfactionBoost(value);
+                    boosted.add((MainZone) this.map[i][j]);
+                } else if (this.map[i][j] instanceof ZonePart){ //zonepart check, NOT usable
+                    if (((ZonePart) this.map[i][j]).mainBuilding instanceof ResidentialZone
+                            || ((ZonePart) this.map[i][j]).mainBuilding instanceof IndustrialZone || ((ZonePart) this.map[i][j]).mainBuilding instanceof ServiceZone) {
+                        if (!boosted.contains(((ZonePart) this.map[i][j]).mainBuilding)) {
+                            ((ZonePart) this.map[i][j]).mainBuilding.setSatisfactionBoost(value);
+                            boosted.add(((ZonePart) this.map[i][j]).mainBuilding);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 
     /**
      * This method resets all satisfaction boost values every time something is built and recalculates the new values.
@@ -824,24 +862,9 @@ public class City implements java.io.Serializable {
 
     }
 
-    //forTesting
-    public void printMap() {
-        for (int i = 0; i < mapHeight; i++) {
-            for (int j = 0; j < mapWidth; j++) {
-                if(this.map[i][j] instanceof MainZone || this.map[i][j] instanceof ZonePart
-                    || this.map[i][j] instanceof Road || this.map[i][j] instanceof Pole){
-                //if(this.map[i][j] instanceof ResidentialZone){
-                    System.out.print("1");
-                }else{
-                    System.out.print("0");
-                }
-                System.out.print(" ");
-            }
-            System.out.println();
-        }
-        System.out.println();
-    }
-
+    /**
+     * This method calculates the electricity supply throughout the city
+     */
     public void electricitySupply(){
         for (int i = 0; i < mapHeight; i++) {
             for (int j = 0; j < mapWidth; j++) {
@@ -946,6 +969,9 @@ public class City implements java.io.Serializable {
         }
     }
 
+    /**
+     * This method calculates the data for the electricity produced and used
+     */
     public void electricityStats() {
         this.electricityNeed = 0;
         this.electricityProduction = 0;
@@ -959,10 +985,12 @@ public class City implements java.io.Serializable {
                 }
             }
         }
-
-
     }
 
+    /**
+     * This method handles the upgrade of the three upgradeable zones (residential, industrial, service)
+     * @param coords Coordinates of given building
+     */
     public void upgrade(Coordinates coords){
         if (this.map[coords.getHeight()][coords.getWidth()] instanceof Road) {
 
@@ -1015,6 +1043,24 @@ public class City implements java.io.Serializable {
         }
     }
 
+    //forTesting
+    public void printMap() {
+        for (int i = 0; i < mapHeight; i++) {
+            for (int j = 0; j < mapWidth; j++) {
+                if(this.map[i][j] instanceof MainZone || this.map[i][j] instanceof ZonePart
+                        || this.map[i][j] instanceof Road || this.map[i][j] instanceof Pole){
+                    //if(this.map[i][j] instanceof ResidentialZone){
+                    System.out.print("1");
+                }else{
+                    System.out.print("0");
+                }
+                System.out.print(" ");
+            }
+            System.out.println();
+        }
+        System.out.println();
+    }
+
     public Tile[][] getMap() {
         return map;
     }
@@ -1027,5 +1073,7 @@ public class City implements java.io.Serializable {
 
     public int getCitizenslength(){return citizens.size();}
 
-
+    public ArrayList<Citizen> getCitizens() {
+        return citizens;
+    }
 }

@@ -2,6 +2,7 @@ package KukaPest.Model;
 
 import KukaPest.Model.Helper.Building;
 import KukaPest.Model.Helper.Coordinates;
+import KukaPest.Model.Map.ResidentialZone;
 import KukaPest.Model.Map.Tile;
 
 import java.io.*;
@@ -32,7 +33,6 @@ public class Game implements java.io.Serializable {
     public void upgrade(Coordinates coords){
         city.upgrade(coords);
     }
-
     public void stepGame(){
         city.timePassed(timeSpeed);
     }
@@ -52,15 +52,13 @@ public class Game implements java.io.Serializable {
         return city.getLastBalance();
     }
     public int getCitizenslength(){return city.getCitizenslength();}
-
+    public ArrayList<Citizen> getCitizens() {return city.getCitizens();}
     public City getCity() {
         return city;
     }
-
     public void setTimeSpeed(int timeSpeed) {
         this.timeSpeed = timeSpeed;
     }
-
     public int getElectricityProduction() {
         return city.getElectricityProduction();
     }
@@ -72,5 +70,8 @@ public class Game implements java.io.Serializable {
         return city.getElectricityNeed();
     }
 
-
+    /**
+     * For Testing purposes
+     */
+    public ResidentialZone getPoweredResZone() {return city.hasFreeResidentialWithElectricity();}
 }
