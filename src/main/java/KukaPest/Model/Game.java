@@ -61,7 +61,9 @@ public class Game {
         return city.getElectricityProduction();
     }
 
-
+    public double[] getEducatedCitizens(){
+        return city.getEducatedCitizens();
+    }
     public int getElectricityNeed() {
         return city.getElectricityNeed();
     }

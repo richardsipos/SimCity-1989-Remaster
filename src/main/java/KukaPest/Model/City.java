@@ -243,37 +243,29 @@ public class City {
 
         for(int i=1;i<=randomNumber;i++){
             ResidentialZone Rzone = hasFreeResidential();
-            ResidentialZone RzoneWithElectricity = hasFreeResidentialWithElectricity();
             Workplace Wzone = hasFreeWorkplace();
 
             //satisfaction miatt nem koltozhet be <30  akkor nem koltozhet be. Eloszor lesz biztosan 50 szemely aki barhogy bekoltozik
 
             //ha van free residential zone es van industrial zone is akkor letre kell hozzni egy citizent.
 
-            if(Rzone!=null && Wzone!=null){
-                if(citizens.size() >= guaranteedCitizens){
-
-                    if(RzoneWithElectricity != null && satisfaction()>=30){//akkor koltozhet csak  be ha van aram es ha boldogabbak mint 30
-
-                        Citizen citizen = new Citizen(new Random().nextInt(42) + 18, RzoneWithElectricity, Wzone, this);
-                        citizens.add(citizen);
-                        RzoneWithElectricity.addCitizen(citizen);
-                        Wzone.addCitizen(citizen);
-                    }
-                }else{
-                    Citizen citizen = new Citizen(new Random().nextInt(42) + 18, Rzone, Wzone, this);
-                    citizens.add(citizen);
-                    Rzone.addCitizen(citizen);
-                    Wzone.addCitizen(citizen);
-                }
-
+            if(Rzone!=null && Wzone!=null && canMoveIn()){
+                Citizen citizen = new Citizen(new Random().nextInt(42) + 18, Rzone, Wzone, this);
+                citizens.add(citizen);
+                Rzone.addCitizen(citizen);
+                Wzone.addCitizen(citizen);
             }
         }
-        //amugy meg nem tortenik semmi.
-
-
-
     }
+    private boolean canMoveIn(){
+        if (citizens.size() < guaranteedCitizens){
+            return true;
+        }
+        else{
+            return satisfaction() >= 30;
+        }
+    }
+
     void updateBalance(){
         int[] balance = {0 , 0};
         for (int i = 0; i < mapHeight; i++) {
@@ -295,22 +287,14 @@ public class City {
             for (int j = 0; j < mapWidth; j++) {
                 if(this.map[i][j] instanceof ResidentialZone){
                     if(((MainZone)this.map[i][j]).getCurrentCapacity() < ((MainZone)this.map[i][j]).getMaxCapacity()){
-                        return ((ResidentialZone) this.map[i][j]);
-                    }
-                }
-            }
-        }
-        // System.out.println("residential");
-        return null;
-    }
-
-    ResidentialZone hasFreeResidentialWithElectricity(){
-        for (int i = 0; i < mapHeight; i++) {
-            for (int j = 0; j < mapWidth; j++) {
-                if(this.map[i][j] instanceof ResidentialZone){
-                    if( ((MainZone)this.map[i][j]).isElectricity()
-                          && ((MainZone)this.map[i][j]).getCurrentCapacity() < ((MainZone)this.map[i][j]).getMaxCapacity()){
-                        return ((ResidentialZone) this.map[i][j]);
+                        if(citizens.size() > guaranteedCitizens) {
+                            if (((ResidentialZone) this.map[i][j]).isElectricity()) {
+                                return (ResidentialZone) this.map[i][j];
+                            }
+                        }
+                        else{
+                            return ((ResidentialZone) this.map[i][j]);
+                        }
                     }
                 }
             }
@@ -367,6 +351,21 @@ public class City {
         return electricityNeed;
     }
 
+    public double[] getEducatedCitizens(){
+        double[] educatedCitizens = {0, 0, 0};
+        for (Citizen c : citizens){
+            if(c.education == EduLevel.BASIC) educatedCitizens[0]++;
+            if(c.education == EduLevel.MID) educatedCitizens[1]++;
+            if(c.education == EduLevel.HIGH) educatedCitizens[2]++;
+        }
+        if(citizens.size() > 0) {
+            educatedCitizens[0] = educatedCitizens[0] / citizens.size() * 100;
+            educatedCitizens[1] = educatedCitizens[1] / citizens.size() * 100;
+            educatedCitizens[2] = educatedCitizens[2] / citizens.size() * 100;
+        }
+        return educatedCitizens;
+    }
+
     public void timePassed(int days){
         int dateChange = date.DaysPassed(days);
 
@@ -386,19 +385,7 @@ public class City {
                 for (int i = 0; i < citizens.size(); i++){
                     citizens.get(i).yearPassed();
                 }
-
             }
-            // FOR TESTING
-            int basic = 0, mid = 0, high = 0;
-            for (Citizen c : citizens){
-                if(c.education == EduLevel.BASIC) basic++;
-                if(c.education == EduLevel.MID) mid++;
-                if(c.education == EduLevel.HIGH) high++;
-            }
-            System.out.println("Oktatási százalákok: ");
-            System.out.println("\tAlap " + basic * 100d / citizens.size());
-            System.out.println("\tKözép " + mid * 100d / citizens.size());
-            System.out.println("\tFelső " + high * 100d / citizens.size());
         }
         System.out.println("Elégedettség: " + satisfaction()); //debug
     }
@@ -1001,7 +988,7 @@ public class City {
                 }
             }
             if (mainZone instanceof Infrastructure) {
-                // TODO: Ez itt mi?
+
             }
 
         }
