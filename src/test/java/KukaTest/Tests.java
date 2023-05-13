@@ -3,12 +3,38 @@ package KukaTest;
 import KukaPest.Model.Game;
 import KukaPest.Model.Helper.Building;
 import KukaPest.Model.Helper.Coordinates;
+import KukaPest.Model.Helper.EduLevel;
 import KukaPest.Model.Map.*;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class Game_build_tests {
+public class Tests {
+
+    //first tries
+    @Test
+    public void testName() {
+        Game g = new Game("asd");
+        assertEquals("asd", g.getCityName());
+    }
+
+    @Test
+    public void testMoney() {
+        Game g = new Game("asd");
+        assertEquals(10000, g.getFunds());
+    }
+
+    @Test
+    public void testPopulation() {
+        Game g = new Game("test");
+        assertEquals(0, g.getPopulation());
+    }
+    @Test
+    public void testUpkeep() {
+        Game g = new Game("test");
+        g.stepGame();
+        assertNotEquals(10000, g.getFunds());
+    }
 
     //building-near-road tests
     @Test
@@ -29,7 +55,7 @@ public class Game_build_tests {
     public void testBuildResiSuccessful() {
         Game g = new Game("test");
         g.build(Building.RESIDENTIAL, new Coordinates(24,22));
-        assertTrue(g.getMap()[24][22] instanceof IndustrialZone); //ITT HIBA!!
+        assertTrue(g.getMap()[24][22] instanceof ResidentialZone); //ITT HIBA!!
     }
 
     @Test
@@ -166,4 +192,109 @@ public class Game_build_tests {
         g.build(Building.RESIDENTIAL, new Coordinates(24,0));
         assertFalse(g.getMap()[26][0] instanceof Road && g.getMap()[24][0] instanceof ResidentialZone);
     }
+
+    //destroy tests
+    @Test
+    public void testDestroyInitRoad() {
+        Game g = new Game("test");
+        g.destroy(new Coordinates(26,22));
+        assertTrue(g.getMap()[26][22] instanceof Road);
+    }
+
+    @Test
+    public void testDestroyRoadSuccessful() {
+        Game g = new Game("test");
+        g.build(Building.ROAD, new Coordinates(26,21));
+        g.destroy(new Coordinates(26,21));
+        assertFalse(g.getMap()[26][21] instanceof Road);
+    }
+    @Test
+    public void testDestroyGraphIntegrity() {
+        Game g = new Game("test");
+        g.build(Building.ROAD, new Coordinates(26,21));
+        g.build(Building.ROAD, new Coordinates(26,20));
+        g.build(Building.RESIDENTIAL, new Coordinates(24,20));
+        g.destroy(new Coordinates(26,20));
+        g.destroy(new Coordinates(26,21));
+        assertTrue(g.getMap()[26][21] instanceof Road);
+    }
+
+    //other game/city class tests
+    @Test
+    public void testBuildingUpgrade() {
+        Game g = new Game("test");
+        g.build(Building.RESIDENTIAL, new Coordinates(24,22));
+        g.upgrade(new Coordinates(24,22));
+        ResidentialZone r = (ResidentialZone) g.getMap()[24][22];
+        assertTrue(r.getLevel() == 2 );
+    }
+
+    @Test
+    public void testElectricity() {
+        Game g = new Game("test");
+        for (int i = 21; i > 16; --i) {
+            g.build(Building.ROAD, new Coordinates(26,i));
+        }
+        g.build(Building.RESIDENTIAL, new Coordinates(24,22));
+        g.build(Building.POWER_PLANT, new Coordinates(22,18));
+        g.getCity().electricityStats();
+        assertTrue( g.getElectricityNeed() == 20 && g.getElectricityProduction() == 1000);
+    }
+//    @Test
+//    public void testElectricityUsedAndPoles() throws InterruptedException {
+//        Game g = new Game("test");
+//        for (int i = 21; i > 16; --i) {
+//            g.build(Building.ROAD, new Coordinates(26,i));
+//        }
+//        g.build(Building.RESIDENTIAL, new Coordinates(24,22));
+//        g.build(Building.POWER_PLANT, new Coordinates(22,16));
+//        g.build(Building.POLE, new Coordinates(22,20));
+//        g.build(Building.POLE, new Coordinates(22,21));
+//        Thread.sleep(1000);
+//        ResidentialZone r = g.getPoweredResZone();
+//        assertTrue( r == null);
+//    }
+
+    //education tests
+    /*@Test
+    public void BaseEducation() throws InterruptedException {
+        Game g = new Game("test");
+        for (int i = 21; i > -1; --i) {
+            g.build(Building.ROAD, new Coordinates(26,i));
+        }
+        g.build(Building.RESIDENTIAL, new Coordinates(24,22));
+        g.build(Building.SERVICE, new Coordinates(24,20));
+        g.build(Building.POWER_PLANT, new Coordinates(22,16));
+        Thread.sleep(5000);
+        assertTrue(g.getCitizens().get(0).getEducation() == EduLevel.BASIC);
+    }
+
+    @Test
+    public void MidEducation() throws InterruptedException {
+        Game g = new Game("test");
+        for (int i = 21; i > -1; --i) {
+            g.build(Building.ROAD, new Coordinates(26,i));
+        }
+        g.build(Building.RESIDENTIAL, new Coordinates(2422));
+        g.build(Building.SERVICE, new Coordinates(24,20));
+        g.build(Building.POWER_PLANT, new Coordinates(22,16));
+        g.build(Building.SCHOOL, new Coordinates(24,12));
+        Thread.sleep(5000);
+        assertTrue(g.getCitizens().get(0).education == 2);
+    }*/
+
+    /*@Test
+    public void HighEducation() throws InterruptedException {
+        Game g = new Game("test");
+        for (int i = 21; i > -1; --i) {
+            g.build(Building.ROAD, new Coordinates(26,i));
+        }
+        g.build(Building.RESIDENTIAL, new Coordinates(2422));
+        g.build(Building.SERVICE, new Coordinates(24,20));
+        g.build(Building.POWER_PLANT, new Coordinates(22,16));
+        g.build(Building.SCHOOL, new Coordinates(24,12));
+        g.build(Building.UNIVERSITY, new Coordinates(22,8));
+        Thread.sleep(20000);
+        assertTrue(g.getCitizens().get(0).education == 3);
+    }*/
 }
