@@ -6,7 +6,7 @@ import KukaPest.Model.Helper.Coordinates;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-abstract public class MainZone extends Constructable {
+abstract public class MainZone extends Constructable implements java.io.Serializable{
     private final int width;
     private final int height;
 

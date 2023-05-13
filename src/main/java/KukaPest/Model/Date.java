@@ -1,6 +1,8 @@
 package KukaPest.Model;
 
-public class Date {
+import java.io.Serializable;
+
+public class Date implements java.io.Serializable {
     private int year;
     private int month;
     private int day;

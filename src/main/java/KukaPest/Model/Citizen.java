@@ -4,9 +4,10 @@ import KukaPest.Model.Helper.EduLevel;
 import KukaPest.Model.Map.ResidentialZone;
 import KukaPest.Model.Map.Workplace;
 
+import java.io.Serializable;
 import java.util.Random;
 
-public class Citizen {
+public class Citizen implements java.io.Serializable {
     int age;
     boolean isPensioner = false;
     int pension = 0;

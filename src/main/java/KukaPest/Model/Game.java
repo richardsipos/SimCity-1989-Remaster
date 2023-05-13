@@ -4,9 +4,11 @@ import KukaPest.Model.Helper.Building;
 import KukaPest.Model.Helper.Coordinates;
 import KukaPest.Model.Map.Tile;
 
+import java.io.*;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
-public class Game {
+public class Game implements java.io.Serializable {
     private UUID gameID;
     private City city;
     private int timeSpeed;
@@ -17,6 +19,8 @@ public class Game {
         city = new City(cityName);
         timeSpeed = 1;
     }
+
+
 
     public boolean build(Building toBuild, Coordinates coords){
         return city.build(toBuild, coords);
@@ -67,4 +71,6 @@ public class Game {
     public int getElectricityNeed() {
         return city.getElectricityNeed();
     }
+
+
 }

@@ -8,12 +8,13 @@ import KukaPest.Model.Helper.Graph;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.Serializable;
 import java.security.InvalidParameterException;
 import java.util.*;
 
 //import java.util.Date;
 
-public class City {
+public class City implements java.io.Serializable {
     private final String name;
     final ArrayList<Citizen> citizens;
     private int funds = 10000;
@@ -54,7 +55,8 @@ public class City {
         return lastBalance;
     }
 
-    public Graph destroyGraph;
+    public Graph destroygraph;
+    public Graph moveInGraph;
 
     public int destroynodes = 0;
 
@@ -119,14 +121,17 @@ public class City {
             case SERVICE -> new ServiceZone(coords);
         };
 
-        if(toBeBuilt instanceof Road || toBeBuilt instanceof Pole){
-            destroynodes = destroynodes + 1;
-        }else{
-            destroynodes = destroynodes + 1;
-            numberBuilding = numberBuilding + 1;
-        }
+
 
         if(canBeBuilt(toBeBuilt,coords)) {
+            if(toBeBuilt instanceof Road){
+                destroynodes = destroynodes + 1;
+
+            }else if(toBeBuilt instanceof MainZone){
+                destroynodes = destroynodes + 1;
+                numberBuilding = numberBuilding + 1;
+            }
+
             if((toBeBuilt instanceof MainZone)) {
                 for(int i = coords.getHeight(); i < coords.getHeight() + ((MainZone) toBeBuilt).getHeight(); i++){
                     for(int j = coords.getWidth(); j < coords.getWidth()+((MainZone) toBeBuilt).getWidth(); j++){
@@ -283,6 +288,11 @@ public class City {
     }
 
     ResidentialZone hasFreeResidential(){
+        Coordinates coords;
+        System.out.println("Node a gráfnak: " + destroynodes);
+        moveInGraph = new Graph(destroynodes);
+        Coordinates coords2 = new Coordinates(mapHeight,mapWidth);
+        buildingsAvailable(coords2,moveInGraph);
         for (int i = 0; i < mapHeight; i++) {
             for (int j = 0; j < mapWidth; j++) {
                 if(this.map[i][j] instanceof ResidentialZone){
@@ -304,6 +314,11 @@ public class City {
     }
 
     Workplace hasFreeWorkplace(){
+        Coordinates coords;
+        System.out.println("Node a gráfnak: " + destroynodes);
+        moveInGraph = new Graph(destroynodes);
+        Coordinates coords2 = new Coordinates(mapHeight,mapWidth);
+        buildingsAvailable(coords2,moveInGraph);
         Workplace industrialWorkplace = null;
         int workersInIndustrialZones = 0;
         Workplace serviceWorkplace = null;
@@ -312,14 +327,20 @@ public class City {
             for (int j = 0; j < mapWidth; j++) {
                 if( (this.map[i][j] instanceof IndustrialZone) ) {
                     workersInIndustrialZones = workersInIndustrialZones + ((MainZone)this.map[i][j]).getCurrentCapacity();
-                    if(  ((MainZone)this.map[i][j]).getCurrentCapacity() < ((MainZone)this.map[i][j]).getMaxCapacity()  ){
-                        industrialWorkplace = ((Workplace) this.map[i][j]);
+                    coords = new Coordinates(i,j);
+                    if(moveInGraph.BFS_movein(0,numberBuilding,coords)) {
+                        if (((MainZone) this.map[i][j]).getCurrentCapacity() < ((MainZone) this.map[i][j]).getMaxCapacity()) {
+                            industrialWorkplace = ((Workplace) this.map[i][j]);
+                        }
                     }
                 }
                 if( (this.map[i][j] instanceof ServiceZone) ) {
                     workersInServiceZones = workersInServiceZones + ((MainZone)this.map[i][j]).getCurrentCapacity();
-                    if(  ((MainZone)this.map[i][j]).getCurrentCapacity() < ((MainZone)this.map[i][j]).getMaxCapacity()  ){
-                        serviceWorkplace = ((Workplace) this.map[i][j]);
+                    coords = new Coordinates(i,j);
+                    if(moveInGraph.BFS_movein(0,numberBuilding,coords)) {
+                        if (((MainZone) this.map[i][j]).getCurrentCapacity() < ((MainZone) this.map[i][j]).getMaxCapacity()) {
+                            serviceWorkplace = ((Workplace) this.map[i][j]);
+                        }
                     }
                 }
             }
@@ -502,11 +523,11 @@ public class City {
             if(coords.getHeight() == startRoad.getHeight() && coords.getWidth() == startRoad.getWidth()){
                 return false;
             }
-            destroyGraph = new Graph(destroynodes);
-            //System.out.println(destroynodes);
-            buildingsAvailable(coords);
+            destroygraph = new Graph(destroynodes);
+            System.out.println(destroynodes);
+            buildingsAvailable(coords,destroygraph);
             //System.out.println(destroyGraph);
-            if(destroyGraph.BFS(0,numberBuilding)){
+            if(destroygraph.BFS(0,numberBuilding)){
                 Environment environment = ((Road) this.map[coords.getHeight()][coords.getWidth()]).getFormerEnvironment();
                 funds = funds + (((Road) this.map[coords.getHeight()][coords.getWidth()]).getPrice()/100*40);
                 this.map[coords.getHeight()][coords.getWidth()] = null;
@@ -588,9 +609,9 @@ public class City {
         return true;
     }
 
-    public void buildingsAvailable(Coordinates coords) {
+    public void buildingsAvailable(Coordinates coords,Graph graph) {
         numberBuilding = 0;
-        destroyGraph.addNode(0, true, new Coordinates(startRoad.getHeight(), startRoad.getWidth()));
+        graph.addNode(0, true, new Coordinates(startRoad.getHeight(), startRoad.getWidth()));
         //System.out.println(startRoad.getHeight() + " " + startRoad.getWidth() + " id: " + destroyGraph.getNodeID(new Coordinates(startRoad.getHeight(),startRoad.getWidth())));
         int id = 1;
 
@@ -602,13 +623,13 @@ public class City {
                 }
                 else if (this.map[i][j] instanceof Road) {
                     // System.out.println(i + " " + j + " id: " + id);
-                    destroyGraph.addNode(id, true, new Coordinates(i, j));
+                    graph.addNode(id, true, new Coordinates(i, j));
                     id = id + 1;
                 }
                 else if (this.map[i][j] instanceof MainZone) {
                     numberBuilding++;
                     // System.out.println(i + " " + j + " id: " + id);
-                    destroyGraph.addNode(id, false, new Coordinates(i, j));
+                    graph.addNode(id, false, new Coordinates(i, j));
                     id = id + 1;
                 }
             }
@@ -616,163 +637,163 @@ public class City {
 
         for (int i = this.mapHeight - 1; i >= 0; i--) {
             for (int j = this.mapWidth - 1; j >= 0; j--) {
-                if (destroyGraph.getNodeID(new Coordinates(i, j)) != -1 && (this.map[i][j] instanceof Road)) {
-                    int first_id = destroyGraph.getNodeID(new Coordinates(i, j));
+                if (graph.getNodeID(new Coordinates(i, j)) != -1 && (this.map[i][j] instanceof Road)) {
+                    int first_id = graph.getNodeID(new Coordinates(i, j));
 
                     //bals alsó sarok, jobb alsó sarok
                     if (i == 0 && j == this.mapWidth - 1) {
-                        if (this.map[i][j - 1] instanceof Road && destroyGraph.getNodeID(new Coordinates(i, j - 1)) != -1) {
-                            destroyGraph.addEdge(first_id, destroyGraph.getNodeID(new Coordinates(i, j - 1)));
+                        if (this.map[i][j - 1] instanceof Road && graph.getNodeID(new Coordinates(i, j - 1)) != -1) {
+                            graph.addEdge(first_id, graph.getNodeID(new Coordinates(i, j - 1)));
                         }
-                        if ((this.map[i + 1][j] instanceof Road || this.map[i + 1][j] instanceof MainZone) && destroyGraph.getNodeID(new Coordinates(i + 1, j)) != -1) {
-                            destroyGraph.addEdge(first_id, destroyGraph.getNodeID(new Coordinates(i + 1, j)));
+                        if ((this.map[i + 1][j] instanceof Road || this.map[i + 1][j] instanceof MainZone) && graph.getNodeID(new Coordinates(i + 1, j)) != -1) {
+                            graph.addEdge(first_id, graph.getNodeID(new Coordinates(i + 1, j)));
                         }
-                        if (this.map[i][j - 1] instanceof ZonePart && destroyGraph.getNodeID(((ZonePart) this.map[i][j - 1]).mainBuilding.getCoordinates()) != -1) {
-                            destroyGraph.addEdge(first_id, destroyGraph.getNodeID(((ZonePart) this.map[i][j - 1]).mainBuilding.getCoordinates()));
+                        if (this.map[i][j - 1] instanceof ZonePart && graph.getNodeID(((ZonePart) this.map[i][j - 1]).mainBuilding.getCoordinates()) != -1) {
+                            graph.addEdge(first_id, graph.getNodeID(((ZonePart) this.map[i][j - 1]).mainBuilding.getCoordinates()));
                         }
-                        if (this.map[i + 1][j] instanceof ZonePart && destroyGraph.getNodeID(((ZonePart) this.map[i + 1][j]).mainBuilding.getCoordinates()) != -1) {
-                            destroyGraph.addEdge(first_id, destroyGraph.getNodeID(((ZonePart) this.map[i + 1][j]).mainBuilding.getCoordinates()));
+                        if (this.map[i + 1][j] instanceof ZonePart && graph.getNodeID(((ZonePart) this.map[i + 1][j]).mainBuilding.getCoordinates()) != -1) {
+                            graph.addEdge(first_id, graph.getNodeID(((ZonePart) this.map[i + 1][j]).mainBuilding.getCoordinates()));
                         }
                     } else if (i == this.mapHeight - 1 && j == this.mapWidth - 1) {
-                        if (this.map[i - 1][j] instanceof Road && destroyGraph.getNodeID(new Coordinates(i - 1, j)) != -1) {
-                            destroyGraph.addEdge(first_id, destroyGraph.getNodeID(new Coordinates(i - 1, j)));
+                        if (this.map[i - 1][j] instanceof Road && graph.getNodeID(new Coordinates(i - 1, j)) != -1) {
+                            graph.addEdge(first_id, graph.getNodeID(new Coordinates(i - 1, j)));
                         }
-                        if (this.map[i - 1][j] instanceof ZonePart && destroyGraph.getNodeID(((ZonePart) this.map[i - 1][j]).mainBuilding.getCoordinates()) != -1) {
-                            destroyGraph.addEdge(first_id, destroyGraph.getNodeID(((ZonePart) this.map[i - 1][j]).mainBuilding.getCoordinates()));
+                        if (this.map[i - 1][j] instanceof ZonePart && graph.getNodeID(((ZonePart) this.map[i - 1][j]).mainBuilding.getCoordinates()) != -1) {
+                            graph.addEdge(first_id, graph.getNodeID(((ZonePart) this.map[i - 1][j]).mainBuilding.getCoordinates()));
                         }
-                        if (this.map[i][j - 1] instanceof Road && destroyGraph.getNodeID(new Coordinates(i, j - 1)) != -1) {
-                            destroyGraph.addEdge(first_id, destroyGraph.getNodeID(new Coordinates(i, j - 1)));
+                        if (this.map[i][j - 1] instanceof Road && graph.getNodeID(new Coordinates(i, j - 1)) != -1) {
+                            graph.addEdge(first_id, graph.getNodeID(new Coordinates(i, j - 1)));
                         }
-                        if (this.map[i][j - 1] instanceof ZonePart && destroyGraph.getNodeID(((ZonePart) this.map[i][j - 1]).mainBuilding.getCoordinates()) != -1) {
-                            destroyGraph.addEdge(first_id, destroyGraph.getNodeID(((ZonePart) this.map[i][j - 1]).mainBuilding.getCoordinates()));
+                        if (this.map[i][j - 1] instanceof ZonePart && graph.getNodeID(((ZonePart) this.map[i][j - 1]).mainBuilding.getCoordinates()) != -1) {
+                            graph.addEdge(first_id, graph.getNodeID(((ZonePart) this.map[i][j - 1]).mainBuilding.getCoordinates()));
                         }
                     }
 
                     //bal felső sarok, jobb felső sarok
                     else if (i == 0 && j == 0) {
-                        if ((this.map[i][j + 1] instanceof Road || this.map[i][j + 1] instanceof MainZone) && destroyGraph.getNodeID(new Coordinates(i, j + 1)) != -1) {
-                            destroyGraph.addEdge(first_id, destroyGraph.getNodeID(new Coordinates(i, j + 1)));
+                        if ((this.map[i][j + 1] instanceof Road || this.map[i][j + 1] instanceof MainZone) && graph.getNodeID(new Coordinates(i, j + 1)) != -1) {
+                            graph.addEdge(first_id, graph.getNodeID(new Coordinates(i, j + 1)));
                         }
-                        if ((this.map[i + 1][j] instanceof Road || this.map[i + 1][j] instanceof MainZone) && destroyGraph.getNodeID(new Coordinates(i + 1, j)) != -1) {
-                            destroyGraph.addEdge(first_id, destroyGraph.getNodeID(new Coordinates(i + 1, j)));
+                        if ((this.map[i + 1][j] instanceof Road || this.map[i + 1][j] instanceof MainZone) && graph.getNodeID(new Coordinates(i + 1, j)) != -1) {
+                            graph.addEdge(first_id, graph.getNodeID(new Coordinates(i + 1, j)));
                         }
                     } else if (i == this.mapHeight && j == 0) {
-                        if (this.map[i - 1][j] instanceof Road && destroyGraph.getNodeID(new Coordinates(i - 1, j)) != -1) {
-                            destroyGraph.addEdge(first_id, destroyGraph.getNodeID(new Coordinates(i - 1, j)));
+                        if (this.map[i - 1][j] instanceof Road && graph.getNodeID(new Coordinates(i - 1, j)) != -1) {
+                            graph.addEdge(first_id, graph.getNodeID(new Coordinates(i - 1, j)));
                         }
-                        if (this.map[i - 1][j] instanceof ZonePart && destroyGraph.getNodeID(((ZonePart) this.map[i - 1][j]).mainBuilding.getCoordinates()) != -1) {
-                            destroyGraph.addEdge(first_id, destroyGraph.getNodeID(((ZonePart) this.map[i - 1][j]).mainBuilding.getCoordinates()));
+                        if (this.map[i - 1][j] instanceof ZonePart && graph.getNodeID(((ZonePart) this.map[i - 1][j]).mainBuilding.getCoordinates()) != -1) {
+                            graph.addEdge(first_id,graph.getNodeID(((ZonePart) this.map[i - 1][j]).mainBuilding.getCoordinates()));
                         }
-                        if (this.map[i][j + 1] instanceof Road && destroyGraph.getNodeID(new Coordinates(i, j + 1)) != -1) {
-                            destroyGraph.addEdge(first_id, destroyGraph.getNodeID(new Coordinates(i, j + 1)));
+                        if (this.map[i][j + 1] instanceof Road && graph.getNodeID(new Coordinates(i, j + 1)) != -1) {
+                            graph.addEdge(first_id, graph.getNodeID(new Coordinates(i, j + 1)));
                         }
-                        if (this.map[i][j + 1] instanceof ZonePart && destroyGraph.getNodeID(((ZonePart) this.map[i][j + 1]).mainBuilding.getCoordinates()) != -1) {
-                            destroyGraph.addEdge(first_id, destroyGraph.getNodeID(((ZonePart) this.map[i][j + 1]).mainBuilding.getCoordinates()));
+                        if (this.map[i][j + 1] instanceof ZonePart && graph.getNodeID(((ZonePart) this.map[i][j + 1]).mainBuilding.getCoordinates()) != -1) {
+                            graph.addEdge(first_id, graph.getNodeID(((ZonePart) this.map[i][j + 1]).mainBuilding.getCoordinates()));
                         }
                     }
 
                     //alsó sor, felső sor
                     else if (i != 0 && i < this.mapHeight - 1 && j == this.mapWidth - 1) {
-                        if (this.map[i - 1][j] instanceof Road && destroyGraph.getNodeID(new Coordinates(i - 1, j)) != -1) {
-                            destroyGraph.addEdge(first_id, destroyGraph.getNodeID(new Coordinates(i - 1, j)));
+                        if (this.map[i - 1][j] instanceof Road && graph.getNodeID(new Coordinates(i - 1, j)) != -1) {
+                            graph.addEdge(first_id, graph.getNodeID(new Coordinates(i - 1, j)));
                         }
-                        if (this.map[i - 1][j] instanceof ZonePart && destroyGraph.getNodeID(((ZonePart) this.map[i - 1][j]).mainBuilding.getCoordinates()) != -1) {
-                            destroyGraph.addEdge(first_id, destroyGraph.getNodeID(((ZonePart) this.map[i - 1][j]).mainBuilding.getCoordinates()));
+                        if (this.map[i - 1][j] instanceof ZonePart && graph.getNodeID(((ZonePart) this.map[i - 1][j]).mainBuilding.getCoordinates()) != -1) {
+                            graph.addEdge(first_id, graph.getNodeID(((ZonePart) this.map[i - 1][j]).mainBuilding.getCoordinates()));
                         }
-                        if (this.map[i][j - 1] instanceof Road && destroyGraph.getNodeID(new Coordinates(i, j - 1)) != -1) {
-                            destroyGraph.addEdge(first_id, destroyGraph.getNodeID(new Coordinates(i, j - 1)));
+                        if (this.map[i][j - 1] instanceof Road && graph.getNodeID(new Coordinates(i, j - 1)) != -1) {
+                            graph.addEdge(first_id, graph.getNodeID(new Coordinates(i, j - 1)));
                         }
-                        if (this.map[i][j - 1] instanceof ZonePart && destroyGraph.getNodeID(((ZonePart) this.map[i][j - 1]).mainBuilding.getCoordinates()) != -1) {
-                            destroyGraph.addEdge(first_id, destroyGraph.getNodeID(((ZonePart) this.map[i][j - 1]).mainBuilding.getCoordinates()));
+                        if (this.map[i][j - 1] instanceof ZonePart && graph.getNodeID(((ZonePart) this.map[i][j - 1]).mainBuilding.getCoordinates()) != -1) {
+                            graph.addEdge(first_id, graph.getNodeID(((ZonePart) this.map[i][j - 1]).mainBuilding.getCoordinates()));
                         }
-                        if (this.map[i + 1][j] instanceof Road && destroyGraph.getNodeID(new Coordinates(i + 1, j)) != -1) {
-                            destroyGraph.addEdge(first_id, destroyGraph.getNodeID(new Coordinates(i + 1, j)));
+                        if (this.map[i + 1][j] instanceof Road && graph.getNodeID(new Coordinates(i + 1, j)) != -1) {
+                            graph.addEdge(first_id, graph.getNodeID(new Coordinates(i + 1, j)));
                         }
-                        if (this.map[i + 1][j] instanceof ZonePart && destroyGraph.getNodeID(((ZonePart) this.map[i + 1][j]).mainBuilding.getCoordinates()) != -1) {
-                            destroyGraph.addEdge(first_id, destroyGraph.getNodeID(((ZonePart) this.map[i + 1][j]).mainBuilding.getCoordinates()));
+                        if (this.map[i + 1][j] instanceof ZonePart && graph.getNodeID(((ZonePart) this.map[i + 1][j]).mainBuilding.getCoordinates()) != -1) {
+                            graph.addEdge(first_id,graph.getNodeID(((ZonePart) this.map[i + 1][j]).mainBuilding.getCoordinates()));
                         }
                     } else if (i != 0 && i < this.mapHeight - 1 && j == 0) {
-                        if (this.map[i - 1][j] instanceof Road && destroyGraph.getNodeID(new Coordinates(i - 1, j)) != -1) {
-                            destroyGraph.addEdge(first_id, destroyGraph.getNodeID(new Coordinates(i - 1, j)));
+                        if (this.map[i - 1][j] instanceof Road && graph.getNodeID(new Coordinates(i - 1, j)) != -1) {
+                            graph.addEdge(first_id, graph.getNodeID(new Coordinates(i - 1, j)));
                         }
-                        if (this.map[i - 1][j] instanceof ZonePart && destroyGraph.getNodeID(((ZonePart) this.map[i - 1][j]).mainBuilding.getCoordinates()) != -1) {
-                            destroyGraph.addEdge(first_id, destroyGraph.getNodeID(((ZonePart) this.map[i - 1][j]).mainBuilding.getCoordinates()));
+                        if (this.map[i - 1][j] instanceof ZonePart && graph.getNodeID(((ZonePart) this.map[i - 1][j]).mainBuilding.getCoordinates()) != -1) {
+                            graph.addEdge(first_id, graph.getNodeID(((ZonePart) this.map[i - 1][j]).mainBuilding.getCoordinates()));
                         }
-                        if ((this.map[i][j + 1] instanceof Road || this.map[i][j + 1] instanceof MainZone) && destroyGraph.getNodeID(new Coordinates(i, j + 1)) != -1) {
-                            destroyGraph.addEdge(first_id, destroyGraph.getNodeID(new Coordinates(i, j + 1)));
+                        if ((this.map[i][j + 1] instanceof Road || this.map[i][j + 1] instanceof MainZone) && graph.getNodeID(new Coordinates(i, j + 1)) != -1) {
+                            graph.addEdge(first_id, graph.getNodeID(new Coordinates(i, j + 1)));
                         }
-                        if (this.map[i][j + 1] instanceof ZonePart && destroyGraph.getNodeID(((ZonePart) this.map[i][j + 1]).mainBuilding.getCoordinates()) != -1) {
-                            destroyGraph.addEdge(first_id, destroyGraph.getNodeID(((ZonePart) this.map[i][j + 1]).mainBuilding.getCoordinates()));
+                        if (this.map[i][j + 1] instanceof ZonePart && graph.getNodeID(((ZonePart) this.map[i][j + 1]).mainBuilding.getCoordinates()) != -1) {
+                            graph.addEdge(first_id, graph.getNodeID(((ZonePart) this.map[i][j + 1]).mainBuilding.getCoordinates()));
                         }
-                        if ((this.map[i + 1][j] instanceof Road || this.map[i + 1][j] instanceof MainZone) && destroyGraph.getNodeID(new Coordinates(i + 1, j)) != -1) {
-                            destroyGraph.addEdge(first_id, destroyGraph.getNodeID(new Coordinates(i + 1, j)));
+                        if ((this.map[i + 1][j] instanceof Road || this.map[i + 1][j] instanceof MainZone) && graph.getNodeID(new Coordinates(i + 1, j)) != -1) {
+                            graph.addEdge(first_id, graph.getNodeID(new Coordinates(i + 1, j)));
                         }
                     }
 
                     //jobb oszlop, bal oszlop
                     else if (i == this.mapHeight - 1 && j != 0 && j < this.mapWidth - 1) {
-                        if (this.map[i][j - 1] instanceof Road && destroyGraph.getNodeID(new Coordinates(i, j - 1)) != -1) {
-                            destroyGraph.addEdge(first_id, destroyGraph.getNodeID(new Coordinates(i, j - 1)));
+                        if (this.map[i][j - 1] instanceof Road && graph.getNodeID(new Coordinates(i, j - 1)) != -1) {
+                            graph.addEdge(first_id, graph.getNodeID(new Coordinates(i, j - 1)));
                         }
-                        if (this.map[i][j - 1] instanceof ZonePart && destroyGraph.getNodeID(((ZonePart) this.map[i][j - 1]).mainBuilding.getCoordinates()) != -1) {
-                            destroyGraph.addEdge(first_id, destroyGraph.getNodeID(((ZonePart) this.map[i][j - 1]).mainBuilding.getCoordinates()));
+                        if (this.map[i][j - 1] instanceof ZonePart && graph.getNodeID(((ZonePart) this.map[i][j - 1]).mainBuilding.getCoordinates()) != -1) {
+                            graph.addEdge(first_id, graph.getNodeID(((ZonePart) this.map[i][j - 1]).mainBuilding.getCoordinates()));
                         }
-                        if (this.map[i - 1][j] instanceof Road && destroyGraph.getNodeID(new Coordinates(i - 1, j)) != -1) {
-                            destroyGraph.addEdge(first_id, destroyGraph.getNodeID(new Coordinates(i - 1, j)));
+                        if (this.map[i - 1][j] instanceof Road && graph.getNodeID(new Coordinates(i - 1, j)) != -1) {
+                            graph.addEdge(first_id, graph.getNodeID(new Coordinates(i - 1, j)));
                         }
-                        if (this.map[i - 1][j] instanceof ZonePart && destroyGraph.getNodeID(((ZonePart) this.map[i - 1][j]).mainBuilding.getCoordinates()) != -1) {
-                            destroyGraph.addEdge(first_id, destroyGraph.getNodeID(((ZonePart) this.map[i - 1][j]).mainBuilding.getCoordinates()));
+                        if (this.map[i - 1][j] instanceof ZonePart && graph.getNodeID(((ZonePart) this.map[i - 1][j]).mainBuilding.getCoordinates()) != -1) {
+                            graph.addEdge(first_id, graph.getNodeID(((ZonePart) this.map[i - 1][j]).mainBuilding.getCoordinates()));
                         }
-                        if (this.map[i][j + 1] instanceof Road && destroyGraph.getNodeID(new Coordinates(i, j + 1)) != -1) {
-                            destroyGraph.addEdge(first_id, destroyGraph.getNodeID(new Coordinates(i, j + 1)));
+                        if (this.map[i][j + 1] instanceof Road && graph.getNodeID(new Coordinates(i, j + 1)) != -1) {
+                            graph.addEdge(first_id, graph.getNodeID(new Coordinates(i, j + 1)));
                         }
-                        if (this.map[i][j + 1] instanceof ZonePart && destroyGraph.getNodeID(((ZonePart) this.map[i][j + 1]).mainBuilding.getCoordinates()) != -1) {
-                            destroyGraph.addEdge(first_id, destroyGraph.getNodeID(((ZonePart) this.map[i][j + 1]).mainBuilding.getCoordinates()));
+                        if (this.map[i][j + 1] instanceof ZonePart && graph.getNodeID(((ZonePart) this.map[i][j + 1]).mainBuilding.getCoordinates()) != -1) {
+                            graph.addEdge(first_id, graph.getNodeID(((ZonePart) this.map[i][j + 1]).mainBuilding.getCoordinates()));
                         }
                     } else if (i == 0 && j != 0 && j < this.mapWidth - 1) {
-                        if (this.map[i][j - 1] instanceof Road && destroyGraph.getNodeID(new Coordinates(i, j - 1)) != -1) {
-                            destroyGraph.addEdge(first_id, destroyGraph.getNodeID(new Coordinates(i, j - 1)));
+                        if (this.map[i][j - 1] instanceof Road && graph.getNodeID(new Coordinates(i, j - 1)) != -1) {
+                            graph.addEdge(first_id, graph.getNodeID(new Coordinates(i, j - 1)));
                         }
-                        if (this.map[i][j - 1] instanceof ZonePart && destroyGraph.getNodeID(((ZonePart) this.map[i][j - 1]).mainBuilding.getCoordinates()) != -1) {
-                            destroyGraph.addEdge(first_id, destroyGraph.getNodeID(((ZonePart) this.map[i][j - 1]).mainBuilding.getCoordinates()));
+                        if (this.map[i][j - 1] instanceof ZonePart && graph.getNodeID(((ZonePart) this.map[i][j - 1]).mainBuilding.getCoordinates()) != -1) {
+                            graph.addEdge(first_id, graph.getNodeID(((ZonePart) this.map[i][j - 1]).mainBuilding.getCoordinates()));
                         }
-                        if ((this.map[i + 1][j] instanceof Road || this.map[i + 1][j] instanceof MainZone) && destroyGraph.getNodeID(new Coordinates(i + 1, j)) != -1) {
-                            destroyGraph.addEdge(first_id, destroyGraph.getNodeID(new Coordinates(i + 1, j)));
+                        if ((this.map[i + 1][j] instanceof Road || this.map[i + 1][j] instanceof MainZone) && graph.getNodeID(new Coordinates(i + 1, j)) != -1) {
+                            graph.addEdge(first_id, graph.getNodeID(new Coordinates(i + 1, j)));
                         }
-                        if (this.map[i + 1][j] instanceof ZonePart && destroyGraph.getNodeID(((ZonePart) this.map[i + 1][j]).mainBuilding.getCoordinates()) != -1) {
-                            destroyGraph.addEdge(first_id, destroyGraph.getNodeID(((ZonePart) this.map[i + 1][j]).mainBuilding.getCoordinates()));
+                        if (this.map[i + 1][j] instanceof ZonePart && graph.getNodeID(((ZonePart) this.map[i + 1][j]).mainBuilding.getCoordinates()) != -1) {
+                            graph.addEdge(first_id, graph.getNodeID(((ZonePart) this.map[i + 1][j]).mainBuilding.getCoordinates()));
                         }
-                        if ((this.map[i][j + 1] instanceof Road || this.map[i][j + 1] instanceof MainZone) && destroyGraph.getNodeID(new Coordinates(i, j + 1)) != -1) {
-                            destroyGraph.addEdge(first_id, destroyGraph.getNodeID(new Coordinates(i, j + 1)));
+                        if ((this.map[i][j + 1] instanceof Road || this.map[i][j + 1] instanceof MainZone) && graph.getNodeID(new Coordinates(i, j + 1)) != -1) {
+                            graph.addEdge(first_id, graph.getNodeID(new Coordinates(i, j + 1)));
                         }
                     }
 
 
                     //nem sarok vagy szél
                     else {
-                        if (this.map[i][j - 1] instanceof Road && destroyGraph.getNodeID(new Coordinates(i, j - 1)) != -1) {
-                            destroyGraph.addEdge(first_id, destroyGraph.getNodeID(new Coordinates(i, j - 1)));
+                        if (this.map[i][j - 1] instanceof Road && graph.getNodeID(new Coordinates(i, j - 1)) != -1) {
+                            graph.addEdge(first_id, graph.getNodeID(new Coordinates(i, j - 1)));
                         }
-                        if (this.map[i][j - 1] instanceof ZonePart && destroyGraph.getNodeID(((ZonePart) this.map[i][j - 1]).mainBuilding.getCoordinates()) != -1) {
-                            destroyGraph.addEdge(first_id, destroyGraph.getNodeID(((ZonePart) this.map[i][j - 1]).mainBuilding.getCoordinates()));
+                        if (this.map[i][j - 1] instanceof ZonePart && graph.getNodeID(((ZonePart) this.map[i][j - 1]).mainBuilding.getCoordinates()) != -1) {
+                            graph.addEdge(first_id, graph.getNodeID(((ZonePart) this.map[i][j - 1]).mainBuilding.getCoordinates()));
                         }
-                        if ((this.map[i + 1][j] instanceof Road || this.map[i + 1][j] instanceof MainZone) && destroyGraph.getNodeID(new Coordinates(i + 1, j)) != -1) {
-                            destroyGraph.addEdge(first_id, destroyGraph.getNodeID(new Coordinates(i + 1, j)));
+                        if ((this.map[i + 1][j] instanceof Road || this.map[i + 1][j] instanceof MainZone) && graph.getNodeID(new Coordinates(i + 1, j)) != -1) {
+                            graph.addEdge(first_id, graph.getNodeID(new Coordinates(i + 1, j)));
                         }
-                        if (this.map[i + 1][j] instanceof ZonePart && destroyGraph.getNodeID(((ZonePart) this.map[i + 1][j]).mainBuilding.getCoordinates()) != -1) {
-                            destroyGraph.addEdge(first_id, destroyGraph.getNodeID(((ZonePart) this.map[i + 1][j]).mainBuilding.getCoordinates()));
+                        if (this.map[i + 1][j] instanceof ZonePart && graph.getNodeID(((ZonePart) this.map[i + 1][j]).mainBuilding.getCoordinates()) != -1) {
+                            graph.addEdge(first_id, graph.getNodeID(((ZonePart) this.map[i + 1][j]).mainBuilding.getCoordinates()));
                         }
-                        if ((this.map[i][j + 1] instanceof Road || this.map[i][j + 1] instanceof MainZone) && destroyGraph.getNodeID(new Coordinates(i, j + 1)) != -1) {
-                            destroyGraph.addEdge(first_id, destroyGraph.getNodeID(new Coordinates(i, j + 1)));
+                        if ((this.map[i][j + 1] instanceof Road || this.map[i][j + 1] instanceof MainZone) && graph.getNodeID(new Coordinates(i, j + 1)) != -1) {
+                            graph.addEdge(first_id, graph.getNodeID(new Coordinates(i, j + 1)));
                         }
-                        if (this.map[i][j + 1] instanceof ZonePart && destroyGraph.getNodeID(((ZonePart) this.map[i][j + 1]).mainBuilding.getCoordinates()) != -1) {
-                            destroyGraph.addEdge(first_id, destroyGraph.getNodeID(((ZonePart) this.map[i][j + 1]).mainBuilding.getCoordinates()));
+                        if (this.map[i][j + 1] instanceof ZonePart && graph.getNodeID(((ZonePart) this.map[i][j + 1]).mainBuilding.getCoordinates()) != -1) {
+                            graph.addEdge(first_id, graph.getNodeID(((ZonePart) this.map[i][j + 1]).mainBuilding.getCoordinates()));
                         }
-                        if (this.map[i - 1][j] instanceof Road && destroyGraph.getNodeID(new Coordinates(i - 1, j)) != -1) {
-                            destroyGraph.addEdge(first_id, destroyGraph.getNodeID(new Coordinates(i - 1, j)));
+                        if (this.map[i - 1][j] instanceof Road && graph.getNodeID(new Coordinates(i - 1, j)) != -1) {
+                            graph.addEdge(first_id, graph.getNodeID(new Coordinates(i - 1, j)));
                         }
-                        if (this.map[i - 1][j] instanceof ZonePart && destroyGraph.getNodeID(((ZonePart) this.map[i - 1][j]).mainBuilding.getCoordinates()) != -1) {
-                            destroyGraph.addEdge(first_id, destroyGraph.getNodeID(((ZonePart) this.map[i - 1][j]).mainBuilding.getCoordinates()));
+                        if (this.map[i - 1][j] instanceof ZonePart && graph.getNodeID(((ZonePart) this.map[i - 1][j]).mainBuilding.getCoordinates()) != -1) {
+                            graph.addEdge(first_id, graph.getNodeID(((ZonePart) this.map[i - 1][j]).mainBuilding.getCoordinates()));
                         }
                     }
 

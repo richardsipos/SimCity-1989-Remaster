@@ -1,6 +1,6 @@
 package KukaPest.Model.Helper;
 
-public class Edge {
+public class Edge implements java.io.Serializable{
 
     private int node_1;
     private int node_2;

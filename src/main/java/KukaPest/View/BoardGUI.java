@@ -11,11 +11,17 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.awt.image.BufferedImage;
 import java.util.Map;
 
 public class BoardGUI extends JPanel implements MouseListener, MouseMotionListener {
 
+    int x;
+    int y;
     static final int DELAY = 1000;
     Image background, grass, dirt, water, road, uni, res_zone, res_zone_1, res_zone_2, res_zone_3, res_zone_max, res_zone_level2,
             res_zone_level2_2,res_zone_level3,res_zone_level3_2,pp, school, police, stadium, industrial, power_pole,
@@ -28,7 +34,13 @@ public class BoardGUI extends JPanel implements MouseListener, MouseMotionListen
     boolean zonestat = false;
     Building selectedBuilding;
     Tile[][] map;
+
+    public void setMap(Tile[][] map) {
+        this.map = map;
+    }
+
     private Game game;
+
 
     //private MenuWindow menuWindow = new MenuWindow();
 
@@ -91,6 +103,64 @@ public class BoardGUI extends JPanel implements MouseListener, MouseMotionListen
         setPreferredSize(dim);
         setMaximumSize(dim);
         setSize(dim);
+    }
+
+    public BoardGUI(int fieldX, int fieldY,Game g){
+        //menuWindow.setVisible(false);
+
+        this.game = g;
+
+
+
+        this.board = new Board(fieldX,fieldY);
+
+        addMouseListener(this);
+        addMouseMotionListener(this);
+
+        //szükséges képek felvétele a kirajzoláshoz
+
+        background = new ImageIcon("src/main/java/KukaPest/Assets/gatyakukarestart.jpg").getImage();
+        grass = new ImageIcon("src/main/java/KukaPest/Assets/grass2.png").getImage();
+        dirt = new ImageIcon("src/main/java/KukaPest/Assets/dirt2.png").getImage();
+        water = new ImageIcon("src/main/java/KukaPest/Assets/water_2.png").getImage();
+        road = new ImageIcon("src/main/java/KukaPest/Assets/road.png").getImage();
+        uni = new ImageIcon("src/main/java/KukaPest/Assets/university_2.png").getImage();
+        res_zone = new ImageIcon("src/main/java/KukaPest/Assets/residental.png").getImage();
+        res_zone_1 = new ImageIcon("src/main/java/KukaPest/Assets/residental_1.png").getImage();
+        res_zone_2 = new ImageIcon("src/main/java/KukaPest/Assets/residental_2.png").getImage();
+        res_zone_3 = new ImageIcon("src/main/java/KukaPest/Assets/residental_3.png").getImage();
+        res_zone_max = new ImageIcon("src/main/java/KukaPest/Assets/residental_max.png").getImage();
+        res_zone_level2 = new ImageIcon("src/main/java/KukaPest/Assets/residental_level2_1.png").getImage();
+        res_zone_level2_2 = new ImageIcon("src/main/java/KukaPest/Assets/residental_level2_2.png").getImage();
+        res_zone_level3 = new ImageIcon("src/main/java/KukaPest/Assets/residental_level2_3.png").getImage();
+        res_zone_level3_2 = new ImageIcon("src/main/java/KukaPest/Assets/residental_level3_2.png").getImage();
+        pp = new ImageIcon("src/main/java/KukaPest/Assets/pp.png").getImage();
+        school = new ImageIcon("src/main/java/KukaPest/Assets/school.png").getImage();
+        police = new ImageIcon("src/main/java/KukaPest/Assets/police.png").getImage();
+        stadium = new ImageIcon("src/main/java/KukaPest/Assets/stadium.png").getImage();
+        industrial = new ImageIcon("src/main/java/KukaPest/Assets/industrial.png").getImage();
+        industrial_1 = new ImageIcon("src/main/java/KukaPest/Assets/industrial_1.png").getImage();
+        industrial_2 = new ImageIcon("src/main/java/KukaPest/Assets/industrial_2.png").getImage();
+        industrial_level2 = new ImageIcon("src/main/java/KukaPest/Assets/industrial_level2.png").getImage();
+        industrial_level2_2 = new ImageIcon("src/main/java/KukaPest/Assets/industrial_level2_2.png").getImage();
+        industrial_level3 = new ImageIcon("src/main/java/KukaPest/Assets/industrial_level3.png").getImage();
+        industrial_level3_2 = new ImageIcon("src/main/java/KukaPest/Assets/industrial_level3_2.png").getImage();
+        power_pole = new ImageIcon("src/main/java/KukaPest/Assets/power_pole.png").getImage();
+        service = new ImageIcon("src/main/java/KukaPest/Assets/service.png").getImage();
+        service_1 = new ImageIcon("src/main/java/KukaPest/Assets/service_1.png").getImage();
+        service_2 = new ImageIcon("src/main/java/KukaPest/Assets/service_2.png").getImage();
+        service_level2 = new ImageIcon("src/main/java/KukaPest/Assets/service_level2.png").getImage();
+        service_level2_2 = new ImageIcon("src/main/java/KukaPest/Assets/service_level2_2.png").getImage();
+        service_level3 = new ImageIcon("src/main/java/KukaPest/Assets/service_level3.png").getImage();
+        service_level3_2 = new ImageIcon("src/main/java/KukaPest/Assets/service_level3_2.png").getImage();
+
+        map = g.getMap();
+
+        Dimension dim = new Dimension(48 * 25, 27 * 25);
+        setPreferredSize(dim);
+        setMaximumSize(dim);
+        setSize(dim);
+        repaint();
     }
 
 
@@ -244,6 +314,12 @@ public class BoardGUI extends JPanel implements MouseListener, MouseMotionListen
     }
 
 
+
+    public void setGame(Game game) {
+        this.game = game;
+    }
+
+
     /**
      * Click monitoring and coordinate determination
      * @param e
@@ -328,7 +404,10 @@ public class BoardGUI extends JPanel implements MouseListener, MouseMotionListen
             int y = e.getPoint().y;
             int row = (y  / board.getCellSide());
 
-            game.build(selectedBuilding, new Coordinates(row, col));
+            if(build){
+                game.build(selectedBuilding, new Coordinates(row, col));
+            }
+
             repaint();
         }
     }
@@ -366,6 +445,9 @@ public class BoardGUI extends JPanel implements MouseListener, MouseMotionListen
         return game;
     }
 
+    public Tile[][] getMap() {
+        return map;
+    }
     public static Image newBrightness( Image source, float brightnessPercentage ) {
 
         BufferedImage bi = new BufferedImage(
@@ -399,7 +481,22 @@ public class BoardGUI extends JPanel implements MouseListener, MouseMotionListen
         }
 
         return bi;
-
     }
 
+    public void printMap() {
+        for (int i = 0; i < board.getBoardY(); i++) {
+            for (int j = 0; j < board.getBoardX(); j++) {
+                if(this.map[i][j] instanceof MainZone || this.map[i][j] instanceof ZonePart
+                        || this.map[i][j] instanceof Road || this.map[i][j] instanceof Pole){
+                    //if(this.map[i][j] instanceof ResidentialZone){
+                    System.out.print("1");
+                }else{
+                    System.out.print("0");
+                }
+                System.out.print(" ");
+            }
+            System.out.println();
+        }
+        System.out.println();
+    }
 }

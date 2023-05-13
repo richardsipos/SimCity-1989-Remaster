@@ -1,6 +1,6 @@
 package KukaPest.Model.Map;
 
-public class Road extends Constructable{
+public class Road extends Constructable implements java.io.Serializable{
 
     Environment formerEnvironment;
     public Road(Environment environment){
