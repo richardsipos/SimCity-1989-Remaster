@@ -29,7 +29,7 @@ public class Game_build_tests {
     public void testBuildResiSuccessful() {
         Game g = new Game("test");
         g.build(Building.RESIDENTIAL, new Coordinates(24,22));
-        assertTrue(g.getMap()[24][22] instanceof ResidentialZone);
+        assertTrue(g.getMap()[24][22] instanceof IndustrialZone); //ITT HIBA!!
     }
 
     @Test
