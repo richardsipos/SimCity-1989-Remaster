@@ -4,6 +4,7 @@ import KukaPest.Model.Citizen;
 import KukaPest.Model.Helper.Coordinates;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 abstract public class MainZone extends Constructable implements java.io.Serializable{
     private final int width;
@@ -39,6 +40,14 @@ abstract public class MainZone extends Constructable implements java.io.Serializ
         return electricityNeed;
     }
 
+    public HashMap<String, String> getStats(){
+        HashMap<String, String> ret = new HashMap<>();
+        ret.put("Kapacitás", "" + capacity);
+        ret.put("Elégedettség nővelés", "" + satisfactionBoost);
+        ret.put("Emberek", "" + citizens.size());
+        ret.put("Fenntartási költség", "" + super.getUpKeep());
+        return ret;
+    }
 
     public void addCitizen(Citizen c){
         this.citizens.add(c);
