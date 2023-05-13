@@ -859,7 +859,7 @@ public class MainWindow extends JFrame{
 
         Game game;
         try{
-            FileInputStream fis = new FileInputStream("valami2.sav");
+            FileInputStream fis = new FileInputStream("Bencevarosa.sav");
             ObjectInputStream ois = new ObjectInputStream(fis);
             game = (Game)ois.readObject();
 
@@ -890,7 +890,6 @@ public class MainWindow extends JFrame{
         }catch(Exception e){
             System.out.println("Serialization Error! Can't save data."
                     + e.getClass() + ":" + e.getMessage());
-
         }
     }
 

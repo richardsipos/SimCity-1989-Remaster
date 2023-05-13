@@ -313,7 +313,6 @@ public class City implements java.io.Serializable {
      */
     ResidentialZone hasFreeResidential(){
         Coordinates coords;
-        System.out.println("Node a gráfnak: " + destroynodes);
         moveInGraph = new Graph(destroynodes);
         Coordinates coords2 = new Coordinates(mapHeight,mapWidth);
         buildingsAvailable(coords2,moveInGraph);
@@ -343,7 +342,6 @@ public class City implements java.io.Serializable {
      */
     Workplace hasFreeWorkplace(){
         Coordinates coords;
-        System.out.println("Node a gráfnak: " + destroynodes);
         moveInGraph = new Graph(destroynodes);
         Coordinates coords2 = new Coordinates(mapHeight,mapWidth);
         buildingsAvailable(coords2,moveInGraph);
@@ -436,7 +434,7 @@ public class City implements java.io.Serializable {
                 }
             }
         }
-        System.out.println("Elégedettség: " + satisfaction()); //debug
+        // System.out.println("Elégedettség: " + satisfaction()); //debug
     }
 
     private void handleGraduation() {
@@ -476,8 +474,8 @@ public class City implements java.io.Serializable {
                                 percentageWithSchoolDegree = percentageWithSchoolDegree + oneCitizenPercentage;
 
                             }
-                            System.out.println("Ennyi szemely fog az iskolabol grarudalni");
-                            System.out.println(graduatedFromSchool.size());
+                            // System.out.println("Ennyi szemely fog az iskolabol grarudalni");
+                            // System.out.println(graduatedFromSchool.size());
                             ((School)this.map[i][j]).handleGraduation(graduatedFromSchool);
                         }
 
@@ -497,8 +495,8 @@ public class City implements java.io.Serializable {
 
 
                             }
-                            System.out.println("Ennyi szemely fog az egyetemrol gradualni");
-                            System.out.println(graduatedFromUniversity.size());
+                            // System.out.println("Ennyi szemely fog az egyetemrol gradualni");
+                            // System.out.println(graduatedFromUniversity.size());
                             ((University)this.map[i][j]).handleGraduation(graduatedFromUniversity);
                         }
                     }
@@ -519,7 +517,7 @@ public class City implements java.io.Serializable {
                 return false;
             }
             destroygraph = new Graph(destroynodes);
-            System.out.println(destroynodes);
+            // System.out.println(destroynodes);
             buildingsAvailable(coords,destroygraph);
             //System.out.println(destroyGraph);
             if(destroygraph.BFS(0,numberBuilding)){
@@ -961,8 +959,8 @@ public class City implements java.io.Serializable {
                     }
 
 
-                    System.out.println(visitedCoords.size());
-                    System.out.println("Ennyi aram maradt: "+electricityToGive);
+                    // System.out.println(visitedCoords.size());
+                    // System.out.println("Ennyi aram maradt: "+electricityToGive);
 
                 }
             }

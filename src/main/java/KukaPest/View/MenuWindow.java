@@ -82,25 +82,11 @@ public class MenuWindow extends JPanel {
                 name = JOptionPane.showInputDialog(null, "Your city's name:", "");
                 if (name != null) {
                     if (!name.equals("")){
-                    frame.setVisible(false);
-                    new MainWindow(name);}
-                } else 
-                    name = "";
-                    try {
-                        FileWriter myWriter = new FileWriter("citysname.txt");
-                        myWriter.write(name + "\n");
-                        myWriter.close();
-                        System.out.println("Successfully wrote to the file.");
-                    } catch (IOException e) {
-                        System.out.println("An error occurred.");
-                        e.printStackTrace();
+                        frame.setVisible(false);
+                        new MainWindow(name, false);
                     }
-
-                    new MainWindow(name,false);
-                    /*frame.dispose();
-                    frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));*/
-
                 }
+                else name = "";
             }
         });
 

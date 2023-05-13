@@ -3,13 +3,14 @@ package KukaTest;
 import KukaPest.Model.Game;
 import KukaPest.Model.Helper.Building;
 import KukaPest.Model.Helper.Coordinates;
+import KukaPest.Model.Helper.EduLevel;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class Education_tests {
 
-    /*@Test
+    @Test
     public void BaseEducation() throws InterruptedException {
         Game g = new Game("test");
         for (int i = 21; i > -1; --i) {
@@ -18,8 +19,8 @@ public class Education_tests {
         g.build(Building.RESIDENTIAL, new Coordinates(24,22));
         g.build(Building.SERVICE, new Coordinates(24,20));
         g.build(Building.POWER_PLANT, new Coordinates(22,16));
-        assertTrue(g.getCitizens().get(0).education == 1);
-    }*/
+        assertTrue(g.getCitizens().get(0).getEducation() == EduLevel.BASIC);
+    }
 
     /*@Test
     public void MidEducation() throws InterruptedException {

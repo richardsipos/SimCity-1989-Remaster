@@ -6,6 +6,7 @@ import KukaPest.Model.Map.ResidentialZone;
 import KukaPest.Model.Map.Tile;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
@@ -69,9 +70,4 @@ public class Game implements java.io.Serializable {
     public int getElectricityNeed() {
         return city.getElectricityNeed();
     }
-
-    /**
-     * For Testing purposes
-     */
-    public ResidentialZone getPoweredResZone() {return city.hasFreeResidentialWithElectricity();}
 }

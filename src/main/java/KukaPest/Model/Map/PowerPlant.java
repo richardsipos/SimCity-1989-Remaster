@@ -4,7 +4,7 @@ import KukaPest.Model.Helper.Coordinates;
 import java.util.HashMap;
 
 public class PowerPlant extends Infrastructure implements java.io.Serializable{
-    private int electricityProduction = 300;
+    private final int electricityProduction = 1000;
     public PowerPlant(Coordinates coordinates) {
         super(4,4,30,3000, coordinates, 30,0);
     }
