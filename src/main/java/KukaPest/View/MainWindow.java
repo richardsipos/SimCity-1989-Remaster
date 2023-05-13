@@ -1,5 +1,6 @@
 package KukaPest.View;
 
+import KukaPest.Model.Game;
 import KukaPest.Model.Helper.Building;
 
 import javax.swing.*;
@@ -7,17 +8,27 @@ import javax.swing.border.EtchedBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 public class MainWindow extends JFrame{
     private static final int INITIAL_BOARD_X = 48;
     private static final int INITIAL_BOARD_Y = 27;
     private BoardGUI BoardPanel;
+
+    public BoardGUI getBoardPanel() {
+        return BoardPanel;
+    }
+
     JLabel populationlabel = new JLabel();
     JProgressBar b;
     JToolBar statBar = new JToolBar();
     JLabel fundslabel = new JLabel();
     JLabel balancelabel = new JLabel();
-    JLabel  electricityneed = new JLabel();
+    JLabel educatedlabel = new JLabel();
+    JLabel electricityneed = new JLabel();
     JLabel year = new JLabel();
     JLabel fund = new JLabel();
     JLabel citizens = new JLabel();
@@ -27,14 +38,22 @@ public class MainWindow extends JFrame{
 
 
 
-    public MainWindow(String cityName){
+    public MainWindow(String cityName, boolean load){
 
         cityname = cityName;
-        BoardPanel = new BoardGUI(INITIAL_BOARD_X, INITIAL_BOARD_Y, cityName);
+        if(load){
+            loadGame(cityName);
+        }
+        else{
+            BoardPanel = new BoardGUI(INITIAL_BOARD_X, INITIAL_BOARD_Y, cityName);
+
+        }
+
 
         gameTime = new Timer(1000,new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e){
+                BoardPanel.repaint();
                 BoardPanel.getGame().stepGame();
                 System.out.println("Lakók: " + BoardPanel.getGame().getPopulation() + "\nPézz: " + BoardPanel.getGame().getFunds()+ "\n\n");
                 refreshGameStatLabel();
@@ -463,6 +482,20 @@ public class MainWindow extends JFrame{
         balancelabel.setMinimumSize(new Dimension(250,50));
         balancelabel.setMaximumSize(new Dimension(250,50));
 
+        educatedlabel.setBackground(Color.WHITE);
+        educatedlabel.setBorder(
+         BorderFactory.createTitledBorder(
+                 BorderFactory.createEtchedBorder(
+                         EtchedBorder.RAISED, Color.GRAY
+                         , Color.DARK_GRAY), "Educated citizens"));
+        educatedlabel.setText("");
+
+        educatedlabel.setFont(new Font("Cooper Black", Font.BOLD, 15));
+
+        educatedlabel.setPreferredSize(new Dimension(250,75));
+        educatedlabel.setMinimumSize(new Dimension(250,75));
+        educatedlabel.setMaximumSize(new Dimension(250,75));
+
         JButton zoneClick = new JButton("Zone Stats: Off");
         zoneClick.setFont(new Font("Cooper Black2",Font.BOLD,13));
 
@@ -471,6 +504,7 @@ public class MainWindow extends JFrame{
         statBar.add(populationlabel);
         statBar.add(fundslabel);
         statBar.add(balancelabel);
+        statBar.add(educatedlabel);
         statBar.add( electricityneed);
         statBar.addSeparator(new Dimension(20,20));
         statBar.add(zoneClick);
@@ -791,6 +825,22 @@ public class MainWindow extends JFrame{
                 BoardPanel.upgrade = true;
             }
         });
+        sgMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                saveGame(cityName);
+            }
+        });
+        lgMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                loadGame(cityName);
+                BoardPanel.printMap();
+                repaint();
+                pack();
+
+            }
+        });
     }
 
     /**
@@ -801,6 +851,47 @@ public class MainWindow extends JFrame{
         populationlabel.setText(BoardPanel.getGame().getPopulation() + " people");
         fundslabel.setText(BoardPanel.getGame().getFunds()+ " $");
         balancelabel.setText((BoardPanel.getGame().getLastBalance()[0] + BoardPanel.getGame().getLastBalance()[1]) + " $");
+        double[] educated = BoardPanel.getGame().getEducatedCitizens();
+        educatedlabel.setText("<html>Basic: " + educated[0] + "%<br />Mid: " + educated[1] + "%<br />High: " + educated[2] + "%</html>");
+    }
+
+    void loadGame(String cityname){
+
+        Game game;
+        try{
+            FileInputStream fis = new FileInputStream("valami2.sav");
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            game = (Game)ois.readObject();
+
+            BoardPanel = new BoardGUI(INITIAL_BOARD_X, INITIAL_BOARD_Y,game);
+            //BoardPanel.setMap(((Game) ois.readObject()).getMap());
+
+            ois.close();
+            //ois.close();
+            System.out.println("Game loaded");
+            BoardPanel.getGame().getCity().printMap();
+
+        }catch(Exception e){
+            System.out.println("Serialization Error! Can't load data."
+                    + e.getClass() + ":" + e.getMessage());
+
+        }
+    }
+
+    void saveGame(String cityname){
+        try{
+            FileOutputStream f = new FileOutputStream(cityname + ".sav");
+            ObjectOutputStream oos = new ObjectOutputStream(f);
+            oos.writeObject(BoardPanel.getGame());
+            oos.flush();
+            oos.close();
+            System.out.println("Game saved");
+
+        }catch(Exception e){
+            System.out.println("Serialization Error! Can't save data."
+                    + e.getClass() + ":" + e.getMessage());
+
+        }
     }
 
 

@@ -5,10 +5,11 @@ import KukaPest.Model.Helper.Coordinates;
 import KukaPest.Model.Map.ResidentialZone;
 import KukaPest.Model.Map.Tile;
 
-import java.util.ArrayList;
+import java.io.*;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
-public class Game {
+public class Game implements java.io.Serializable {
     private UUID gameID;
     private City city;
     private int timeSpeed;
@@ -19,6 +20,8 @@ public class Game {
         city = new City(cityName);
         timeSpeed = 1;
     }
+
+
 
     public boolean build(Building toBuild, Coordinates coords){
         return city.build(toBuild, coords);
@@ -58,6 +61,10 @@ public class Game {
     }
     public int getElectricityProduction() {
         return city.getElectricityProduction();
+    }
+
+    public double[] getEducatedCitizens(){
+        return city.getEducatedCitizens();
     }
     public int getElectricityNeed() {
         return city.getElectricityNeed();

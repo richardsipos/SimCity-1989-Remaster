@@ -1,15 +1,18 @@
 package KukaPest.Model;
 
+import KukaPest.Model.Helper.EduLevel;
 import KukaPest.Model.Map.ResidentialZone;
 import KukaPest.Model.Map.Workplace;
 
+import java.io.Serializable;
 import java.util.Random;
 
-public class Citizen {
+public class Citizen implements java.io.Serializable {
     int age;
     boolean isPensioner = false;
     int pension = 0;
     int chanceToDie = 0;
+    EduLevel education = EduLevel.BASIC;
     ResidentialZone home;
     Workplace workPlace;
     City city;
@@ -37,20 +40,14 @@ public class Citizen {
                 total += home.getSatisfactionBoost()/2;
             }
         }
-
-        if (workPlace.isElectricity()){
-            total += workPlace.getSatisfactionBoost();
-        }else{
-            if(workPlace.getSatisfactionBoost()!=0){
+        if(!isPensioner){
+            if (workPlace.isElectricity()){
+                total += workPlace.getSatisfactionBoost();
+            }else{
                 total += workPlace.getSatisfactionBoost()/2;
             }
         }
 
-        if (tax() == 7) total -= 10;
-        else if (tax() == 5) total -= 5;
-
-        total += home.getSatisfactionBoost();
-        if (!isPensioner) total += workPlace.getSatisfactionBoost();
         if (total < 0) total = 0;
         if (total > 100) total = 100;
         return total;
@@ -73,9 +70,9 @@ public class Citizen {
             return 2;
         }
         else if (workPlace.isElectricity()) {
-            return 7;
+            return 7 * education.salaryModifier();
         }else {
-            return 5;
+            return 5 * education.salaryModifier();
         }
     }
 
@@ -137,6 +134,14 @@ public class Citizen {
         else{
             this.city.citizens.remove(this);
         }
+    }
+
+    public EduLevel getEducation() {
+        return education;
+    }
+
+    public void setEducation(EduLevel education) {
+        this.education = education;
     }
 
     @Override

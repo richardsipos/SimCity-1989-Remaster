@@ -1,6 +1,6 @@
 package KukaPest.Model.Helper;
 
-public class Node {
+public class Node implements java.io.Serializable{
     private int id;
     boolean isroad;
     private Coordinates coordinates;

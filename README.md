@@ -6,7 +6,6 @@
 - Perzisztencia (0.5 pont)
 - Áramellátás (1 pont)
 - Metropolisz (0.5 pont)
-- Konfliktusos bontás (0.5 pont)
 
 ## Felhasználói történetek
 ### Általánosan (bármikor) megtehető:
@@ -18,8 +17,6 @@
 
 ### Játék előtt:
 - Nevet adni a városnak
-- (nehézség választás)
-- Pályaválasztás
 
 ### Játék közben:
 - Zónák kijelölése
@@ -28,9 +25,8 @@
 - Épületek lebontása, zónák törlése/módosítása
 - Villanypózna építés
 - Bevétel/kiadás-t megnézi
-- Hitelt vesz fel
 - Boldogság szintet megnézi
-- Idő telését modosítja
+- Idő sebességét modosítja
 
 ### Játék végén:
 - Statisztikát megnézi

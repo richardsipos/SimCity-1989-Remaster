@@ -1,9 +1,15 @@
 package KukaPest.View;
 
+import KukaPest.Model.Game;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 
 public class MenuWindow extends JPanel {
     JFrame frame;
@@ -78,7 +84,23 @@ public class MenuWindow extends JPanel {
                     if (!name.equals("")){
                     frame.setVisible(false);
                     new MainWindow(name);}
-                } else name = "";
+                } else 
+                    name = "";
+                    try {
+                        FileWriter myWriter = new FileWriter("citysname.txt");
+                        myWriter.write(name + "\n");
+                        myWriter.close();
+                        System.out.println("Successfully wrote to the file.");
+                    } catch (IOException e) {
+                        System.out.println("An error occurred.");
+                        e.printStackTrace();
+                    }
+
+                    new MainWindow(name,false);
+                    /*frame.dispose();
+                    frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));*/
+
+                }
             }
         });
 
@@ -121,5 +143,28 @@ public class MenuWindow extends JPanel {
         frame.pack();
         frame.setVisible(true);
         frame.setLocationRelativeTo(null);
+
+        egame.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                System.exit(0);
+            }
+        });
+
+        lgame.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.setVisible(false);
+                new MainWindow(name,true);
+
+            }
+        });
+
+        //buttons.add(ngame, gbc);
+        //buttons.add(lgame, gbc2);
+        //buttons.add(egame, gbc3);
+
     }
+
+
 }
