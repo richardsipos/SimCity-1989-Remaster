@@ -79,6 +79,14 @@ abstract public class MainZone extends Constructable implements java.io.Serializ
         return this.satisfactionBoost;
     }
 
+    public int getSatisfaction(){
+        int sum = 0;
+        for (Citizen c : citizens) {
+            sum += c.satisfaction();
+        }
+        return sum / citizens.size();
+    }
+
     public void setSatisfactionBoost(int value) {
          this.satisfactionBoost += value;
     }

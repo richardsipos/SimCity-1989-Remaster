@@ -42,7 +42,7 @@ public class MainWindow extends JFrame{
 
         cityname = cityName;
         if(load){
-            loadGame(cityName);
+            loadGame();
         }
         else{
             BoardPanel = new BoardGUI(INITIAL_BOARD_X, INITIAL_BOARD_Y, cityName);
@@ -834,7 +834,7 @@ public class MainWindow extends JFrame{
         lgMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                loadGame(cityName);
+                loadGame();
                 BoardPanel.printMap();
                 repaint();
                 pack();
@@ -855,15 +855,16 @@ public class MainWindow extends JFrame{
         educatedlabel.setText("<html>Basic: " + educated[0] + "%<br />Mid: " + educated[1] + "%<br />High: " + educated[2] + "%</html>");
     }
 
-    void loadGame(String cityname){
-
+    void loadGame(){
+        String name = JOptionPane.showInputDialog(null, "The saved city's name:", "");
+        System.out.println("Mentett név: " + name + ".sav");
         Game game;
         try{
-            FileInputStream fis = new FileInputStream("Bencevarosa.sav");
+            FileInputStream fis = new FileInputStream(name + ".sav");
             ObjectInputStream ois = new ObjectInputStream(fis);
             game = (Game)ois.readObject();
 
-            BoardPanel = new BoardGUI(INITIAL_BOARD_X, INITIAL_BOARD_Y,game);
+            BoardPanel = new BoardGUI(INITIAL_BOARD_X, INITIAL_BOARD_Y, game);
             //BoardPanel.setMap(((Game) ois.readObject()).getMap());
 
             ois.close();
@@ -874,7 +875,6 @@ public class MainWindow extends JFrame{
         }catch(Exception e){
             System.out.println("Serialization Error! Can't load data."
                     + e.getClass() + ":" + e.getMessage());
-
         }
     }
 
@@ -885,7 +885,7 @@ public class MainWindow extends JFrame{
             oos.writeObject(BoardPanel.getGame());
             oos.flush();
             oos.close();
-            System.out.println("Game saved");
+            JOptionPane.showMessageDialog(this, "Játék elmentve!");
 
         }catch(Exception e){
             System.out.println("Serialization Error! Can't save data."

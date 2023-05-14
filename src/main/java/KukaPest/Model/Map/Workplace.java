@@ -24,6 +24,7 @@ public abstract class Workplace extends MainZone implements java.io.Serializable
         ret.put("Munkások", "" + super.getCurrentCapacity());
         ret.put("Szint", "" + "" + level);
         ret.put("Fenntartási költség", "" + super.getUpKeep());
+        ret.put("Elégedettség", "" + super.getSatisfaction());
         return ret;
     }
 

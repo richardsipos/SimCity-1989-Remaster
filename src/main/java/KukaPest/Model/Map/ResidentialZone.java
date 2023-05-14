@@ -24,6 +24,7 @@ public class ResidentialZone extends MainZone implements java.io.Serializable{
         ret.put("Lakosok", "" + super.getCurrentCapacity());
         ret.put("Szint", "" + "" + level);
         ret.put("Fenntartási költség", "" + super.getUpKeep());
+        ret.put("Elégedettség", "" + super.getSatisfaction());
         return ret;
     }
 
