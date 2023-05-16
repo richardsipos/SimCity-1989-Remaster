@@ -29,4 +29,6 @@ public class Coordinates implements java.io.Serializable{
     public int getWidth() {
         return y;
     }
+
+
 }

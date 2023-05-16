@@ -46,7 +46,6 @@ public class MainWindow extends JFrame{
         }
         else{
             BoardPanel = new BoardGUI(INITIAL_BOARD_X, INITIAL_BOARD_Y, cityName);
-
         }
 
 
@@ -579,8 +578,6 @@ public class MainWindow extends JFrame{
 
         JMenuItem ngMenuItem = new JMenuItem("New Game");
         gameMenu.add(ngMenuItem);
-        JMenuItem lgMenuItem = new JMenuItem("Load Game");
-        gameMenu.add(lgMenuItem);
         JMenuItem sgMenuItem = new JMenuItem("Save Game");
         gameMenu.add(sgMenuItem);
         JMenuItem crMenuItem = new JMenuItem("Credits");
@@ -831,16 +828,6 @@ public class MainWindow extends JFrame{
                 saveGame(cityName);
             }
         });
-        lgMenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                loadGame();
-                BoardPanel.printMap();
-                repaint();
-                pack();
-
-            }
-        });
     }
 
     /**
@@ -857,7 +844,6 @@ public class MainWindow extends JFrame{
 
     void loadGame(){
         String name = JOptionPane.showInputDialog(null, "The saved city's name:", "");
-        System.out.println("Mentett név: " + name + ".sav");
         Game game;
         try{
             FileInputStream fis = new FileInputStream(name + ".sav");
