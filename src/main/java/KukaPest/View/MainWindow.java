@@ -861,6 +861,8 @@ public class MainWindow extends JFrame{
         }catch(Exception e){
             System.out.println("Serialization Error! Can't load data."
                     + e.getClass() + ":" + e.getMessage());
+            JOptionPane.showMessageDialog(this, "No save with this name!");
+            System.exit(1);
         }
     }
 
@@ -871,7 +873,7 @@ public class MainWindow extends JFrame{
             oos.writeObject(BoardPanel.getGame());
             oos.flush();
             oos.close();
-            JOptionPane.showMessageDialog(this, "Játék elmentve!");
+            JOptionPane.showMessageDialog(this, "Game saved!");
 
         }catch(Exception e){
             System.out.println("Serialization Error! Can't save data."

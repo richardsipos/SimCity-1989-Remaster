@@ -319,14 +319,15 @@ public class City implements java.io.Serializable {
         for (int i = 0; i < mapHeight; i++) {
             for (int j = 0; j < mapWidth; j++) {
                 if(this.map[i][j] instanceof ResidentialZone){
-                    if(((MainZone)this.map[i][j]).getCurrentCapacity() < ((MainZone)this.map[i][j]).getMaxCapacity()){
-                        if(citizens.size() > guaranteedCitizens) {
-                            if (((ResidentialZone) this.map[i][j]).isElectricity()) {
-                                return (ResidentialZone) this.map[i][j];
+                    if(moveInGraph.BFS_movein(0,numberBuilding,new Coordinates(i,j))) {
+                        if (((MainZone) this.map[i][j]).getCurrentCapacity() < ((MainZone) this.map[i][j]).getMaxCapacity()) {
+                            if (citizens.size() > guaranteedCitizens) {
+                                if (((ResidentialZone) this.map[i][j]).isElectricity()) {
+                                    return (ResidentialZone) this.map[i][j];
+                                }
+                            } else {
+                                return ((ResidentialZone) this.map[i][j]);
                             }
-                        }
-                        else{
-                            return ((ResidentialZone) this.map[i][j]);
                         }
                     }
                 }
