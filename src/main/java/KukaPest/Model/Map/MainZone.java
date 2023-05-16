@@ -80,6 +80,7 @@ abstract public class MainZone extends Constructable implements java.io.Serializ
     }
 
     public int getSatisfaction(){
+        if (citizens.size() == 0) return 0;
         int sum = 0;
         for (Citizen c : citizens) {
             sum += c.satisfaction();
