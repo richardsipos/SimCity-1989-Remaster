@@ -35,6 +35,7 @@ public class MainWindow extends JFrame{
     Timer gameTime;
     String cityname;
     ImageIcon credits;
+    int paused = 0;
 
 
 
@@ -53,7 +54,7 @@ public class MainWindow extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e){
                 BoardPanel.repaint();
-                BoardPanel.getGame().stepGame();
+                if (paused == 0) BoardPanel.getGame().stepGame();
                 System.out.println("Lakók: " + BoardPanel.getGame().getPopulation() + "\nPézz: " + BoardPanel.getGame().getFunds()+ "\n\n");
                 refreshGameStatLabel();
                 int day = BoardPanel.getGame().getCity().getDate().getDay();
@@ -108,8 +109,11 @@ public class MainWindow extends JFrame{
         Icon firstspeedicon = new ImageIcon("src/main/java/KukaPest/Assets/speed-icon.png");
         Icon secondspeedicon = new ImageIcon("src/main/java/KukaPest/Assets/speed-3x-icon.png");
         Icon thirdspeedicon = new ImageIcon("src/main/java/KukaPest/Assets/speed-5x-icon.png");
+        Icon pausespeedicon = new ImageIcon("src/main/java/KukaPest/Assets/speed-pause-icon.png");
         credits = new ImageIcon("src/main/java/KukaPest/Assets/credits.jpg");
 
+        JButton pausespeed = new JButton(pausespeedicon);
+        pausespeed.setBackground(Color.WHITE);
         JButton firstspeed = new JButton(firstspeedicon);
         firstspeed.setBackground(Color.WHITE);
         JButton secondspeed = new JButton(secondspeedicon);
@@ -117,9 +121,10 @@ public class MainWindow extends JFrame{
         JButton thirdspeed = new JButton(thirdspeedicon);
         thirdspeed.setBackground(Color.WHITE);
 
-        panel2.add(firstspeed);
-        panel2.add(secondspeed);
-        panel2.add(thirdspeed);
+        //panel2.add(pausespeed);
+        //panel2.add(firstspeed);
+        //panel2.add(secondspeed);
+        //panel2.add(thirdspeed);
 
 
         year.setBackground(Color.WHITE);
@@ -205,6 +210,8 @@ public class MainWindow extends JFrame{
         buttonpanel.add(upgrade);
         buttonpanel.add(stats);
 
+        panel.add(pausespeed);
+        panel.addSeparator();
         panel.add(firstspeed);
         panel.addSeparator();
         panel.add(secondspeed);
@@ -782,24 +789,43 @@ public class MainWindow extends JFrame{
                 BoardPanel.selectedBuilding = Building.SERVICE;
             }
         });
+        pausespeed.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                if (paused == 0) {
+                    paused = 1;
+                } else {
+                    paused = 0;
+                }
+            }
+        });
         firstspeed.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-
+                if (paused == 1){
+                    BoardPanel.getGame().setTimeSpeed(1);
+                    paused = 0;
+                } else
                 BoardPanel.getGame().setTimeSpeed(1);
             }
         });
         secondspeed.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-
+                if (paused == 1){
+                    BoardPanel.getGame().setTimeSpeed(3);
+                    paused = 0;
+                } else
                 BoardPanel.getGame().setTimeSpeed(3);
             }
         });
         thirdspeed.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-
+                if (paused == 1){
+                    BoardPanel.getGame().setTimeSpeed(5);
+                    paused = 0;
+                } else
                 BoardPanel.getGame().setTimeSpeed(5);
             }
         });
