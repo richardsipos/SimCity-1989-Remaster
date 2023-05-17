@@ -240,61 +240,60 @@ public class Tests {
         g.getCity().electricityStats();
         assertTrue( g.getElectricityNeed() == 20 && g.getElectricityProduction() == 1000);
     }
-//    @Test
-//    public void testElectricityUsedAndPoles() throws InterruptedException {
-//        Game g = new Game("test");
-//        for (int i = 21; i > 16; --i) {
-//            g.build(Building.ROAD, new Coordinates(26,i));
-//        }
-//        g.build(Building.RESIDENTIAL, new Coordinates(24,22));
-//        g.build(Building.POWER_PLANT, new Coordinates(22,16));
-//        g.build(Building.POLE, new Coordinates(22,20));
-//        g.build(Building.POLE, new Coordinates(22,21));
-//        Thread.sleep(1000);
-//        ResidentialZone r = g.getPoweredResZone();
-//        assertTrue( r == null);
-//    }
+    @Test
+    public void testElectricityUsedAndPoles() {
+        Game g = new Game("test");
+        for (int i = 21; i > 16; --i) {
+           g.build(Building.ROAD, new Coordinates(26,i));
+        }
+        g.build(Building.RESIDENTIAL, new Coordinates(24,22));
+        g.build(Building.POWER_PLANT, new Coordinates(22,16));
+        g.build(Building.POLE, new Coordinates(22,20));
+        g.build(Building.POLE, new Coordinates(22,21));
+        ResidentialZone r = g.getPoweredResZone();
+        assertTrue( r == null);
+    }
 
     //education tests
-    /*@Test
-    public void BaseEducation() throws InterruptedException {
+    @Test
+    public void BaseEducation() {
         Game g = new Game("test");
-        for (int i = 21; i > -1; --i) {
+        for (int i = 21; i > 0; --i) {
             g.build(Building.ROAD, new Coordinates(26,i));
         }
         g.build(Building.RESIDENTIAL, new Coordinates(24,22));
         g.build(Building.SERVICE, new Coordinates(24,20));
-        g.build(Building.POWER_PLANT, new Coordinates(22,16));
-        Thread.sleep(5000);
+        long end = System.currentTimeMillis() + 5000;
+        while(System.currentTimeMillis()<end){g.stepGame();}
         assertTrue(g.getCitizens().get(0).getEducation() == EduLevel.BASIC);
     }
 
     @Test
-    public void MidEducation() throws InterruptedException {
+    public void MidEducation() {
         Game g = new Game("test");
-        for (int i = 21; i > -1; --i) {
+        for (int i = 21; i > 0; --i) {
             g.build(Building.ROAD, new Coordinates(26,i));
         }
-        g.build(Building.RESIDENTIAL, new Coordinates(2422));
+        g.build(Building.RESIDENTIAL, new Coordinates(24,22));
         g.build(Building.SERVICE, new Coordinates(24,20));
-        g.build(Building.POWER_PLANT, new Coordinates(22,16));
-        g.build(Building.SCHOOL, new Coordinates(24,12));
-        Thread.sleep(5000);
-        assertTrue(g.getCitizens().get(0).education == 2);
-    }*/
+        g.build(Building.SCHOOL, new Coordinates(24,16));
+        long end = System.currentTimeMillis() + 5000;
+        while(System.currentTimeMillis()<end){g.stepGame();}
+        assertTrue(g.getCitizens().get(0).getEducation() == EduLevel.MID);
+    }
 
-    /*@Test
-    public void HighEducation() throws InterruptedException {
+    @Test
+    public void HiEducation() {
         Game g = new Game("test");
-        for (int i = 21; i > -1; --i) {
+        for (int i = 21; i > 0; --i) {
             g.build(Building.ROAD, new Coordinates(26,i));
         }
-        g.build(Building.RESIDENTIAL, new Coordinates(2422));
+        g.build(Building.RESIDENTIAL, new Coordinates(24,22));
         g.build(Building.SERVICE, new Coordinates(24,20));
-        g.build(Building.POWER_PLANT, new Coordinates(22,16));
-        g.build(Building.SCHOOL, new Coordinates(24,12));
-        g.build(Building.UNIVERSITY, new Coordinates(22,8));
-        Thread.sleep(20000);
-        assertTrue(g.getCitizens().get(0).education == 3);
-    }*/
+        g.build(Building.SCHOOL, new Coordinates(24,16));
+        g.build(Building.UNIVERSITY, new Coordinates(22,12));
+        long end = System.currentTimeMillis() + 5000;
+        while(System.currentTimeMillis()<end){g.stepGame();}
+        assertTrue(g.getCitizens().get(0).getEducation() == EduLevel.HIGH);
+    }
 }
