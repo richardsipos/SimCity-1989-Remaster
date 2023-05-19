@@ -183,6 +183,13 @@ public class Tests {
         assertTrue(g.getMap()[24][22] instanceof ResidentialZone);
     }
 
+    /*@Test
+    public void testBuildingCollisionEdgeOfMap() {
+        Game g = new Game("test");
+        g.build(Building.RESIDENTIAL, new Coordinates(26,23));
+        assertTrue(g.getMap()[26][23] instanceof Grass);
+    }*/
+
     //building on water tests
     @Test
     public void testBuildOnWaterSuccessful() {
