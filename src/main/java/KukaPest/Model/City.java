@@ -108,6 +108,12 @@ public class City implements java.io.Serializable {
      * @return True/false depending on the state of construction
      */
     boolean build(Building toBuild, Coordinates coords){
+        if(coords.getHeight() > mapHeight || coords.getWidth() > mapWidth || coords.getHeight() == mapHeight || coords.getWidth() == mapWidth){
+            return false;
+        }
+        if(coords.getHeight() < 0 || coords.getWidth() < 0){
+            return false;
+        }
         Environment enviroment;
         if(this.map[coords.getHeight()][coords.getWidth()] instanceof Grass){
             enviroment = new Grass();
@@ -174,6 +180,10 @@ public class City implements java.io.Serializable {
             return map[coords.getHeight()][coords.getWidth()] instanceof Environment;
         } else{
             MainZone mz = ((MainZone)toBuild);
+            if(coords.getWidth()+mz.getWidth() >= mapWidth || coords.getHeight()+ mz.getHeight() >= mapHeight){
+                System.out.println("Nincs elég hely az építéshez");
+                return false;
+            }
             for(int i = coords.getHeight(); i< coords.getHeight() + mz.getHeight(); i++){
                 for(int j = coords.getWidth(); j< coords.getWidth()+ mz.getWidth(); j++){
                     if(this.map[i][j] instanceof ZonePart   //Nem építhetsz mert foglalt terület.
