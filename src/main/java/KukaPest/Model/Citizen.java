@@ -144,6 +144,9 @@ public class Citizen implements java.io.Serializable {
         this.education = education;
     }
 
+    public boolean getPensioner() {return isPensioner;}
+    public int getAge() {return age;}
+
     @Override
     public String toString() {
         return "Citizen{" +
