@@ -1,14 +1,13 @@
 package KukaPest.Model;
 
-import KukaPest.Model.Helper.EduLevel;
-import KukaPest.Model.Map.*;
 import KukaPest.Model.Helper.Building;
 import KukaPest.Model.Helper.Coordinates;
+import KukaPest.Model.Helper.EduLevel;
 import KukaPest.Model.Helper.Graph;
+import KukaPest.Model.Map.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.Serializable;
 import java.security.InvalidParameterException;
 import java.util.*;
 
@@ -26,6 +25,8 @@ public class City implements java.io.Serializable {
     private int maxSchoolDegrees = 50; //in percentage
     private int maxUniversityDegrees = 20; //in percentage
     private int daysInNegative = 0;
+
+    private boolean isPaused=false;
 
     //Map dimensions:
     private final int mapHeight = 27;
@@ -165,97 +166,80 @@ public class City implements java.io.Serializable {
      * @return True if a nearby road exists and space is available, else false
      */
     boolean canBeBuilt(Constructable toBuild, Coordinates coords){
-        if(toBuild instanceof Road){
-            return (map[coords.getHeight()][coords.getWidth()] instanceof Environment
-                    && (coords.getHeight() + 1 < mapHeight && (map[coords.getHeight() + 1][coords.getWidth()] instanceof Road)
-                    || (coords.getHeight() - 1 >= 0 && map[coords.getHeight() - 1][coords.getWidth()] instanceof Road)
-                    || (coords.getWidth() + 1 < mapWidth && map[coords.getHeight()][coords.getWidth() + 1] instanceof Road)
-                    || (coords.getWidth() - 1 >= 0 && map[coords.getHeight()][coords.getWidth() - 1] instanceof Road)));
-        } else if (toBuild instanceof Pole) {
-            return map[coords.getHeight()][coords.getWidth()] instanceof Environment;
-        } else{
-            MainZone mz = ((MainZone)toBuild);
-            for(int i = coords.getHeight(); i< coords.getHeight() + mz.getHeight(); i++){
-                for(int j = coords.getWidth(); j< coords.getWidth()+ mz.getWidth(); j++){
-                    if(this.map[i][j] instanceof ZonePart   //Nem építhetsz mert foglalt terület.
-                            || this.map[i][j] instanceof MainZone
-                            || this.map[i][j] instanceof Road
-                            || this.map[i][j] instanceof Pole
-                            || this.map[i][j] instanceof Water){
-                        System.out.println("Foglalt terulet sorry");
-                        return false;
+        if(!isPaused){
+            if(toBuild instanceof Road){
+                return (map[coords.getHeight()][coords.getWidth()] instanceof Environment
+                        && (coords.getHeight() + 1 < mapHeight && (map[coords.getHeight() + 1][coords.getWidth()] instanceof Road)
+                        || (coords.getHeight() - 1 >= 0 && map[coords.getHeight() - 1][coords.getWidth()] instanceof Road)
+                        || (coords.getWidth() + 1 < mapWidth && map[coords.getHeight()][coords.getWidth() + 1] instanceof Road)
+                        || (coords.getWidth() - 1 >= 0 && map[coords.getHeight()][coords.getWidth() - 1] instanceof Road)));
+            } else if (toBuild instanceof Pole) {
+                return map[coords.getHeight()][coords.getWidth()] instanceof Environment;
+            } else{
+                MainZone mz = ((MainZone)toBuild);
+                for(int i = coords.getHeight(); i< coords.getHeight() + mz.getHeight(); i++){
+                    for(int j = coords.getWidth(); j< coords.getWidth()+ mz.getWidth(); j++){
+                        if(this.map[i][j] instanceof ZonePart   //Nem építhetsz mert foglalt terület.
+                                || this.map[i][j] instanceof MainZone
+                                || this.map[i][j] instanceof Road
+                                || this.map[i][j] instanceof Pole
+                                || this.map[i][j] instanceof Water){
+                            System.out.println("Foglalt terulet sorry");
+                            return false;
+                        }
                     }
                 }
-            }
-            // Check for a road nearby
-            boolean nearbyRoadExists = false;
+                // Check for a road nearby
+                boolean nearbyRoadExists = false;
 
-            //Check for road at the top of the building
-            if(coords.getHeight() > 0){
-                for (int k = coords.getWidth(); k < coords.getWidth() + mz.getWidth(); k++) {
-                    if (this.map[coords.getHeight() - 1][k] instanceof Road) {
-                        nearbyRoadExists = true;
-                        break;
+                //Check for road at the top of the building
+                if(coords.getHeight() > 0){
+                    for (int k = coords.getWidth(); k < coords.getWidth() + mz.getWidth(); k++) {
+                        if (this.map[coords.getHeight() - 1][k] instanceof Road) {
+                            nearbyRoadExists = true;
+                            break;
+                        }
                     }
                 }
-            }
 
-            //ha nem vagyunk a legalso sorban.
-            if(coords.getHeight() + mz.getHeight() < mapHeight) {
-                for (int k = coords.getWidth(); k < coords.getWidth() + mz.getWidth(); k++) {
-                    if (this.map[coords.getHeight() + mz.getHeight()][k] instanceof Road) {
-                        nearbyRoadExists = true;
-                        //System.out.println("Legalso sorban");
-                        break;
+                //ha nem vagyunk a legalso sorban.
+                if(coords.getHeight() + mz.getHeight() < mapHeight) {
+                    for (int k = coords.getWidth(); k < coords.getWidth() + mz.getWidth(); k++) {
+                        if (this.map[coords.getHeight() + mz.getHeight()][k] instanceof Road) {
+                            nearbyRoadExists = true;
+                            //System.out.println("Legalso sorban");
+                            break;
+                        }
                     }
                 }
-            }
 
-            //ha nem vagyunk baloldali oszlopban.
-            if(coords.getWidth() >0) {
-                for (int k = coords.getHeight(); k < coords.getHeight() + mz.getHeight(); k++) {
-                    if (this.map[k][coords.getWidth() - 1] instanceof Road) {
-                        nearbyRoadExists = true;
-                        //System.out.println("Bal oszlop");
-                        break;
+                //ha nem vagyunk baloldali oszlopban.
+                if(coords.getWidth() >0) {
+                    for (int k = coords.getHeight(); k < coords.getHeight() + mz.getHeight(); k++) {
+                        if (this.map[k][coords.getWidth() - 1] instanceof Road) {
+                            nearbyRoadExists = true;
+                            //System.out.println("Bal oszlop");
+                            break;
+                        }
                     }
                 }
-            }
 
-            //ha nem vagyunk baloldali oszlopban.
-            if(coords.getWidth() + mz.getWidth()<mapWidth) {
-                for (int k = coords.getHeight(); k < coords.getHeight() + mz.getHeight(); k++) {
-                    if (this.map[k][coords.getWidth() + mz.getWidth()] instanceof Road) {
-                        nearbyRoadExists = true;
-                        //System.out.println("Jobb oszlop");
-                        break;
+                //ha nem vagyunk baloldali oszlopban.
+                if(coords.getWidth() + mz.getWidth()<mapWidth) {
+                    for (int k = coords.getHeight(); k < coords.getHeight() + mz.getHeight(); k++) {
+                        if (this.map[k][coords.getWidth() + mz.getWidth()] instanceof Road) {
+                            nearbyRoadExists = true;
+                            //System.out.println("Jobb oszlop");
+                            break;
+                        }
                     }
                 }
-            }
-            //bal felso sarok, jobb felso sarok, bal also sarok, jobb also sarok
-            /*if(coords.getHeight()>0 && coords.getWidth()>0){
-                if(this.map[coords.getHeight()-1][coords.getWidth()-1] instanceof  Road){
-                    nearbyRoadExists=true;
-                }
-            }
-            if(coords.getHeight()+mz.getHeight()<mapHeight && coords.getWidth()>0){
-                if(this.map[coords.getHeight()+mz.getHeight()][coords.getWidth()-1] instanceof Road){
-                    nearbyRoadExists=true;
-                }
-            }
-            if(coords.getHeight()>0 && coords.getWidth()+ mz.getWidth()<mapWidth){
-                if(this.map[coords.getHeight()-1][coords.getWidth()+ mz.getWidth()] instanceof Road){
-                    nearbyRoadExists=true;
-                }
-            }
-            if(coords.getHeight()+mz.getHeight()<mapHeight && coords.getWidth()+mz.getWidth() <mapWidth){
-                if(this.map[coords.getHeight()+mz.getHeight()][coords.getWidth()+ mz.getWidth()] instanceof Road){
-                    nearbyRoadExists=true;
-                }
-            }*/
 
-            //van Út mellete
-            return nearbyRoadExists;
+                //van Út mellete
+                return nearbyRoadExists;
+            }
+        }else{
+            return false;
         }
     }
 
@@ -418,28 +402,33 @@ public class City implements java.io.Serializable {
     }
 
     public void timePassed(int days){
-        int dateChange = date.DaysPassed(days);
+        if(days!=0){
+            isPaused=false;
+            int dateChange = date.DaysPassed(days);
+            System.out.println("Days passed: "+days);
 
-        electricitySupply();
-        electricityStats();
+            electricitySupply();
+            electricityStats();
 
-        calculateSatisfaction();
-        for (int i = 0; i < days; i++) {
-            // One day Passed!
-            handleMoveIn();
-            handleMoveOut();
-            updateBalance();
-        }
-        if(dateChange > 0){
-             //A month has passed!
-            handleGraduation(); //ezt majd rakd eggyel lejjeb legyen evrol evre, igy csak khonaprol honapra
-            if(dateChange > 1){
-                for (int i = 0; i < citizens.size(); i++){
-                    citizens.get(i).yearPassed();
+            calculateSatisfaction();
+            for (int i = 0; i < days; i++) {
+                // One day Passed!
+                handleMoveIn();
+                handleMoveOut();
+                updateBalance();
+            }
+            if(dateChange > 0){
+                //A month has passed!
+                handleGraduation(); //ezt majd rakd eggyel lejjeb legyen evrol evre, igy csak khonaprol honapra
+                if(dateChange > 1){
+                    for (int i = 0; i < citizens.size(); i++){
+                        citizens.get(i).yearPassed();
+                    }
                 }
             }
+        }else{
+            isPaused=true;
         }
-        // System.out.println("Elégedettség: " + satisfaction()); //debug
     }
 
     private void handleMoveOut() {

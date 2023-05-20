@@ -105,11 +105,15 @@ public class MainWindow extends JFrame{
         JToolBar menubar = new JToolBar();
         JPanel panel2 = new JPanel();
 
+        Icon pauseicon = new ImageIcon("src/main/java/KukaPest/Assets/speed-pause.png");
         Icon firstspeedicon = new ImageIcon("src/main/java/KukaPest/Assets/speed-icon.png");
         Icon secondspeedicon = new ImageIcon("src/main/java/KukaPest/Assets/speed-3x-icon.png");
         Icon thirdspeedicon = new ImageIcon("src/main/java/KukaPest/Assets/speed-5x-icon.png");
         credits = new ImageIcon("src/main/java/KukaPest/Assets/credits.jpg");
 
+
+        JButton nullspeed = new JButton(pauseicon);
+        nullspeed.setBackground(Color.WHITE);
         JButton firstspeed = new JButton(firstspeedicon);
         firstspeed.setBackground(Color.WHITE);
         JButton secondspeed = new JButton(secondspeedicon);
@@ -117,6 +121,7 @@ public class MainWindow extends JFrame{
         JButton thirdspeed = new JButton(thirdspeedicon);
         thirdspeed.setBackground(Color.WHITE);
 
+        panel2.add(nullspeed);
         panel2.add(firstspeed);
         panel2.add(secondspeed);
         panel2.add(thirdspeed);
@@ -205,6 +210,8 @@ public class MainWindow extends JFrame{
         buttonpanel.add(upgrade);
         buttonpanel.add(stats);
 
+        panel.add(nullspeed);
+        panel.addSeparator();
         panel.add(firstspeed);
         panel.addSeparator();
         panel.add(secondspeed);
@@ -212,10 +219,7 @@ public class MainWindow extends JFrame{
         panel.add(thirdspeed);
         panel.addSeparator();
         panel.addSeparator();
-        panel.addSeparator();
         panel.add(year);
-        panel.addSeparator();
-        panel.addSeparator();
         panel.addSeparator();
 
         panel.addSeparator();
@@ -780,6 +784,13 @@ public class MainWindow extends JFrame{
             public void actionPerformed(ActionEvent ae) {
 
                 BoardPanel.selectedBuilding = Building.SERVICE;
+            }
+        });
+        nullspeed.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+
+                BoardPanel.getGame().setTimeSpeed(0);
             }
         });
         firstspeed.addActionListener(new ActionListener() {
