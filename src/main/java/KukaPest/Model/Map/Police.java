@@ -11,7 +11,7 @@ public class Police extends Infrastructure implements java.io.Serializable{
     @Override
     public HashMap<String, String> getStats(){
         HashMap<String, String> ret = new HashMap<>();
-        ret.put("Fenntartási költség", "" + super.getUpKeep());
+        ret.put("Upkeep", "" + super.getUpKeep());
         return ret;
     }
 }

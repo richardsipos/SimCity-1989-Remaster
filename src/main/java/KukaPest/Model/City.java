@@ -25,6 +25,7 @@ public class City implements java.io.Serializable {
     private int electricityNeed=0;
     private int maxSchoolDegrees = 50; //in percentage
     private int maxUniversityDegrees = 20; //in percentage
+    private int daysInNegative = 0;
 
     //Map dimensions:
     private final int mapHeight = 27;
@@ -292,7 +293,7 @@ public class City implements java.io.Serializable {
     }
 
     void updateBalance(){
-        int[] balance = {0 , 0};
+        int[] balance = {0, 0};
         for (int i = 0; i < mapHeight; i++) {
             for (int j = 0; j < mapWidth; j++) {
                 if(map[i][j] instanceof Constructable) balance[0] -= ((Constructable) map[i][j]).getUpKeep();
@@ -305,6 +306,8 @@ public class City implements java.io.Serializable {
 
         this.funds += balance[1] + balance[0];
         lastBalance = balance;
+        if (funds < 0) daysInNegative++;
+        else daysInNegative = 0;
     }
 
     /**
@@ -424,6 +427,7 @@ public class City implements java.io.Serializable {
         for (int i = 0; i < days; i++) {
             // One day Passed!
             handleMoveIn();
+            handleMoveOut();
             updateBalance();
         }
         if(dateChange > 0){
@@ -436,6 +440,15 @@ public class City implements java.io.Serializable {
             }
         }
         // System.out.println("Elégedettség: " + satisfaction()); //debug
+    }
+
+    private void handleMoveOut() {
+        if (satisfaction() >= 30) return;
+        System.out.println("Lakosok: " + citizens.size());
+        int toMoveOut = (int)Math.ceil((double)citizens.size() / 100);
+        for (int i = 0; i < toMoveOut; i++) {
+            citizens.get(new Random().nextInt(citizens.size())).moveOut();
+        }
     }
 
     private void handleGraduation() {
@@ -1074,5 +1087,9 @@ public class City implements java.io.Serializable {
 
     public ArrayList<Citizen> getCitizens() {
         return citizens;
+    }
+
+    public int getDaysInNegative() {
+        return daysInNegative;
     }
 }

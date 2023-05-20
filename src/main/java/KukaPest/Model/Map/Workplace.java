@@ -20,11 +20,11 @@ public abstract class Workplace extends MainZone implements java.io.Serializable
     @Override
     public HashMap<String, String> getStats(){
         HashMap<String, String> ret = new HashMap<>();
-        ret.put("Kapacitás", "" + super.getMaxCapacity());
-        ret.put("Munkások", "" + super.getCurrentCapacity());
-        ret.put("Szint", "" + "" + level);
-        ret.put("Fenntartási költség", "" + super.getUpKeep());
-        ret.put("Elégedettség", "" + super.getSatisfaction());
+        ret.put("Capacity", "" + super.getMaxCapacity());
+        ret.put("Workers", "" + super.getCurrentCapacity());
+        ret.put("Level", "" + "" + level);
+        ret.put("Upkeep", "" + super.getUpKeep());
+        ret.put("Satisfaction", "" + super.getSatisfaction());
         return ret;
     }
 
