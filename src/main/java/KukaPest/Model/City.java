@@ -24,9 +24,6 @@ public class City implements java.io.Serializable {
     private int electricityNeed=0;
     private int maxSchoolDegrees = 50; //in percentage
     private int maxUniversityDegrees = 20; //in percentage
-
-    private Sound sound = new Sound();
-
     //Map dimensions:
     private final int mapHeight = 27;
     private final int mapWidth = 48;
@@ -185,7 +182,6 @@ public class City implements java.io.Serializable {
             MainZone mz = ((MainZone)toBuild);
             if(coords.getWidth()+mz.getWidth() >= mapWidth || coords.getHeight()+ mz.getHeight() >= mapHeight){
                 System.out.println("Nincs elég hely az építéshez");
-                playMusic(0);
                 return false;
             }
             for(int i = coords.getHeight(); i< coords.getHeight() + mz.getHeight(); i++){
@@ -196,7 +192,6 @@ public class City implements java.io.Serializable {
                             || this.map[i][j] instanceof Pole
                             || this.map[i][j] instanceof Water){
                         System.out.println("Foglalt terulet sorry");
-                        playMusic(0);
                         return false;
                     }
                 }
@@ -267,9 +262,7 @@ public class City implements java.io.Serializable {
                     nearbyRoadExists=true;
                 }
             }*/
-            if(!nearbyRoadExists){
-                playMusic(0);
-            }
+
 
             //van Út mellete
             return nearbyRoadExists;
@@ -1131,8 +1124,4 @@ public class City implements java.io.Serializable {
         return citizens;
     }
 
-    public void playMusic(int i){
-        sound.setFile(i);
-        sound.play();
-    }
 }
