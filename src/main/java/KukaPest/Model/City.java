@@ -1,16 +1,15 @@
 package KukaPest.Model;
 
-import KukaPest.Model.Helper.EduLevel;
+import KukaPest.Model.Helper.*;
 import KukaPest.Model.Map.*;
-import KukaPest.Model.Helper.Building;
-import KukaPest.Model.Helper.Coordinates;
-import KukaPest.Model.Helper.Graph;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.Serializable;
 import java.security.InvalidParameterException;
 import java.util.*;
+
+import static java.lang.Math.*;
 
 //import java.util.Date;
 
@@ -25,6 +24,8 @@ public class City implements java.io.Serializable {
     private int electricityNeed=0;
     private int maxSchoolDegrees = 50; //in percentage
     private int maxUniversityDegrees = 20; //in percentage
+
+    private Sound sound = new Sound();
 
     //Map dimensions:
     private final int mapHeight = 27;
@@ -61,6 +62,7 @@ public class City implements java.io.Serializable {
 
     public Graph destroygraph;
     public Graph moveInGraph;
+    public Graph IsIndustrialClose;
 
     public int destroynodes = 0;
 
@@ -160,6 +162,7 @@ public class City implements java.io.Serializable {
             this.funds -= (toBeBuilt.getPrice());
             return true;
         }
+
         return false;
     }
 
@@ -182,6 +185,7 @@ public class City implements java.io.Serializable {
             MainZone mz = ((MainZone)toBuild);
             if(coords.getWidth()+mz.getWidth() >= mapWidth || coords.getHeight()+ mz.getHeight() >= mapHeight){
                 System.out.println("Nincs elég hely az építéshez");
+                playMusic(0);
                 return false;
             }
             for(int i = coords.getHeight(); i< coords.getHeight() + mz.getHeight(); i++){
@@ -192,6 +196,7 @@ public class City implements java.io.Serializable {
                             || this.map[i][j] instanceof Pole
                             || this.map[i][j] instanceof Water){
                         System.out.println("Foglalt terulet sorry");
+                        playMusic(0);
                         return false;
                     }
                 }
@@ -262,6 +267,9 @@ public class City implements java.io.Serializable {
                     nearbyRoadExists=true;
                 }
             }*/
+            if(!nearbyRoadExists){
+                playMusic(0);
+            }
 
             //van Út mellete
             return nearbyRoadExists;
@@ -274,7 +282,20 @@ public class City implements java.io.Serializable {
 //    ezt hivja majd a TimePassed es intezzi majd a Citizenet bekoltozeset.
     void handleMoveIn(){
         //random people will come to the city (bebtween 1-4 bot ends included)
-        int randomNumber = (new Random().nextInt(4)) + 1;
+        int randomNumber;
+        if(satisfaction() <= 50){
+            randomNumber = 1;
+        }
+        else if(satisfaction() <= 65){
+            randomNumber = 2;
+        }
+        else if(satisfaction() <= 75){
+            randomNumber = 3;
+        }
+        else{
+            randomNumber = 4;
+        }
+
 
         for(int i=1;i<=randomNumber;i++){
             ResidentialZone Rzone = hasFreeResidential();
@@ -285,10 +306,28 @@ public class City implements java.io.Serializable {
             //ha van free residential zone es van industrial zone is akkor letre kell hozzni egy citizent.
 
             if(Rzone!=null && Wzone!=null && canMoveIn()){
+                int x = abs(Rzone.getCoordinates().getHeight()-Wzone.getCoordinates().getHeight());
+                int y = abs(Rzone.getCoordinates().getWidth()-Wzone.getCoordinates().getWidth());
+                int first = (int) pow((Rzone.getCoordinates().getHeight() - Wzone.getCoordinates().getHeight()),2);
+                int second = (int) pow((Rzone.getCoordinates().getWidth() - Wzone.getCoordinates().getWidth()),2);
+                int d = (int) sqrt(first + second);
+                System.out.println(d);
                 Citizen citizen = new Citizen(new Random().nextInt(42) + 18, Rzone, Wzone, this);
                 citizens.add(citizen);
                 Rzone.addCitizen(citizen);
                 Wzone.addCitizen(citizen);
+                if (d <= 5){
+                    Rzone.setSatisfactionBoost(0);
+                }
+                else if (d <= 10) {
+                    Rzone.setSatisfactionBoost(-3);
+                }
+                else if (d <= 15){
+                    Rzone.setSatisfactionBoost(-5);
+                }
+                else if (d > 15){
+                    Rzone.setSatisfactionBoost(-10);
+                }
             }
         }
     }
@@ -615,7 +654,7 @@ public class City implements java.io.Serializable {
 
     public void buildingsAvailable(Coordinates coords,Graph graph) {
         numberBuilding = 0;
-        graph.addNode(0, true, new Coordinates(startRoad.getHeight(), startRoad.getWidth()));
+        graph.addNode(0, true, new Coordinates(startRoad.getHeight(), startRoad.getWidth()),false);
         //System.out.println(startRoad.getHeight() + " " + startRoad.getWidth() + " id: " + destroyGraph.getNodeID(new Coordinates(startRoad.getHeight(),startRoad.getWidth())));
         int id = 1;
 
@@ -627,13 +666,18 @@ public class City implements java.io.Serializable {
                 }
                 else if (this.map[i][j] instanceof Road) {
                     // System.out.println(i + " " + j + " id: " + id);
-                    graph.addNode(id, true, new Coordinates(i, j));
+                    graph.addNode(id, true, new Coordinates(i, j),false);
                     id = id + 1;
                 }
                 else if (this.map[i][j] instanceof MainZone) {
                     numberBuilding++;
                     // System.out.println(i + " " + j + " id: " + id);
-                    graph.addNode(id, false, new Coordinates(i, j));
+                    if(this.map[i][j] instanceof Workplace){
+                        graph.addNode(id, false, new Coordinates(i, j),true);
+                    }
+                    else {
+                        graph.addNode(id, false, new Coordinates(i, j), false);
+                    }
                     id = id + 1;
                 }
             }
@@ -866,6 +910,7 @@ public class City implements java.io.Serializable {
             for (int j = 0; j < mapWidth; j++) {
                 if (this.map[i][j] instanceof Stadium && ((Stadium) this.map[i][j]).isElectricity()) modifySatisfactionBoost(new Coordinates(i,j), 9, 15, (Constructable) this.map[i][j]);
                 else if (this.map[i][j] instanceof Police && ((Police) this.map[i][j]).isElectricity()) modifySatisfactionBoost(new Coordinates(i,j), 6, 10, (Constructable) this.map[i][j]);
+                else if (this.map[i][j] instanceof IndustrialZone && ((IndustrialZone) this.map[i][j]).isElectricity()) modifySatisfactionBoost(new Coordinates(i,j), 3, -5, (Constructable) this.map[i][j]);
             }
         }
 
@@ -1084,5 +1129,10 @@ public class City implements java.io.Serializable {
 
     public ArrayList<Citizen> getCitizens() {
         return citizens;
+    }
+
+    public void playMusic(int i){
+        sound.setFile(i);
+        sound.play();
     }
 }
