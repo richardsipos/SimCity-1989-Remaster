@@ -51,9 +51,10 @@ abstract public class MainZone extends Constructable implements java.io.Serializ
 
     public void addCitizen(Citizen c){
         this.citizens.add(c);
+
     }
-    public void removeCitizen(Citizen c){
-        this.citizens.remove(c);
+    public boolean removeCitizen(Citizen c){
+        return this.citizens.remove(c);
     }
 
     /**

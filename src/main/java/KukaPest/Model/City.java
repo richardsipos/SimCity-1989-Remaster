@@ -248,6 +248,7 @@ public class City implements java.io.Serializable {
      */
 //    ezt hivja majd a TimePassed es intezzi majd a Citizenet bekoltozeset.
     void handleMoveIn(){
+
         //random people will come to the city (bebtween 1-4 bot ends included)
         int randomNumber = (new Random().nextInt(4)) + 1;
 
@@ -259,7 +260,7 @@ public class City implements java.io.Serializable {
 
             //ha van free residential zone es van industrial zone is akkor letre kell hozzni egy citizent.
 
-            if(Rzone!=null && Wzone!=null && canMoveIn()){
+            if(Rzone!=null && Wzone!=null && canMoveIn() && daysInNegative<=0){
                 Citizen citizen = new Citizen(new Random().nextInt(42) + 18, Rzone, Wzone, this);
                 citizens.add(citizen);
                 Rzone.addCitizen(citizen);
@@ -413,8 +414,8 @@ public class City implements java.io.Serializable {
             calculateSatisfaction();
             for (int i = 0; i < days; i++) {
                 // One day Passed!
-                handleMoveIn();
                 handleMoveOut();
+                handleMoveIn();
                 updateBalance();
             }
             if(dateChange > 0){
