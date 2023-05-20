@@ -4,6 +4,7 @@ import KukaPest.Model.Helper.EduLevel;
 import KukaPest.Model.Map.ResidentialZone;
 import KukaPest.Model.Map.Workplace;
 
+import java.io.Serializable;
 import java.util.Random;
 
 public class Citizen implements java.io.Serializable {
@@ -140,18 +141,9 @@ public class Citizen implements java.io.Serializable {
     public void moveOut(){
         if(isPensioner) return;
         System.out.println("Move out: " + this);
-        boolean removedFromHome;
-        boolean removedFromWork;
-        removedFromHome = this.home.removeCitizen(this);
-
-        if(removedFromHome){
-            removedFromWork = this.workPlace.removeCitizen(this);
-            if(removedFromHome && removedFromWork){
-                this.city.citizens.remove(this);
-            }
-        }
-        System.out.println("Vegigment a delete");
-
+        this.city.citizens.remove(this);
+        this.workPlace.removeCitizen(this);
+        this.home.removeCitizen(this);
     }
 
     public EduLevel getEducation() {
