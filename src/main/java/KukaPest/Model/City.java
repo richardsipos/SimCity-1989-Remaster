@@ -307,7 +307,7 @@ public class City implements java.io.Serializable {
         this.funds += balance[1] + balance[0];
         lastBalance = balance;
         if (funds < 0) daysInNegative++;
-        else daysInNegative = 0;
+        else daysInNegative = Math.max(daysInNegative - 2 , 0);
     }
 
     /**
