@@ -34,19 +34,21 @@ public class Citizen implements java.io.Serializable {
     public int satisfaction() {
         int total = 50;
         if (home.isElectricity()){
-            total += home.getSatisfactionBoost();
+            total += Math.min(home.getSatisfactionBoost(), 30);
         }else{
             if(home.getSatisfactionBoost()!=0){
-                total += home.getSatisfactionBoost()/2;
+                total += Math.min(home.getSatisfactionBoost() / 2, 30);
             }
         }
         if(!isPensioner){
             if (workPlace.isElectricity()){
-                total += workPlace.getSatisfactionBoost();
+                total += Math.min(workPlace.getSatisfactionBoost(), 30);
             }else{
-                total += workPlace.getSatisfactionBoost()/2;
+                total += Math.min(workPlace.getSatisfactionBoost() / 2, 30);
             }
         }
+
+        total -= city.getDaysInNegative() * 0.3;
 
         if (total < 0) total = 0;
         if (total > 100) total = 100;
@@ -77,7 +79,7 @@ public class Citizen implements java.io.Serializable {
     }
 
     /**
-     * This method ages th citizen if a year passes, and settles age related matters (tax, pension, death)
+     * This method ages the citizen if a year passes, and settles age related matters (tax, pension, death)
      */
     public void yearPassed(){
         this.age++;
@@ -132,8 +134,16 @@ public class Citizen implements java.io.Serializable {
             this.chanceToDie = 0;
         }
         else{
-            this.city.citizens.remove(this);
+            moveOut();
         }
+    }
+
+    public void moveOut(){
+        if(isPensioner) return;
+        System.out.println("Move out: " + this);
+        this.city.citizens.remove(this);
+        this.workPlace.removeCitizen(this);
+        this.home.removeCitizen(this);
     }
 
     public EduLevel getEducation() {
@@ -154,5 +164,15 @@ public class Citizen implements java.io.Serializable {
                 ", home=" + home +
                 ", workPlace=" + workPlace +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj instanceof Citizen c){
+            return c.age == this.age && c.education == this.education
+                    && c.pension == this.pension;
+        }
+        return false;
     }
 }

@@ -42,10 +42,10 @@ abstract public class MainZone extends Constructable implements java.io.Serializ
 
     public HashMap<String, String> getStats(){
         HashMap<String, String> ret = new HashMap<>();
-        ret.put("Kapacitás", "" + capacity);
-        ret.put("Elégedettség nővelés", "" + satisfactionBoost);
-        ret.put("Emberek", "" + citizens.size());
-        ret.put("Fenntartási költség", "" + super.getUpKeep());
+        ret.put("Capacity", "" + capacity);
+        ret.put("Satisfaction Boost", "" + satisfactionBoost);
+        ret.put("People", "" + citizens.size());
+        ret.put("Upkeep", "" + super.getUpKeep());
         return ret;
     }
 

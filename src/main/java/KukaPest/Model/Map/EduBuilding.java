@@ -27,9 +27,9 @@ abstract public class EduBuilding extends Infrastructure implements java.io.Seri
     @Override
     public HashMap<String, String> getStats(){
         HashMap<String, String> ret = new HashMap<>();
-        ret.put("Kapacitás", "" + super.getMaxCapacity());
-        ret.put("Utolsó évben végzettek", "" + lastGraduated);
-        ret.put("Fenntartási költség", "" + super.getUpKeep());
+        ret.put("Capacity", "" + super.getMaxCapacity());
+        ret.put("Graduated", "" + lastGraduated);
+        ret.put("Upkeep", "" + super.getUpKeep());
         return ret;
     }
 
