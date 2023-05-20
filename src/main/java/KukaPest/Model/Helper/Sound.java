@@ -8,7 +8,7 @@ import java.io.File;
 
 public class Sound {
     Clip clip;
-    private String[] soundsname = new String[1];
+    String[] soundsname = new String[1];
 
 
     public Sound(){
