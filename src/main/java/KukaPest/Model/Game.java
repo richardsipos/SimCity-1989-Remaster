@@ -2,6 +2,7 @@ package KukaPest.Model;
 
 import KukaPest.Model.Helper.Building;
 import KukaPest.Model.Helper.Coordinates;
+import KukaPest.Model.Map.ResidentialZone;
 import KukaPest.Model.Map.Tile;
 
 import java.util.ArrayList;
@@ -67,4 +68,5 @@ public class Game implements java.io.Serializable {
     public int getElectricityNeed() {
         return city.getElectricityNeed();
     }
+    public ResidentialZone getPoweredResZone() { return city.getPoweredResZone();}
 }

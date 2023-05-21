@@ -1,11 +1,14 @@
 package KukaTest;
 
+import KukaPest.Model.Citizen;
 import KukaPest.Model.Game;
 import KukaPest.Model.Helper.Building;
 import KukaPest.Model.Helper.Coordinates;
 import KukaPest.Model.Helper.EduLevel;
 import KukaPest.Model.Map.*;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -172,6 +175,21 @@ public class Tests {
         assertTrue(g.getMap()[24][22] instanceof ResidentialZone);
     }
 
+    @Test
+    public void testBuildingCollision2() {
+        Game g = new Game("test");
+        g.build(Building.RESIDENTIAL, new Coordinates(24,22));
+        g.build(Building.INDUSTRY, new Coordinates(24,22));
+        assertTrue(g.getMap()[24][22] instanceof ResidentialZone);
+    }
+
+    /*@Test
+    public void testBuildingCollisionEdgeOfMap() {
+        Game g = new Game("test");
+        g.build(Building.RESIDENTIAL, new Coordinates(26,23));
+        assertTrue(g.getMap()[26][23] instanceof Grass);
+    }*/
+
     //building on water tests
     @Test
     public void testBuildOnWaterSuccessful() {
@@ -230,6 +248,16 @@ public class Tests {
     }
 
     @Test
+    public void testBuildingUpgrade2() {
+        Game g = new Game("test");
+        g.build(Building.INDUSTRY, new Coordinates(24,22));
+        g.upgrade(new Coordinates(24,22));
+        g.upgrade(new Coordinates(24,22));
+        IndustrialZone r = (IndustrialZone) g.getMap()[24][22];
+        assertTrue(r.getLevel() == 3 );
+    }
+
+    @Test
     public void testElectricity() {
         Game g = new Game("test");
         for (int i = 21; i > 16; --i) {
@@ -240,61 +268,162 @@ public class Tests {
         g.getCity().electricityStats();
         assertTrue( g.getElectricityNeed() == 20 && g.getElectricityProduction() == 1000);
     }
-//    @Test
-//    public void testElectricityUsedAndPoles() throws InterruptedException {
-//        Game g = new Game("test");
-//        for (int i = 21; i > 16; --i) {
-//            g.build(Building.ROAD, new Coordinates(26,i));
-//        }
-//        g.build(Building.RESIDENTIAL, new Coordinates(24,22));
-//        g.build(Building.POWER_PLANT, new Coordinates(22,16));
-//        g.build(Building.POLE, new Coordinates(22,20));
-//        g.build(Building.POLE, new Coordinates(22,21));
-//        Thread.sleep(1000);
-//        ResidentialZone r = g.getPoweredResZone();
-//        assertTrue( r == null);
-//    }
+    @Test
+    public void testElectricityUsedAndPoles() {
+        Game g = new Game("test");
+        for (int i = 21; i > 16; --i) {
+            g.build(Building.ROAD, new Coordinates(26,i));
+        }
+        g.build(Building.RESIDENTIAL, new Coordinates(24,22));
+        g.build(Building.POWER_PLANT, new Coordinates(22,16));
+        g.build(Building.POLE, new Coordinates(22,20));
+        g.build(Building.POLE, new Coordinates(22,21));
+        ResidentialZone r = g.getPoweredResZone();
+        assertTrue( r == null);
+    }
 
     //education tests
-    /*@Test
-    public void BaseEducation() throws InterruptedException {
+    @Test
+    public void baseEducation() {
         Game g = new Game("test");
-        for (int i = 21; i > -1; --i) {
+        for (int i = 21; i > 0; --i) {
             g.build(Building.ROAD, new Coordinates(26,i));
         }
         g.build(Building.RESIDENTIAL, new Coordinates(24,22));
         g.build(Building.SERVICE, new Coordinates(24,20));
-        g.build(Building.POWER_PLANT, new Coordinates(22,16));
-        Thread.sleep(5000);
+        long end = System.currentTimeMillis() + 5000;
+        while(System.currentTimeMillis()<end){g.stepGame();}
         assertTrue(g.getCitizens().get(0).getEducation() == EduLevel.BASIC);
     }
 
     @Test
-    public void MidEducation() throws InterruptedException {
+    public void midEducation() {
         Game g = new Game("test");
-        for (int i = 21; i > -1; --i) {
+        for (int i = 21; i > 0; --i) {
             g.build(Building.ROAD, new Coordinates(26,i));
         }
-        g.build(Building.RESIDENTIAL, new Coordinates(2422));
+        g.build(Building.RESIDENTIAL, new Coordinates(24,22));
         g.build(Building.SERVICE, new Coordinates(24,20));
-        g.build(Building.POWER_PLANT, new Coordinates(22,16));
-        g.build(Building.SCHOOL, new Coordinates(24,12));
-        Thread.sleep(5000);
-        assertTrue(g.getCitizens().get(0).education == 2);
-    }*/
+        g.build(Building.SCHOOL, new Coordinates(24,16));
+        long end = System.currentTimeMillis() + 5000;
+        while(System.currentTimeMillis()<end){g.stepGame();}
+        assertTrue(g.getCitizens().get(0).getEducation() == EduLevel.MID);
+    }
 
-    /*@Test
-    public void HighEducation() throws InterruptedException {
+    @Test
+    public void hiEducation() {
         Game g = new Game("test");
-        for (int i = 21; i > -1; --i) {
+        for (int i = 21; i > 0; --i) {
             g.build(Building.ROAD, new Coordinates(26,i));
         }
-        g.build(Building.RESIDENTIAL, new Coordinates(2422));
+        g.build(Building.RESIDENTIAL, new Coordinates(24,22));
         g.build(Building.SERVICE, new Coordinates(24,20));
-        g.build(Building.POWER_PLANT, new Coordinates(22,16));
-        g.build(Building.SCHOOL, new Coordinates(24,12));
-        g.build(Building.UNIVERSITY, new Coordinates(22,8));
-        Thread.sleep(20000);
-        assertTrue(g.getCitizens().get(0).education == 3);
-    }*/
+        g.build(Building.SCHOOL, new Coordinates(24,16));
+        g.build(Building.UNIVERSITY, new Coordinates(22,12));
+        long end = System.currentTimeMillis() + 5000;
+        while(System.currentTimeMillis()<end){g.stepGame();}
+        assertTrue(g.getCitizens().get(0).getEducation() == EduLevel.HIGH);
+    }
+
+    //satisfaction tests
+    @Test
+    public void baseSatisfaction() {
+        Game g = new Game("test");
+        for (int i = 21; i > 0; --i) {
+            g.build(Building.ROAD, new Coordinates(26,i));
+        }
+        g.build(Building.RESIDENTIAL, new Coordinates(24,22));
+        g.build(Building.SERVICE, new Coordinates(24,20));
+        long end = System.currentTimeMillis() + 2000;
+        while(System.currentTimeMillis()<end){g.stepGame();}
+        assertTrue(g.getCitizens().get(0).satisfaction() == 50);
+    }
+
+    @Test
+    public void noElectricityNoSatisfactionBoost() {
+        Game g = new Game("test");
+        for (int i = 21; i > 0; --i) {
+            g.build(Building.ROAD, new Coordinates(26,i));
+        }
+        g.build(Building.RESIDENTIAL, new Coordinates(24,22));
+        g.build(Building.SERVICE, new Coordinates(24,20));
+        g.build(Building.POLICE, new Coordinates(24,15));
+        long end = System.currentTimeMillis() + 2000;
+        while(System.currentTimeMillis()<end){g.stepGame();}
+        assertTrue(g.getCitizens().get(0).satisfaction() == 50);
+    }
+
+    @Test
+    public void yesElectricityYesSatisfactionBoostPolice() {
+        Game g = new Game("test");
+        for (int i = 21; i > 0; --i) {
+            g.build(Building.ROAD, new Coordinates(26,i));
+        }
+        g.build(Building.RESIDENTIAL, new Coordinates(24,22));
+        g.build(Building.SERVICE, new Coordinates(24,20));
+        g.build(Building.POLICE, new Coordinates(24,15));
+        g.build(Building.POWER_PLANT, new Coordinates(22,11));
+        long end = System.currentTimeMillis() + 2000;
+        while(System.currentTimeMillis()<end){g.stepGame();}
+        assertTrue(g.getCitizens().get(0).satisfaction() != 50);
+    }
+
+    @Test
+    public void yesElectricityYesSatisfactionBoostStadium() {
+        Game g = new Game("test");
+        for (int i = 21; i > 0; --i) {
+            g.build(Building.ROAD, new Coordinates(26,i));
+        }
+        g.build(Building.RESIDENTIAL, new Coordinates(24,22));
+        g.build(Building.SERVICE, new Coordinates(24,20));
+        g.build(Building.STADIUM, new Coordinates(22,15));
+        g.build(Building.POWER_PLANT, new Coordinates(22,11));
+        long end = System.currentTimeMillis() + 2000;
+        while(System.currentTimeMillis()<end){g.stepGame();}
+        assertTrue(g.getCitizens().get(0).satisfaction() != 50);
+    }
+
+    //citizen tests
+    @Test
+    public void movedInCitizenNotPensioner() {
+        Game g = new Game("test");
+        for (int i = 21; i > 0; --i) {
+            g.build(Building.ROAD, new Coordinates(26,i));
+        }
+        g.build(Building.RESIDENTIAL, new Coordinates(24,22));
+        g.build(Building.SERVICE, new Coordinates(24,20));
+        g.stepGame();
+        boolean noPensioners = true;
+        ArrayList<Citizen> c = g.getCitizens();
+        for (Citizen cit : c) {
+            if (cit.getPensioner()) {
+                noPensioners = false;
+            }
+        }
+        assertTrue(noPensioners);
+    }
+
+    @Test
+    public void agedCitizenIsPensioner() {
+        Game g = new Game("test");
+        for (int i = 21; i > 0; --i) {
+            g.build(Building.ROAD, new Coordinates(26,i));
+        }
+        g.build(Building.RESIDENTIAL, new Coordinates(24,22));
+        g.build(Building.SERVICE, new Coordinates(24,20));
+        ArrayList<Citizen> c = g.getCitizens();
+        boolean pensionersExist = false;
+        Citizen pensioner = null;
+        while (!pensionersExist) {
+            g.stepGame();
+            for (Citizen cit : c) {
+                if (cit.getPensioner()) {
+                    pensionersExist = true;
+                    pensioner = cit;
+                }
+            }
+        }
+        assertTrue(pensionersExist && pensioner.getAge() >= 65);
+    }
 }
+

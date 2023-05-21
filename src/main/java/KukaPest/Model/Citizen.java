@@ -164,6 +164,9 @@ public class Citizen implements java.io.Serializable {
         return this.education;
     }
 
+    public boolean getPensioner() { return isPensioner; }
+    public int getAge() { return age; }
+
     public void setEducation(EduLevel education) {
         this.education = education;
     }

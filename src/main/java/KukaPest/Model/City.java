@@ -1030,4 +1030,19 @@ public class City implements java.io.Serializable {
     public int getDaysInNegative() {
         return this.daysInNegative;
     }
+
+    //for CI/CD purposes
+    public ResidentialZone getPoweredResZone() {
+        for (int i = 0; i < mapHeight; i++) {
+            for (int j = 0; j < mapWidth; j++) {
+                if (this.map[i][j] instanceof ResidentialZone) {
+                    if (((ResidentialZone) this.map[i][j]).isElectricity()) {
+                        return (ResidentialZone) this.map[i][j];
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
 }

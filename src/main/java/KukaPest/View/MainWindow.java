@@ -408,7 +408,7 @@ public class MainWindow extends JFrame{
                         BorderFactory.createEtchedBorder(
                                 EtchedBorder.RAISED, Color.GRAY
                                 , Color.DARK_GRAY), "Electricity need: "));
-        electricityneed.setText(BoardPanel.getGame().getElectricityProduction()-BoardPanel.getGame().getElectricityNeed()+ "");
+        electricityneed.setText(BoardPanel.getGame().getElectricityProduction() - BoardPanel.getGame().getElectricityNeed()+ "");
 
         electricityneed.setFont(new Font("Cooper Black", Font.BOLD, 15));
 
@@ -524,9 +524,6 @@ public class MainWindow extends JFrame{
         JMenu gameMenu = new JMenu("Game");
         menuBar.add(gameMenu,BorderLayout.SOUTH);
 
-
-        JMenuItem ngMenuItem = new JMenuItem("New Game");
-        gameMenu.add(ngMenuItem);
         JMenuItem sgMenuItem = new JMenuItem("Save Game");
         gameMenu.add(sgMenuItem);
         JMenuItem crMenuItem = new JMenuItem("Credits");
