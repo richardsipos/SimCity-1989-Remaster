@@ -69,4 +69,6 @@ public class Game implements java.io.Serializable {
         return city.getElectricityNeed();
     }
     public ResidentialZone getPoweredResZone() { return city.getPoweredResZone();}
+
+    public int getTimeSpeed() {return timeSpeed;}
 }

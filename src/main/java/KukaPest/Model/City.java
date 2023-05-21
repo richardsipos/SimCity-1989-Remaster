@@ -91,6 +91,7 @@ public class City implements java.io.Serializable {
                     if (this.map[i][j] instanceof Road) {
                         this.destroynodes = this.destroynodes + 1;
                         this.startRoad = new Coordinates(i,j);
+                        System.out.println(i + " " + j);
                     }
                 }
             }
@@ -107,6 +108,12 @@ public class City implements java.io.Serializable {
      * @return True/false depending on the state of construction
      */
     boolean build(Building toBuild, Coordinates coords) {
+        if(coords.getHeight() > mapHeight || coords.getWidth() > mapWidth || coords.getHeight() == mapHeight || coords.getWidth() == mapWidth){
+            return false;
+        }
+        if(coords.getHeight() < 0 || coords.getWidth() < 0){
+            return false;
+        }
         Environment environment;
         if (this.map[coords.getHeight()][coords.getWidth()] instanceof Grass) {
             environment = new Grass();
@@ -133,6 +140,7 @@ public class City implements java.io.Serializable {
 
 
 
+
         if (canBeBuilt(toBeBuilt,coords)) {
             if (toBeBuilt instanceof Road) {
                 this.destroynodes = this.destroynodes + 1;
@@ -143,6 +151,7 @@ public class City implements java.io.Serializable {
             }
 
             if ((toBeBuilt instanceof MainZone)) {
+
                 for (int i = coords.getHeight(); i < coords.getHeight() + ((MainZone) toBeBuilt).getHeight(); i++) {
                     for (int j = coords.getWidth(); j < coords.getWidth()+((MainZone) toBeBuilt).getWidth(); j++) {
                         this.map[i][j] = new ZonePart((MainZone)toBeBuilt);
@@ -151,6 +160,7 @@ public class City implements java.io.Serializable {
             }
             this.map[coords.getHeight()][coords.getWidth()] = toBeBuilt;
             this.funds -= (toBeBuilt.getPrice());
+            System.out.println(coords.getHeight() + " " + coords.getWidth());
             return true;
         }
         return false;
@@ -243,7 +253,20 @@ public class City implements java.io.Serializable {
      */
     void handleMoveIn() {
         // random people will come to the city (between 1-4 bot ends included)
-        int randomNumber = (new Random().nextInt(4)) + 1;
+        int randomNumber;
+
+        if(satisfaction() < 50){
+            randomNumber = 1;
+        }
+        else if(satisfaction() < 65){
+            randomNumber = 2;
+        }
+        else if(satisfaction() < 85){
+            randomNumber = 3;
+        }
+        else{
+            randomNumber = 4;
+        }
 
         for (int i = 1; i <= randomNumber; i++) {
             ResidentialZone Rzone = hasFreeResidential();
@@ -657,7 +680,7 @@ public class City implements java.io.Serializable {
                         if ((this.map[i + 1][j] instanceof Road || this.map[i + 1][j] instanceof MainZone) && graph.getNodeID(new Coordinates(i + 1, j)) != -1) {
                             graph.addEdge(first_id, graph.getNodeID(new Coordinates(i + 1, j)));
                         }
-                    } else if (i == this.mapHeight && j == 0) {
+                    } else if (i == this.mapHeight - 1 && j == 0) {
                         if (this.map[i - 1][j] instanceof Road && graph.getNodeID(new Coordinates(i - 1, j)) != -1) {
                             graph.addEdge(first_id, graph.getNodeID(new Coordinates(i - 1, j)));
                         }

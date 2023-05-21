@@ -46,7 +46,10 @@ public class Citizen implements java.io.Serializable {
                 total += Math.min(this.workPlace.getSatisfactionBoost() / 2, 30);
             }
         }
-        if (distanceWorkplaceAndHome <= 8) {
+        if (distanceWorkplaceAndHome <= 5) {
+            total -= 0;
+        }
+        else if (distanceWorkplaceAndHome <= 8) {
             total -= 1;
         }
         else if (distanceWorkplaceAndHome <= 10) {
