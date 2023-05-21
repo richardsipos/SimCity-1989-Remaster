@@ -35,7 +35,6 @@ public class MainWindow extends JFrame{
     Timer gameTime;
     String cityname;
     ImageIcon credits;
-    int paused = 0;
 
 
 
@@ -54,7 +53,7 @@ public class MainWindow extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e){
                 BoardPanel.repaint();
-                if (paused == 0) BoardPanel.getGame().stepGame();
+                BoardPanel.getGame().stepGame();
                 System.out.println("Lakók: " + BoardPanel.getGame().getPopulation() + "\nPézz: " + BoardPanel.getGame().getFunds()+ "\n\n");
                 refreshGameStatLabel();
                 int day = BoardPanel.getGame().getCity().getDate().getDay();
@@ -582,9 +581,6 @@ public class MainWindow extends JFrame{
         JMenu gameMenu = new JMenu("Game");
         menuBar.add(gameMenu,BorderLayout.SOUTH);
 
-
-        JMenuItem ngMenuItem = new JMenuItem("New Game");
-        gameMenu.add(ngMenuItem);
         JMenuItem sgMenuItem = new JMenuItem("Save Game");
         gameMenu.add(sgMenuItem);
         JMenuItem crMenuItem = new JMenuItem("Credits");
@@ -789,43 +785,22 @@ public class MainWindow extends JFrame{
                 BoardPanel.selectedBuilding = Building.SERVICE;
             }
         });
-        pausespeed.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                if (paused == 0) {
-                    paused = 1;
-                } else {
-                    paused = 0;
-                }
-            }
-        });
+
         firstspeed.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                if (paused == 1){
-                    BoardPanel.getGame().setTimeSpeed(1);
-                    paused = 0;
-                } else
                 BoardPanel.getGame().setTimeSpeed(1);
             }
         });
         secondspeed.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                if (paused == 1){
-                    BoardPanel.getGame().setTimeSpeed(3);
-                    paused = 0;
-                } else
                 BoardPanel.getGame().setTimeSpeed(3);
             }
         });
         thirdspeed.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                if (paused == 1){
-                    BoardPanel.getGame().setTimeSpeed(5);
-                    paused = 0;
-                } else
                 BoardPanel.getGame().setTimeSpeed(5);
             }
         });
