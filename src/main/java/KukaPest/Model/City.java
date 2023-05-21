@@ -37,6 +37,7 @@ public class City implements java.io.Serializable {
     public int satisfaction(){
         int total = 0;
         for (Citizen c : this.citizens) {
+            c.setDistanceWorkplaceAndHome();
             total += c.satisfaction();
         }
 
@@ -180,7 +181,7 @@ public class City implements java.io.Serializable {
             return map[coords.getHeight()][coords.getWidth()] instanceof Environment;
         } else{
             MainZone mz = ((MainZone)toBuild);
-            if(coords.getWidth()+mz.getWidth() >= mapWidth || coords.getHeight()+ mz.getHeight() >= mapHeight){
+            if(coords.getWidth()+mz.getWidth() > mapWidth || coords.getHeight()+ mz.getHeight() > mapHeight){
                 System.out.println("Nincs elég hely az építéshez");
                 return false;
             }
@@ -299,28 +300,12 @@ public class City implements java.io.Serializable {
             //ha van free residential zone es van industrial zone is akkor letre kell hozzni egy citizent.
 
             if(Rzone!=null && Wzone!=null && canMoveIn()){
-                int x = abs(Rzone.getCoordinates().getHeight()-Wzone.getCoordinates().getHeight());
-                int y = abs(Rzone.getCoordinates().getWidth()-Wzone.getCoordinates().getWidth());
-                int first = (int) pow((Rzone.getCoordinates().getHeight() - Wzone.getCoordinates().getHeight()),2);
-                int second = (int) pow((Rzone.getCoordinates().getWidth() - Wzone.getCoordinates().getWidth()),2);
-                int d = (int) sqrt(first + second);
-                System.out.println(d);
+
                 Citizen citizen = new Citizen(new Random().nextInt(42) + 18, Rzone, Wzone, this);
                 citizens.add(citizen);
                 Rzone.addCitizen(citizen);
                 Wzone.addCitizen(citizen);
-                if (d <= 5){
-                    Rzone.setSatisfactionBoost(0);
-                }
-                else if (d <= 10) {
-                    Rzone.setSatisfactionBoost(-3);
-                }
-                else if (d <= 15){
-                    Rzone.setSatisfactionBoost(-5);
-                }
-                else if (d > 15){
-                    Rzone.setSatisfactionBoost(-10);
-                }
+
             }
         }
     }
@@ -903,7 +888,7 @@ public class City implements java.io.Serializable {
             for (int j = 0; j < mapWidth; j++) {
                 if (this.map[i][j] instanceof Stadium && ((Stadium) this.map[i][j]).isElectricity()) modifySatisfactionBoost(new Coordinates(i,j), 9, 15, (Constructable) this.map[i][j]);
                 else if (this.map[i][j] instanceof Police && ((Police) this.map[i][j]).isElectricity()) modifySatisfactionBoost(new Coordinates(i,j), 6, 10, (Constructable) this.map[i][j]);
-                else if (this.map[i][j] instanceof IndustrialZone && ((IndustrialZone) this.map[i][j]).isElectricity()) modifySatisfactionBoost(new Coordinates(i,j), 3, -5, (Constructable) this.map[i][j]);
+                else if (this.map[i][j] instanceof IndustrialZone && ((IndustrialZone) this.map[i][j]).isElectricity()) modifySatisfactionBoost(new Coordinates(i,j), 3, -8, (Constructable) this.map[i][j]);
             }
         }
 

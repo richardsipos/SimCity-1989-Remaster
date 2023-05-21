@@ -7,6 +7,8 @@ import KukaPest.Model.Map.Workplace;
 import java.io.Serializable;
 import java.util.Random;
 
+import static java.lang.Math.*;
+
 public class Citizen implements java.io.Serializable {
     int age;
     boolean isPensioner = false;
@@ -17,6 +19,8 @@ public class Citizen implements java.io.Serializable {
     Workplace workPlace;
     City city;
     int TAX_FREQUENCY = 365;
+
+    int distanceWorkplaceAndHome;
 
 
     Citizen(int age, ResidentialZone home, Workplace workPlace, City city){
@@ -47,11 +51,27 @@ public class Citizen implements java.io.Serializable {
                 total += workPlace.getSatisfactionBoost()/2;
             }
         }
+        if(distanceWorkplaceAndHome <= 5){
+            total -= 0;
+        }
+        else if(distanceWorkplaceAndHome <= 8){
+            total -= 1;
+        }
+        else if(distanceWorkplaceAndHome <= 10){
+            total -= 3;
+        }
+        else if (distanceWorkplaceAndHome <= 10){
+            total -= 5;
+        }
+        else{
+            total -= 10;
+        }
 
         if (total < 0) total = 0;
         if (total > 100) total = 100;
         return total;
     }
+
 
     /**
      * This method decides whether the given citizen needs to pay taxes or is a pensioner and returns accordingly:
@@ -142,6 +162,15 @@ public class Citizen implements java.io.Serializable {
 
     public void setEducation(EduLevel education) {
         this.education = education;
+    }
+
+    public void setDistanceWorkplaceAndHome() {
+        int x,y,first,second;
+        x = abs(home.getCoordinates().getHeight()-workPlace.getCoordinates().getHeight());
+        y = abs(home.getCoordinates().getWidth()-workPlace.getCoordinates().getWidth());
+        first = (int) pow((home.getCoordinates().getHeight() - workPlace.getCoordinates().getHeight()),2);
+        second = (int) pow((home.getCoordinates().getWidth() - workPlace.getCoordinates().getWidth()),2);
+        this.distanceWorkplaceAndHome = (int) sqrt(first + second);
     }
 
     @Override
