@@ -49,7 +49,7 @@ public class Game implements java.io.Serializable {
     public int[] getLastBalance(){
         return city.getLastBalance();
     }
-    public int getCitizenslength(){return city.getCitizenslength();}
+    public int getCitizenslength(){return city.getCitizensLength();}
     public ArrayList<Citizen> getCitizens() {return city.getCitizens();}
     public City getCity() {
         return city;

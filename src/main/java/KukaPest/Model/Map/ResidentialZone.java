@@ -3,7 +3,7 @@ package KukaPest.Model.Map;
 import KukaPest.Model.Helper.Coordinates;
 import java.util.HashMap;
 
-public class ResidentialZone extends MainZone implements java.io.Serializable{
+public class ResidentialZone extends MainZone implements java.io.Serializable {
     private int level = 1;
     public ResidentialZone(Coordinates coordinates) {
         super(2,2,10, 500, coordinates, 0,20);
@@ -22,7 +22,7 @@ public class ResidentialZone extends MainZone implements java.io.Serializable{
         HashMap<String, String> ret = new HashMap<>();
         ret.put("Capacity", "" + super.getMaxCapacity());
         ret.put("Residents", "" + super.getCurrentCapacity());
-        ret.put("Level", "" + "" + level);
+        ret.put("Level", "" + "" + this.level);
         ret.put("Upkeep", "" + super.getUpKeep());
         ret.put("Satisfaction", "" + super.getSatisfaction());
         return ret;
@@ -30,7 +30,7 @@ public class ResidentialZone extends MainZone implements java.io.Serializable{
 
     @Override
     public int getElectricityNeed() {
-        return switch(level){
+        return switch(this.level){
             case 1 -> 20;
             case 2 -> 60;
             case 3 -> 120;

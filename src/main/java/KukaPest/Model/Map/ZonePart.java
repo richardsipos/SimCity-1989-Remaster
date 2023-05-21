@@ -1,6 +1,6 @@
 package KukaPest.Model.Map;
 
-public class ZonePart extends Tile implements java.io.Serializable{
+public class ZonePart extends Tile implements java.io.Serializable {
 
     public MainZone mainBuilding;
 
@@ -10,6 +10,6 @@ public class ZonePart extends Tile implements java.io.Serializable{
     }
 
     public MainZone getMainBuilding() {
-        return mainBuilding;
+        return this.mainBuilding;
     }
 }

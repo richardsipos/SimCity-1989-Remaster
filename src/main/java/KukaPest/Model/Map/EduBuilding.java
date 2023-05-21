@@ -7,7 +7,7 @@ import KukaPest.Model.Helper.EduLevel;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-abstract public class EduBuilding extends Infrastructure implements java.io.Serializable{
+abstract public class EduBuilding extends Infrastructure implements java.io.Serializable {
     private int lastGraduated = 0;
     public EduBuilding(int width, int height, int maxCapacity, int costOfBuilding, Coordinates coordinates, int upKeep, int electricityNeed) {
         super(width, height, maxCapacity,costOfBuilding, coordinates, upKeep, electricityNeed);

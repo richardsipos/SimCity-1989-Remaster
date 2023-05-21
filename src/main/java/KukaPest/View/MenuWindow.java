@@ -6,10 +6,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 
 public class MenuWindow extends JPanel {
     JFrame frame;
@@ -98,6 +94,15 @@ public class MenuWindow extends JPanel {
         lgame.setBorderPainted(false);
         lgame.setFocusPainted(false);
 
+        lgame.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.setVisible(false);
+                new MainWindow(name,true);
+
+            }
+        });
+
         JButton egame = new JButton();
         egame.setIcon(exit);
         egame.setRolloverIcon(exitactive);
@@ -117,40 +122,14 @@ public class MenuWindow extends JPanel {
         buttons.add(ngame, gbc);
         buttons.add(lgame, gbc2);
         buttons.add(egame, gbc3);
-        /*buttons.add(ngame); //setting vertical or horizontal arrangement
-        buttons.add(lgame);
-        buttons.add(egame);*/
         frame.add(buttons);
 
 
         frame.setSize(1280,720);
         frame.setResizable(false);
-        //frame.setUndecorated(true); //hiding the title bar
         frame.pack();
         frame.setVisible(true);
         frame.setLocationRelativeTo(null);
-
-        egame.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                System.exit(0);
-            }
-        });
-
-        lgame.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                frame.setVisible(false);
-                new MainWindow(name,true);
-
-            }
-        });
-
-        //buttons.add(ngame, gbc);
-        //buttons.add(lgame, gbc2);
-        //buttons.add(egame, gbc3);
-
     }
-
 
 }
