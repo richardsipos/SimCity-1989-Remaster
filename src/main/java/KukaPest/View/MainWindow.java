@@ -36,7 +36,7 @@ public class MainWindow extends JFrame{
 
         cityname = cityName;
         if(load){
-            loadGame();
+            loadGame(cityname);
         }
         else{
             BoardPanel = new BoardGUI(INITIAL_BOARD_X, INITIAL_BOARD_Y, cityName);
@@ -299,7 +299,7 @@ public class MainWindow extends JFrame{
 
         JToolBar startBar = new JToolBar();
 
-        JLabel label = new JLabel("<html>  Welcome to  <br/>"+ cityName +"!  </html>",SwingConstants.CENTER);
+        JLabel label = new JLabel("<html>  Welcome to  <br/>"+ BoardPanel.getGame().getCityName() +"!  </html>",SwingConstants.CENTER);
         label.setVerticalAlignment(SwingConstants.CENTER);
         label.setFont(new Font("Cooper Black", Font.BOLD, 30));
 
@@ -790,14 +790,13 @@ public class MainWindow extends JFrame{
         educatedlabel.setText("<html>Basic: " + educated[0] + "%<br />Mid: " + educated[1] + "%<br />High: " + educated[2] + "%</html>");
     }
 
-    void loadGame(){
-        String name = JOptionPane.showInputDialog(null, "The saved city's name:", "");
+    void loadGame(String loadCityName){
+        String name = JOptionPane.showInputDialog(null, "The saved city's name:", loadCityName);
         Game game;
         try{
             FileInputStream fis = new FileInputStream(name + ".sav");
             ObjectInputStream ois = new ObjectInputStream(fis);
             game = (Game)ois.readObject();
-
             BoardPanel = new BoardGUI(INITIAL_BOARD_X, INITIAL_BOARD_Y, game);
 
             ois.close();

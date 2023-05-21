@@ -160,7 +160,6 @@ public class City implements java.io.Serializable {
             }
             this.map[coords.getHeight()][coords.getWidth()] = toBeBuilt;
             this.funds -= (toBeBuilt.getPrice());
-            System.out.println(coords.getHeight() + " " + coords.getWidth());
             return true;
         }
         return false;
@@ -253,22 +252,14 @@ public class City implements java.io.Serializable {
      */
     void handleMoveIn() {
         // random people will come to the city (between 1-4 bot ends included)
-        int randomNumber;
+        int numberOfMoveInCitizen;
 
-        if(satisfaction() < 50){
-            randomNumber = 1;
-        }
-        else if(satisfaction() < 65){
-            randomNumber = 2;
-        }
-        else if(satisfaction() < 85){
-            randomNumber = 3;
-        }
-        else{
-            randomNumber = 4;
-        }
+        if (satisfaction() < 50){numberOfMoveInCitizen = 1;}
+        else if (satisfaction() < 65){numberOfMoveInCitizen = 2;}
+        else if (satisfaction() < 85){numberOfMoveInCitizen = 3;}
+        else {numberOfMoveInCitizen = 4;}
 
-        for (int i = 1; i <= randomNumber; i++) {
+        for (int i = 1; i <= numberOfMoveInCitizen; i++) {
             ResidentialZone Rzone = hasFreeResidential();
             Workplace Wzone = hasFreeWorkplace();
 
