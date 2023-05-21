@@ -1,66 +1,65 @@
 package KukaPest.Model;
 
-import KukaPest.Model.Helper.EduLevel;
-import KukaPest.Model.Map.*;
 import KukaPest.Model.Helper.Building;
 import KukaPest.Model.Helper.Coordinates;
+import KukaPest.Model.Helper.EduLevel;
 import KukaPest.Model.Helper.Graph;
+import KukaPest.Model.Map.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.Serializable;
 import java.security.InvalidParameterException;
 import java.util.*;
-
-//import java.util.Date;
 
 public class City implements java.io.Serializable {
     private final String name;
     final ArrayList<Citizen> citizens;
     private int funds = 10000;
     private int[] lastBalance = {0 , 0};
-    private KukaPest.Model.Date date;
+    private final KukaPest.Model.Date date;
     private final int guaranteedCitizens = 50;
     private int electricityProduction=0;
     private int electricityNeed=0;
-    private int maxSchoolDegrees = 50; //in percentage
-    private int maxUniversityDegrees = 20; //in percentage
+    private final int MAX_SCHOOL_DEGREES = 50; // in percentage
+    private final int MAX_UNIVERSITY_DEGREES = 20; // in percentage
+    private int daysInNegative = 0;
+    private boolean isPaused = false;
 
     //Map dimensions:
     private final int mapHeight = 27;
     private final int mapWidth = 48;
 
     private final Tile[][] map;
+    public Graph destroygraph;
+    public Graph moveInGraph;
 
     /**
      * This method calculates the city's total satisfaction
      * @return the overall satisfaction
      */
-    public int satisfaction(){
+    public int satisfaction() {
         int total = 0;
         for (Citizen c : this.citizens) {
+            c.setDistanceWorkplaceAndHome();
             total += c.satisfaction();
         }
 
-        if(this.citizens.size() > 0)
-            return total/this.citizens.size();
+        if (this.citizens.size() > 0)
+            return total / this.citizens.size();
         else
             return total;
     }
 
     public int getPopulation() {
-        return citizens.size();
+        return this.citizens.size();
     }
 
     public int getFunds() {
-        return funds;
+        return this.funds;
     }
-    public int[] getLastBalance(){
-        return lastBalance;
+    public int[] getLastBalance() {
+        return this.lastBalance;
     }
-
-    public Graph destroygraph;
-    public Graph moveInGraph;
 
     public int destroynodes = 0;
 
@@ -72,15 +71,15 @@ public class City implements java.io.Serializable {
     public City(String cityName) {
         this.name = cityName;
         this.citizens = new ArrayList<>();
-        date = new KukaPest.Model.Date(2000,02,1);
+        this.date = new KukaPest.Model.Date(2000,2,1);
 
         // Read the default map
-        this.map = new Tile[mapHeight][mapWidth];
+        this.map = new Tile[this.mapHeight][this.mapWidth];
         try {
             Scanner sc = new Scanner(new File("src/main/java/KukaPest/Assets/map.txt"));
-            for (int i = 0; i < mapHeight; i++) {
+            for (int i = 0; i < this.mapHeight; i++) {
                 String line = sc.nextLine();
-                for (int j = 0; j < mapWidth; j++) {
+                for (int j = 0; j < this.mapWidth; j++) {
                     int mapNum = Character.getNumericValue(line.charAt(j));
                     this.map[i][j] = switch (mapNum) {
                         case 1 -> new Grass();
@@ -89,9 +88,9 @@ public class City implements java.io.Serializable {
                         case 4 -> new Road(null);
                         default -> throw new InvalidParameterException();
                     };
-                    if(this.map[i][j] instanceof Road){
-                        destroynodes = destroynodes + 1;
-                        startRoad = new Coordinates(i,j);
+                    if (this.map[i][j] instanceof Road) {
+                        this.destroynodes = this.destroynodes + 1;
+                        this.startRoad = new Coordinates(i,j);
                     }
                 }
             }
@@ -107,21 +106,21 @@ public class City implements java.io.Serializable {
      * @param coords The top left coordinates of given building
      * @return True/false depending on the state of construction
      */
-    boolean build(Building toBuild, Coordinates coords){
-        Environment enviroment;
-        if(this.map[coords.getHeight()][coords.getWidth()] instanceof Grass){
-            enviroment = new Grass();
+    boolean build(Building toBuild, Coordinates coords) {
+        Environment environment;
+        if (this.map[coords.getHeight()][coords.getWidth()] instanceof Grass) {
+            environment = new Grass();
         }
-        else if(this.map[coords.getHeight()][coords.getWidth()] instanceof Dirt){
-            enviroment = new Dirt();
+        else if (this.map[coords.getHeight()][coords.getWidth()] instanceof Dirt) {
+            environment = new Dirt();
         }
-        else{
-            enviroment = new Water();
+        else {
+            environment = new Water();
         }
 
-        Constructable toBeBuilt = switch(toBuild){
+        Constructable toBeBuilt = switch(toBuild) {
             case STADIUM -> new Stadium(coords);
-            case ROAD -> new Road(enviroment);
+            case ROAD -> new Road(environment);
             case POLICE -> new Police(coords);
             case UNIVERSITY -> new University(coords);
             case SCHOOL -> new School(coords);
@@ -134,18 +133,18 @@ public class City implements java.io.Serializable {
 
 
 
-        if(canBeBuilt(toBeBuilt,coords)) {
-            if(toBeBuilt instanceof Road){
-                destroynodes = destroynodes + 1;
+        if (canBeBuilt(toBeBuilt,coords)) {
+            if (toBeBuilt instanceof Road) {
+                this.destroynodes = this.destroynodes + 1;
 
-            }else if(toBeBuilt instanceof MainZone){
-                destroynodes = destroynodes + 1;
-                numberBuilding = numberBuilding + 1;
+            } else if(toBeBuilt instanceof MainZone) {
+                this.destroynodes = this.destroynodes + 1;
+                this.numberBuilding = this.numberBuilding + 1;
             }
 
-            if((toBeBuilt instanceof MainZone)) {
-                for(int i = coords.getHeight(); i < coords.getHeight() + ((MainZone) toBeBuilt).getHeight(); i++){
-                    for(int j = coords.getWidth(); j < coords.getWidth()+((MainZone) toBeBuilt).getWidth(); j++){
+            if ((toBeBuilt instanceof MainZone)) {
+                for (int i = coords.getHeight(); i < coords.getHeight() + ((MainZone) toBeBuilt).getHeight(); i++) {
+                    for (int j = coords.getWidth(); j < coords.getWidth()+((MainZone) toBeBuilt).getWidth(); j++) {
                         this.map[i][j] = new ZonePart((MainZone)toBeBuilt);
                     }
                 }
@@ -163,139 +162,116 @@ public class City implements java.io.Serializable {
      * @param coords Top left coordinates of given building
      * @return True if a nearby road exists and space is available, else false
      */
-    boolean canBeBuilt(Constructable toBuild, Coordinates coords){
-        if(toBuild instanceof Road){
-            return (map[coords.getHeight()][coords.getWidth()] instanceof Environment
-                    && (coords.getHeight() + 1 < mapHeight && (map[coords.getHeight() + 1][coords.getWidth()] instanceof Road)
-                    || (coords.getHeight() - 1 >= 0 && map[coords.getHeight() - 1][coords.getWidth()] instanceof Road)
-                    || (coords.getWidth() + 1 < mapWidth && map[coords.getHeight()][coords.getWidth() + 1] instanceof Road)
-                    || (coords.getWidth() - 1 >= 0 && map[coords.getHeight()][coords.getWidth() - 1] instanceof Road)));
-        } else if (toBuild instanceof Pole) {
-            return map[coords.getHeight()][coords.getWidth()] instanceof Environment;
-        } else{
-            MainZone mz = ((MainZone)toBuild);
-            for(int i = coords.getHeight(); i< coords.getHeight() + mz.getHeight(); i++){
-                for(int j = coords.getWidth(); j< coords.getWidth()+ mz.getWidth(); j++){
-                    if(this.map[i][j] instanceof ZonePart   //Nem építhetsz mert foglalt terület.
-                            || this.map[i][j] instanceof MainZone
-                            || this.map[i][j] instanceof Road
-                            || this.map[i][j] instanceof Pole
-                            || this.map[i][j] instanceof Water){
-                        System.out.println("Foglalt terulet sorry");
-                        return false;
+    boolean canBeBuilt(Constructable toBuild, Coordinates coords) {
+        if (!this.isPaused) {
+            if (toBuild instanceof Road) {
+                return (this.map[coords.getHeight()][coords.getWidth()] instanceof Environment
+                        && (coords.getHeight() + 1 < this.mapHeight && (this.map[coords.getHeight() + 1][coords.getWidth()] instanceof Road)
+                        || (coords.getHeight() - 1 >= 0 && this.map[coords.getHeight() - 1][coords.getWidth()] instanceof Road)
+                        || (coords.getWidth() + 1 < this.mapWidth && this.map[coords.getHeight()][coords.getWidth() + 1] instanceof Road)
+                        || (coords.getWidth() - 1 >= 0 && this.map[coords.getHeight()][coords.getWidth() - 1] instanceof Road)));
+            } else if (toBuild instanceof Pole) {
+                return map[coords.getHeight()][coords.getWidth()] instanceof Environment;
+            } else {
+                MainZone mz = ((MainZone)toBuild);
+                if (coords.getWidth() + mz.getWidth() > mapWidth
+                        || coords.getHeight() + mz.getHeight() > mapHeight) {
+                    return false;
+                }
+                for (int i = coords.getHeight(); i< coords.getHeight() + mz.getHeight(); i++) {
+                    for (int j = coords.getWidth(); j< coords.getWidth()+ mz.getWidth(); j++) {
+                        if (this.map[i][j] instanceof ZonePart
+                                || this.map[i][j] instanceof MainZone
+                                || this.map[i][j] instanceof Road
+                                || this.map[i][j] instanceof Pole
+                                || this.map[i][j] instanceof Water) {
+                            return false;
+                        }
                     }
                 }
-            }
-            // Check for a road nearby
-            boolean nearbyRoadExists = false;
+                // Check for a road nearby
+                boolean nearbyRoadExists = false;
 
-            //Check for road at the top of the building
-            if(coords.getHeight() > 0){
-                for (int k = coords.getWidth(); k < coords.getWidth() + mz.getWidth(); k++) {
-                    if (this.map[coords.getHeight() - 1][k] instanceof Road) {
-                        nearbyRoadExists = true;
-                        break;
+                // Check for road at the top of the building
+                if (coords.getHeight() > 0) {
+                    for (int k = coords.getWidth(); k < coords.getWidth() + mz.getWidth(); k++) {
+                        if (this.map[coords.getHeight() - 1][k] instanceof Road) {
+                            nearbyRoadExists = true;
+                            break;
+                        }
                     }
                 }
-            }
 
-            //ha nem vagyunk a legalso sorban.
-            if(coords.getHeight() + mz.getHeight() < mapHeight) {
-                for (int k = coords.getWidth(); k < coords.getWidth() + mz.getWidth(); k++) {
-                    if (this.map[coords.getHeight() + mz.getHeight()][k] instanceof Road) {
-                        nearbyRoadExists = true;
-                        //System.out.println("Legalso sorban");
-                        break;
+                // Not in the last row
+                if(coords.getHeight() + mz.getHeight() < this.mapHeight) {
+                    for (int k = coords.getWidth(); k < coords.getWidth() + mz.getWidth(); k++) {
+                        if (this.map[coords.getHeight() + mz.getHeight()][k] instanceof Road) {
+                            nearbyRoadExists = true;
+                            break;
+                        }
                     }
                 }
-            }
 
-            //ha nem vagyunk baloldali oszlopban.
-            if(coords.getWidth() >0) {
-                for (int k = coords.getHeight(); k < coords.getHeight() + mz.getHeight(); k++) {
-                    if (this.map[k][coords.getWidth() - 1] instanceof Road) {
-                        nearbyRoadExists = true;
-                        //System.out.println("Bal oszlop");
-                        break;
+                // Not in the left column
+                if (coords.getWidth() > 0) {
+                    for (int k = coords.getHeight(); k < coords.getHeight() + mz.getHeight(); k++) {
+                        if (this.map[k][coords.getWidth() - 1] instanceof Road) {
+                            nearbyRoadExists = true;
+                            break;
+                        }
                     }
                 }
-            }
 
-            //ha nem vagyunk baloldali oszlopban.
-            if(coords.getWidth() + mz.getWidth()<mapWidth) {
-                for (int k = coords.getHeight(); k < coords.getHeight() + mz.getHeight(); k++) {
-                    if (this.map[k][coords.getWidth() + mz.getWidth()] instanceof Road) {
-                        nearbyRoadExists = true;
-                        //System.out.println("Jobb oszlop");
-                        break;
+                if(coords.getWidth() + mz.getWidth() < this.mapWidth) {
+                    for (int k = coords.getHeight(); k < coords.getHeight() + mz.getHeight(); k++) {
+                        if (this.map[k][coords.getWidth() + mz.getWidth()] instanceof Road) {
+                            nearbyRoadExists = true;
+                            break;
+                        }
                     }
                 }
-            }
-            //bal felso sarok, jobb felso sarok, bal also sarok, jobb also sarok
-            /*if(coords.getHeight()>0 && coords.getWidth()>0){
-                if(this.map[coords.getHeight()-1][coords.getWidth()-1] instanceof  Road){
-                    nearbyRoadExists=true;
-                }
-            }
-            if(coords.getHeight()+mz.getHeight()<mapHeight && coords.getWidth()>0){
-                if(this.map[coords.getHeight()+mz.getHeight()][coords.getWidth()-1] instanceof Road){
-                    nearbyRoadExists=true;
-                }
-            }
-            if(coords.getHeight()>0 && coords.getWidth()+ mz.getWidth()<mapWidth){
-                if(this.map[coords.getHeight()-1][coords.getWidth()+ mz.getWidth()] instanceof Road){
-                    nearbyRoadExists=true;
-                }
-            }
-            if(coords.getHeight()+mz.getHeight()<mapHeight && coords.getWidth()+mz.getWidth() <mapWidth){
-                if(this.map[coords.getHeight()+mz.getHeight()][coords.getWidth()+ mz.getWidth()] instanceof Road){
-                    nearbyRoadExists=true;
-                }
-            }*/
 
-            //van Út mellete
-            return nearbyRoadExists;
+                return nearbyRoadExists;
+            }
+        } else {
+            return false;
         }
     }
 
     /**
-     * This method calls upon methods checking reqs of move in, if they are met, handles the creation of new citizen
+     * This method calls upon methods checking requirements of move in, if they are met, handles the creation of new citizen
      */
-//    ezt hivja majd a TimePassed es intezzi majd a Citizenet bekoltozeset.
-    void handleMoveIn(){
-        //random people will come to the city (bebtween 1-4 bot ends included)
+    void handleMoveIn() {
+        // random people will come to the city (between 1-4 bot ends included)
         int randomNumber = (new Random().nextInt(4)) + 1;
 
-        for(int i=1;i<=randomNumber;i++){
+        for (int i = 1; i <= randomNumber; i++) {
             ResidentialZone Rzone = hasFreeResidential();
             Workplace Wzone = hasFreeWorkplace();
 
-            //satisfaction miatt nem koltozhet be <30  akkor nem koltozhet be. Eloszor lesz biztosan 50 szemely aki barhogy bekoltozik
-
-            //ha van free residential zone es van industrial zone is akkor letre kell hozzni egy citizent.
-
-            if(Rzone!=null && Wzone!=null && canMoveIn()){
+            if (Rzone != null && Wzone != null && canMoveIn() && daysInNegative <= 0) {
                 Citizen citizen = new Citizen(new Random().nextInt(42) + 18, Rzone, Wzone, this);
-                citizens.add(citizen);
+                this.citizens.add(citizen);
                 Rzone.addCitizen(citizen);
                 Wzone.addCitizen(citizen);
             }
         }
     }
-    private boolean canMoveIn(){
-        if (citizens.size() < guaranteedCitizens){
+    private boolean canMoveIn() {
+        if (this.citizens.size() < this.guaranteedCitizens) {
             return true;
         }
-        else{
+        else {
             return satisfaction() >= 30;
         }
     }
 
-    void updateBalance(){
-        int[] balance = {0 , 0};
-        for (int i = 0; i < mapHeight; i++) {
-            for (int j = 0; j < mapWidth; j++) {
-                if(map[i][j] instanceof Constructable) balance[0] -= ((Constructable) map[i][j]).getUpKeep();
+    void updateBalance() {
+        int[] balance = {0, 0};
+        for (int i = 0; i < this.mapHeight; i++) {
+            for (int j = 0; j < this.mapWidth; j++) {
+                if (this.map[i][j] instanceof Constructable)
+                    balance[0] -= ((Constructable) map[i][j]).getUpKeep();
             }
         }
 
@@ -305,35 +281,35 @@ public class City implements java.io.Serializable {
 
         this.funds += balance[1] + balance[0];
         lastBalance = balance;
+        if (funds < 0) daysInNegative++;
+        else daysInNegative = Math.max(daysInNegative - 2 , 0);
     }
 
     /**
      * Helper method for move in, checks for available residential zones
      * @return A free residential zone, if available
      */
-    ResidentialZone hasFreeResidential(){
-        Coordinates coords;
-        moveInGraph = new Graph(destroynodes);
-        Coordinates coords2 = new Coordinates(mapHeight,mapWidth);
-        buildingsAvailable(coords2,moveInGraph);
-        for (int i = 0; i < mapHeight; i++) {
-            for (int j = 0; j < mapWidth; j++) {
-                if(this.map[i][j] instanceof ResidentialZone){
-                    if(moveInGraph.BFS_movein(0,numberBuilding,new Coordinates(i,j))) {
-                        if (((MainZone) this.map[i][j]).getCurrentCapacity() < ((MainZone) this.map[i][j]).getMaxCapacity()) {
-                            if (citizens.size() > guaranteedCitizens) {
-                                if (((ResidentialZone) this.map[i][j]).isElectricity()) {
-                                    return (ResidentialZone) this.map[i][j];
-                                }
-                            } else {
-                                return ((ResidentialZone) this.map[i][j]);
-                            }
+    ResidentialZone hasFreeResidential() {
+        this.moveInGraph = new Graph(this.destroynodes);
+        Coordinates coords2 = new Coordinates(this.mapHeight, this.mapWidth);
+        buildingsAvailable(coords2, this.moveInGraph);
+        for (int i = 0; i < this.mapHeight; i++) {
+            for (int j = 0; j < this.mapWidth; j++) {
+                if(((this.map[i][j] instanceof ResidentialZone) &&
+                     this.moveInGraph.BFS_movein(0, this.numberBuilding, new Coordinates(i,j))) &&
+                     ((MainZone) this.map[i][j]).getCurrentCapacity() < ((MainZone) this.map[i][j]).getMaxCapacity()
+                ){
+                    if (this.citizens.size() > this.guaranteedCitizens) {
+                        if (((ResidentialZone) this.map[i][j]).isElectricity()) {
+                            return (ResidentialZone) this.map[i][j];
                         }
+                    } else {
+                        return ((ResidentialZone) this.map[i][j]);
                     }
                 }
             }
         }
-        // System.out.println("residential");
+
         return null;
     }
 
@@ -343,28 +319,28 @@ public class City implements java.io.Serializable {
      */
     Workplace hasFreeWorkplace(){
         Coordinates coords;
-        moveInGraph = new Graph(destroynodes);
-        Coordinates coords2 = new Coordinates(mapHeight,mapWidth);
-        buildingsAvailable(coords2,moveInGraph);
+        this.moveInGraph = new Graph(this.destroynodes);
+        Coordinates coords2 = new Coordinates(this.mapHeight, this.mapWidth);
+        buildingsAvailable(coords2, this.moveInGraph);
         Workplace industrialWorkplace = null;
         int workersInIndustrialZones = 0;
         Workplace serviceWorkplace = null;
         int workersInServiceZones = 0;
-        for (int i = 0; i < mapHeight; i++) {
-            for (int j = 0; j < mapWidth; j++) {
-                if( (this.map[i][j] instanceof IndustrialZone) ) {
+        for (int i = 0; i < this.mapHeight; i++) {
+            for (int j = 0; j < this.mapWidth; j++) {
+                if(this.map[i][j] instanceof IndustrialZone) {
                     workersInIndustrialZones = workersInIndustrialZones + ((MainZone)this.map[i][j]).getCurrentCapacity();
                     coords = new Coordinates(i,j);
-                    if(moveInGraph.BFS_movein(0,numberBuilding,coords)) {
+                    if(this.moveInGraph.BFS_movein(0, this.numberBuilding,coords)) {
                         if (((MainZone) this.map[i][j]).getCurrentCapacity() < ((MainZone) this.map[i][j]).getMaxCapacity()) {
                             industrialWorkplace = ((Workplace) this.map[i][j]);
                         }
                     }
                 }
-                if( (this.map[i][j] instanceof ServiceZone) ) {
+                if(this.map[i][j] instanceof ServiceZone) {
                     workersInServiceZones = workersInServiceZones + ((MainZone)this.map[i][j]).getCurrentCapacity();
                     coords = new Coordinates(i,j);
-                    if(moveInGraph.BFS_movein(0,numberBuilding,coords)) {
+                    if(this.moveInGraph.BFS_movein(0, this.numberBuilding,coords)) {
                         if (((MainZone) this.map[i][j]).getCurrentCapacity() < ((MainZone) this.map[i][j]).getMaxCapacity()) {
                             serviceWorkplace = ((Workplace) this.map[i][j]);
                         }
@@ -373,131 +349,141 @@ public class City implements java.io.Serializable {
             }
         }
 
-        if(industrialWorkplace == null && serviceWorkplace == null ){
+        if (industrialWorkplace == null && serviceWorkplace == null ) {
             return null;
-        }else if(serviceWorkplace == null){
+        } else if(serviceWorkplace == null) {
             return industrialWorkplace;
-        }else if(industrialWorkplace == null){
+        } else if(industrialWorkplace == null) {
             return serviceWorkplace;
-        }else{
+        } else{
             if(workersInIndustrialZones >= workersInServiceZones){
-                // System.out.println("Working in Service");
                 return serviceWorkplace;
-            }else{
-                // System.out.println("Working in Industrial");
+            } else{
                 return industrialWorkplace;
             }
         }
     }
 
     public int getElectricityProduction() {
-        return electricityProduction;
+        return this.electricityProduction;
     }
 
 
     public int getElectricityNeed() {
-        return electricityNeed;
+        return this.electricityNeed;
     }
 
-    public double[] getEducatedCitizens(){
+    public double[] getEducatedCitizens() {
         double[] educatedCitizens = {0, 0, 0};
-        for (Citizen c : citizens){
-            if(c.education == EduLevel.BASIC) educatedCitizens[0]++;
-            if(c.education == EduLevel.MID) educatedCitizens[1]++;
-            if(c.education == EduLevel.HIGH) educatedCitizens[2]++;
+        for (Citizen c : this.citizens) {
+            if (c.education == EduLevel.BASIC) educatedCitizens[0]++;
+            if (c.education == EduLevel.MID) educatedCitizens[1]++;
+            if (c.education == EduLevel.HIGH) educatedCitizens[2]++;
         }
-        if(citizens.size() > 0) {
-            educatedCitizens[0] = educatedCitizens[0] / citizens.size() * 100;
-            educatedCitizens[1] = educatedCitizens[1] / citizens.size() * 100;
-            educatedCitizens[2] = educatedCitizens[2] / citizens.size() * 100;
+        if (citizens.size() > 0) {
+            educatedCitizens[0] = educatedCitizens[0] / this.citizens.size() * 100;
+            educatedCitizens[1] = educatedCitizens[1] / this.citizens.size() * 100;
+            educatedCitizens[2] = educatedCitizens[2] / this.citizens.size() * 100;
         }
         return educatedCitizens;
     }
 
-    public void timePassed(int days){
-        int dateChange = date.DaysPassed(days);
+    public void timePassed(int days) {
+        if (days!=0) {
+            this.isPaused = false;
+            int dateChange = this.date.DaysPassed(days);
 
-        electricitySupply();
-        electricityStats();
+            electricitySupply();
+            electricityStats();
+            calculateSatisfaction();
 
-        calculateSatisfaction();
-        for (int i = 0; i < days; i++) {
-            // One day Passed!
-            handleMoveIn();
-            updateBalance();
-        }
-        if(dateChange > 0){
-             //A month has passed!
-            handleGraduation(); //ezt majd rakd eggyel lejjeb legyen evrol evre, igy csak khonaprol honapra
-            if(dateChange > 1){
-                for (int i = 0; i < citizens.size(); i++){
-                    citizens.get(i).yearPassed();
+            for (int i = 0; i < days; i++) {
+                // One day Passed!
+                handleMoveIn();
+                handleMoveOut();
+                updateBalance();
+            }
+            if(dateChange > 0) {
+                //A month has passed!
+                handleGraduation();
+                if (dateChange > 1) {
+                    for (int i = 0; i < this.citizens.size(); i++){
+                        this.citizens.get(i).yearPassed();
+                    }
                 }
             }
+        } else {
+            this.isPaused = true;
         }
-        // System.out.println("Elégedettség: " + satisfaction()); //debug
     }
 
-    private void handleGraduation() {
-        // Valahogy meghívja az egyetemek és ikolák handleGraduate metódusát random emberekkel, úgy hogy figyel a max %-ra
+    private void handleMoveOut() {
+        if (satisfaction() >= 30) return;
+        int toMoveOut = (int)Math.ceil((double)this.citizens.size() / 100);
+        for (int i = 0; i < toMoveOut; i++) {
+            this.citizens.get(new Random().nextInt(this.citizens.size())).moveOut();
+        }
+    }
 
+
+    /**
+     * This method handles the graduation of citizens from the schools
+     */
+    private void handleGraduation() {
         ArrayList<Citizen> inNeedOfSchoolDegree = new ArrayList<>();
-        ArrayList<Citizen> inNeedOfUniversitylDegree = new ArrayList<>();
+        ArrayList<Citizen> inNeedOfUniversityDegree = new ArrayList<>();
         ArrayList<Citizen> hasAlreadyUniversityDegree = new ArrayList<>();
         for (Citizen citizen : this.citizens)
         {
-            if(citizen.education == EduLevel.BASIC){
+            if (citizen.education == EduLevel.BASIC) {
                 inNeedOfSchoolDegree.add(citizen);
             }
-            else if(citizen.education == EduLevel.MID){
-                inNeedOfUniversitylDegree.add(citizen);
-            }else if(citizen.education == EduLevel.HIGH){
+            else if (citizen.education == EduLevel.MID) {
+                inNeedOfUniversityDegree.add(citizen);
+            }
+            else if(citizen.education == EduLevel.HIGH) {
                 hasAlreadyUniversityDegree.add(citizen);
             }
         }
 
 
-        if(citizens.size() > 0){
-            double oneCitizenPercentage = 100d / citizens.size();
-            for (int i = 0; i < mapHeight; i++) {
-                for (int j = 0; j < mapWidth; j++) {
-                    if(this.map[i][j] instanceof School){
-
-                        double percentageWithSchoolDegree = (inNeedOfUniversitylDegree.size() * 100d) / citizens.size();
+        if (this.citizens.size() > 0) {
+            double oneCitizenPercentage = 100d / this.citizens.size();
+            for (int i = 0; i < this.mapHeight; i++) {
+                for (int j = 0; j < this.mapWidth; j++) {
+                    if (this.map[i][j] instanceof School) {
+                        double percentageWithSchoolDegree = (inNeedOfUniversityDegree.size() * 100d) / this.citizens.size();
                         //check if percentage is alright
-                        if(percentageWithSchoolDegree < maxSchoolDegrees){
+                        if(percentageWithSchoolDegree < this.MAX_SCHOOL_DEGREES){
 
                             ArrayList<Citizen> graduatedFromSchool = new ArrayList<>();
-                            while((graduatedFromSchool.size() <= (((School) this.map[i][j]).getMaxCapacity())) && (Math.ceil(percentageWithSchoolDegree) < maxSchoolDegrees)){
-
+                            while ((graduatedFromSchool.size() <= (((School) this.map[i][j]).getMaxCapacity())) &&
+                                    (Math.ceil(percentageWithSchoolDegree) < this.MAX_SCHOOL_DEGREES)) {
                                 graduatedFromSchool.add(inNeedOfSchoolDegree.get(0));
                                 inNeedOfSchoolDegree.remove(0);
                                 percentageWithSchoolDegree = percentageWithSchoolDegree + oneCitizenPercentage;
 
                             }
-                            // System.out.println("Ennyi szemely fog az iskolabol grarudalni");
-                            // System.out.println(graduatedFromSchool.size());
                             ((School)this.map[i][j]).handleGraduation(graduatedFromSchool);
                         }
 
                     }else if(this.map[i][j] instanceof University){
-                        double percentageWithUniversityDegree = (hasAlreadyUniversityDegree.size() * 100d) / citizens.size();
+                        double percentageWithUniversityDegree = (hasAlreadyUniversityDegree.size() * 100d) / this.citizens.size();
 
-                        if(percentageWithUniversityDegree < maxUniversityDegrees){
+                        if(percentageWithUniversityDegree < this.MAX_UNIVERSITY_DEGREES){
                             ArrayList<Citizen> graduatedFromUniversity = new ArrayList<>();
-                            while((graduatedFromUniversity.size() <= ((University) this.map[i][j]).getMaxCapacity()) && (Math.ceil(percentageWithUniversityDegree)<maxUniversityDegrees)){
-                                if(inNeedOfUniversitylDegree.size() == 0){
+                            while((graduatedFromUniversity.size() <= ((University) this.map[i][j]).getMaxCapacity()) && (Math.ceil(percentageWithUniversityDegree) < this.MAX_UNIVERSITY_DEGREES)){
+                                if (inNeedOfUniversityDegree.size() == 0) {
                                     break;
-                                }else{
-                                    graduatedFromUniversity.add(inNeedOfUniversitylDegree.get(0));
-                                    inNeedOfUniversitylDegree.remove(0);
+                                }
+                                else {
+                                    graduatedFromUniversity.add(inNeedOfUniversityDegree.get(0));
+                                    inNeedOfUniversityDegree.remove(0);
                                     percentageWithUniversityDegree = percentageWithUniversityDegree + oneCitizenPercentage;
                                 }
 
 
                             }
-                            // System.out.println("Ennyi szemely fog az egyetemrol gradualni");
-                            // System.out.println(graduatedFromUniversity.size());
                             ((University)this.map[i][j]).handleGraduation(graduatedFromUniversity);
                         }
                     }
@@ -514,19 +500,17 @@ public class City implements java.io.Serializable {
      */
     public boolean destroy(Coordinates coords) {
         if (this.map[coords.getHeight()][coords.getWidth()] instanceof Road) {
-            if(coords.getHeight() == startRoad.getHeight() && coords.getWidth() == startRoad.getWidth()){
+            if (coords.getHeight() == this.startRoad.getHeight() && coords.getWidth() == this.startRoad.getWidth()) {
                 return false;
             }
-            destroygraph = new Graph(destroynodes);
-            // System.out.println(destroynodes);
-            buildingsAvailable(coords,destroygraph);
-            //System.out.println(destroyGraph);
-            if(destroygraph.BFS(0,numberBuilding)){
+            this.destroygraph = new Graph(this.destroynodes);
+            buildingsAvailable(coords, this.destroygraph);
+            if (this.destroygraph.BFS(0, this.numberBuilding)){
                 Environment environment = ((Road) this.map[coords.getHeight()][coords.getWidth()]).getFormerEnvironment();
-                funds = funds + (((Road) this.map[coords.getHeight()][coords.getWidth()]).getPrice()/100*40);
+                this.funds = this.funds + (((Road) this.map[coords.getHeight()][coords.getWidth()]).getPrice()/100*40);
                 this.map[coords.getHeight()][coords.getWidth()] = null;
                 this.map[coords.getHeight()][coords.getWidth()] = environment;
-                destroynodes = destroynodes - 1;
+                this.destroynodes = this.destroynodes - 1;
                 return true;
             }
 
@@ -537,92 +521,95 @@ public class City implements java.io.Serializable {
             this.map[coords.getHeight()][coords.getWidth()] = new Grass();
             return true;
         }
-        else if (this.map[coords.getHeight()][coords.getWidth()] instanceof MainZone || this.map[coords.getHeight()][coords.getWidth()] instanceof ZonePart) {
+        else if (this.map[coords.getHeight()][coords.getWidth()] instanceof MainZone
+                || this.map[coords.getHeight()][coords.getWidth()] instanceof ZonePart) {
             MainZone mainZone;
-            if(this.map[coords.getHeight()][coords.getWidth()] instanceof MainZone){
+            if (this.map[coords.getHeight()][coords.getWidth()] instanceof MainZone) {
                 mainZone = (MainZone) this.map[coords.getHeight()][coords.getWidth()];
             }
-            else{
-                mainZone = ((ZonePart) this.map[coords.getHeight()][coords.getWidth()]).mainBuilding;
+            else {
+                mainZone = ((ZonePart)this.map[coords.getHeight()][coords.getWidth()]).mainBuilding;
             }
 
             if (mainZone instanceof ResidentialZone) {
                 if (mainZone.getCurrentCapacity() != 0) {
                     return false;
-                } else {
+                }
+                else {
                     int width = mainZone.getWidth();
-                    int heigth = mainZone.getHeight();
-                    for (int i = mainZone.getCoordinates().getHeight(); i < mainZone.getCoordinates().getHeight() + heigth; i++) {
+                    int height = mainZone.getHeight();
+                    for (int i = mainZone.getCoordinates().getHeight(); i < mainZone.getCoordinates().getHeight() + height; i++) {
                         for (int j = mainZone.getCoordinates().getWidth(); j < mainZone.getCoordinates().getWidth() + width; j++) {
                             this.map[i][j] = null;
                             this.map[i][j] = new Grass();
                         }
                     }
-                    destroynodes = destroynodes - 1;
-                    numberBuilding = numberBuilding - 1;
-                    funds = funds + (mainZone.getPrice()/100*40);
+                    this.destroynodes = this.destroynodes - 1;
+                    this.numberBuilding = this.numberBuilding - 1;
+                    this.funds = this.funds + (mainZone.getPrice() / 100 * 40);
                     return true;
                 }
             }
             if (mainZone instanceof Workplace) {
                 if (mainZone.getCurrentCapacity() != 0) {
                     return false;
-                } else {
+                }
+                else {
                     int width = mainZone.getWidth();
-                    int heigth = mainZone.getHeight();
-                    for (int i = mainZone.getCoordinates().getHeight(); i < mainZone.getCoordinates().getHeight() + heigth; i++) {
+                    int height = mainZone.getHeight();
+                    for (int i = mainZone.getCoordinates().getHeight(); i < mainZone.getCoordinates().getHeight() + height; i++) {
                         for (int j = mainZone.getCoordinates().getWidth(); j < mainZone.getCoordinates().getWidth() + width; j++) {
                             this.map[i][j] = null;
                             this.map[i][j] = new Grass();
                         }
                     }
-                    destroynodes = destroynodes - 1;
-                    numberBuilding = numberBuilding - 1;
-                    funds = funds + (mainZone.getPrice()/100*40);
+                    this.destroynodes = this.destroynodes - 1;
+                    this.numberBuilding = this.numberBuilding - 1;
+                    this.funds = this.funds + (mainZone.getPrice() / 100 * 40);
                     return true;
                 }
             }
             if (mainZone instanceof Infrastructure) {
                 int width = mainZone.getWidth();
-                int heigth = mainZone.getHeight();
-                for (int i = mainZone.getCoordinates().getHeight(); i < mainZone.getCoordinates().getHeight() + heigth; i++) {
+                int height = mainZone.getHeight();
+                for (int i = mainZone.getCoordinates().getHeight(); i < mainZone.getCoordinates().getHeight() + height; i++) {
                     for (int j = mainZone.getCoordinates().getWidth(); j < mainZone.getCoordinates().getWidth() + width; j++) {
                         this.map[i][j] = null;
                         this.map[i][j] = new Grass();
                     }
                 }
-                funds = funds + (mainZone.getPrice()/100*40);
-                destroynodes = destroynodes - 1;
-                numberBuilding = numberBuilding - 1;
+                this.funds = this.funds + (mainZone.getPrice()/100*40);
+                this.destroynodes = this.destroynodes - 1;
+                this.numberBuilding = this.numberBuilding - 1;
 
                 return true;
             }
-
-
         }
         return true;
     }
 
+    /**
+     * This method counts the number of buildings in reach of the graph
+     * @param coords Starting coordinates of the graph
+     * @param graph The graph to bea searched
+     */
     public void buildingsAvailable(Coordinates coords,Graph graph) {
-        numberBuilding = 0;
-        graph.addNode(0, true, new Coordinates(startRoad.getHeight(), startRoad.getWidth()));
-        //System.out.println(startRoad.getHeight() + " " + startRoad.getWidth() + " id: " + destroyGraph.getNodeID(new Coordinates(startRoad.getHeight(),startRoad.getWidth())));
+        this.numberBuilding = 0;
+        graph.addNode(0, true, new Coordinates(this.startRoad.getHeight(), this.startRoad.getWidth()));
         int id = 1;
 
-        //node hozzáadás
+        // Add node
         for (int i = this.mapHeight - 1; i >= 0; i--) {
             for (int j = this.mapWidth - 1; j >= 0; j--) {
-                if((i == startRoad.getHeight() && j == startRoad.getWidth()) || (i == coords.getHeight() && j == coords.getWidth())){
+                if ((i == this.startRoad.getHeight() && j == this.startRoad.getWidth()) || (i == coords.getHeight() && j == coords.getWidth())) {
                     continue;
                 }
                 else if (this.map[i][j] instanceof Road) {
-                    // System.out.println(i + " " + j + " id: " + id);
                     graph.addNode(id, true, new Coordinates(i, j));
                     id = id + 1;
                 }
                 else if (this.map[i][j] instanceof MainZone) {
-                    numberBuilding++;
-                    // System.out.println(i + " " + j + " id: " + id);
+                    this.numberBuilding++;
                     graph.addNode(id, false, new Coordinates(i, j));
                     id = id + 1;
                 }
@@ -634,7 +621,6 @@ public class City implements java.io.Serializable {
                 if (graph.getNodeID(new Coordinates(i, j)) != -1 && (this.map[i][j] instanceof Road)) {
                     int first_id = graph.getNodeID(new Coordinates(i, j));
 
-                    //bals alsó sarok, jobb alsó sarok
                     if (i == 0 && j == this.mapWidth - 1) {
                         if (this.map[i][j - 1] instanceof Road && graph.getNodeID(new Coordinates(i, j - 1)) != -1) {
                             graph.addEdge(first_id, graph.getNodeID(new Coordinates(i, j - 1)));
@@ -663,7 +649,7 @@ public class City implements java.io.Serializable {
                         }
                     }
 
-                    //bal felső sarok, jobb felső sarok
+                    // Left and right upper corner
                     else if (i == 0 && j == 0) {
                         if ((this.map[i][j + 1] instanceof Road || this.map[i][j + 1] instanceof MainZone) && graph.getNodeID(new Coordinates(i, j + 1)) != -1) {
                             graph.addEdge(first_id, graph.getNodeID(new Coordinates(i, j + 1)));
@@ -686,7 +672,7 @@ public class City implements java.io.Serializable {
                         }
                     }
 
-                    //alsó sor, felső sor
+                    // Last and first row
                     else if (i != 0 && i < this.mapHeight - 1 && j == this.mapWidth - 1) {
                         if (this.map[i - 1][j] instanceof Road && graph.getNodeID(new Coordinates(i - 1, j)) != -1) {
                             graph.addEdge(first_id, graph.getNodeID(new Coordinates(i - 1, j)));
@@ -724,7 +710,7 @@ public class City implements java.io.Serializable {
                         }
                     }
 
-                    //jobb oszlop, bal oszlop
+                    // right and left column
                     else if (i == this.mapHeight - 1 && j != 0 && j < this.mapWidth - 1) {
                         if (this.map[i][j - 1] instanceof Road && graph.getNodeID(new Coordinates(i, j - 1)) != -1) {
                             graph.addEdge(first_id, graph.getNodeID(new Coordinates(i, j - 1)));
@@ -762,8 +748,6 @@ public class City implements java.io.Serializable {
                         }
                     }
 
-
-                    //nem sarok vagy szél
                     else {
                         if (this.map[i][j - 1] instanceof Road && graph.getNodeID(new Coordinates(i, j - 1)) != -1) {
                             graph.addEdge(first_id, graph.getNodeID(new Coordinates(i, j - 1)));
@@ -790,8 +774,6 @@ public class City implements java.io.Serializable {
                             graph.addEdge(first_id, graph.getNodeID(((ZonePart) this.map[i - 1][j]).mainBuilding.getCoordinates()));
                         }
                     }
-
-
                 }
             }
         }
@@ -806,29 +788,29 @@ public class City implements java.io.Serializable {
      * @param value Value of satisfaction boost
      * @param b Given service building
      */
-    public void modifySatisfactionBoost(Coordinates coords, int radius, int value, Constructable b){
+    public void modifySatisfactionBoost(Coordinates coords, int radius, int value, Constructable b) {
         MainZone mz = (MainZone)b;
         int left, right, top, bottom;
         ArrayList<MainZone> boosted = new ArrayList<>();
 
-        if (coords.getWidth() - radius < 0) { // check if radius is too big for the left side
-            left = 0;
-        } else left = coords.getWidth() - radius;
-        if ((coords.getWidth()+mz.getWidth()+radius) >= mapWidth) { // check if radius is too big for the right side
-            right = mapWidth-1;
+        // Check if radius is too big for the left side
+        left = Math.max(coords.getWidth() - radius, 0);
+        if ((coords.getWidth()+mz.getWidth()+radius) >= this.mapWidth) { // check if radius is too big for the right side
+            right = this.mapWidth - 1;
         } else right = coords.getWidth()+mz.getWidth() + radius;
-        if (coords.getHeight() - radius < 0) { // check if radius is too big for top
-            top = 0;
-        } else top = coords.getHeight() - radius;
-        if ((coords.getHeight()+mz.getHeight()+radius) >= mapHeight) { // check if radius is too big for bottom
-            bottom = mapHeight-1;
-        } else bottom = (coords.getHeight()+mz.getHeight()) + radius;
+        // Check if radius is too big for top
+        top = Math.max(coords.getHeight() - radius, 0);
+        if ((coords.getHeight()+mz.getHeight()+radius) >= this.mapHeight) { // check if radius is too big for bottom
+            bottom = this.mapHeight-1;
+        }
+        else bottom = (coords.getHeight()+mz.getHeight()) + radius;
         for (int i = top; i < bottom; ++i) {
             for (int j = left; j < right; ++j) {
-                if(this.map[i][j] instanceof ResidentialZone || this.map[i][j] instanceof IndustrialZone || this.map[i][j] instanceof ServiceZone){
+                if (this.map[i][j] instanceof ResidentialZone
+                        || this.map[i][j] instanceof IndustrialZone || this.map[i][j] instanceof ServiceZone){
                     ((MainZone) this.map[i][j]).setSatisfactionBoost(value);
                     boosted.add((MainZone) this.map[i][j]);
-                } else if (this.map[i][j] instanceof ZonePart){ //zonepart check, NOT usable
+                } else if (this.map[i][j] instanceof ZonePart) {
                     if (((ZonePart) this.map[i][j]).mainBuilding instanceof ResidentialZone
                             || ((ZonePart) this.map[i][j]).mainBuilding instanceof IndustrialZone || ((ZonePart) this.map[i][j]).mainBuilding instanceof ServiceZone) {
                         if (!boosted.contains(((ZonePart) this.map[i][j]).mainBuilding)) {
@@ -852,10 +834,11 @@ public class City implements java.io.Serializable {
             }
         }
 
-        for (int i = 0; i < mapHeight; i++) {
-            for (int j = 0; j < mapWidth; j++) {
+        for (int i = 0; i < this.mapHeight; i++) {
+            for (int j = 0; j < this.mapWidth; j++) {
                 if (this.map[i][j] instanceof Stadium && ((Stadium) this.map[i][j]).isElectricity()) modifySatisfactionBoost(new Coordinates(i,j), 9, 15, (Constructable) this.map[i][j]);
                 else if (this.map[i][j] instanceof Police && ((Police) this.map[i][j]).isElectricity()) modifySatisfactionBoost(new Coordinates(i,j), 6, 10, (Constructable) this.map[i][j]);
+                else if (this.map[i][j] instanceof IndustrialZone && ((IndustrialZone) this.map[i][j]).isElectricity()) modifySatisfactionBoost(new Coordinates(i,j), 3, -8, (Constructable) this.map[i][j]);
             }
         }
 
@@ -865,8 +848,8 @@ public class City implements java.io.Serializable {
      * This method calculates the electricity supply throughout the city
      */
     public void electricitySupply(){
-        for (int i = 0; i < mapHeight; i++) {
-            for (int j = 0; j < mapWidth; j++) {
+        for (int i = 0; i < this.mapHeight; i++) {
+            for (int j = 0; j < this.mapWidth; j++) {
                 if(this.map[i][j] instanceof PowerPlant){
                     ((MainZone) this.map[i][j]).setElectricity(true);
                 }
@@ -876,15 +859,14 @@ public class City implements java.io.Serializable {
             }
         }
 
-        for (int i = 0; i < mapHeight; i++) {
-            for (int j = 0; j < mapWidth; j++) {
+        for (int i = 0; i < this.mapHeight; i++) {
+            for (int j = 0; j < this.mapWidth; j++) {
                 if(this.map[i][j] instanceof PowerPlant){
-
-                    //preparations for the algorithm
+                    // Preparations for the algorithm
                     Queue<Coordinates> visitedCoords = new LinkedList<>();
                     Queue<Coordinates> currentCoords = new LinkedList<>();
-//                    System.out.println(visitedCoords.size());
 
+                    // Put the frame off the building to the queues
                     currentCoords.add(new Coordinates(i,j));
                     currentCoords.add(new Coordinates(i,j+1));
                     currentCoords.add(new Coordinates(i,j+2));
@@ -898,71 +880,64 @@ public class City implements java.io.Serializable {
                     currentCoords.add(new Coordinates(i+2,j));
                     currentCoords.add(new Coordinates(i+1,j));
 
-
-
-
                     visitedCoords.add(new Coordinates(i+1,j+1));
                     visitedCoords.add(new Coordinates(i+1,j+2));
                     visitedCoords.add(new Coordinates(i+2,j+1));
                     visitedCoords.add(new Coordinates(i+2,j+2));
 
-
-
-                    //start of the algorithm
+                    // Start of the algorithm
                     int electricityToGive = ((PowerPlant) this.map[i][j]).getElectricityProduction();
 
                     while (electricityToGive>0 && !currentCoords.isEmpty()){
 
-                        //remove from queue and adding to already searched Tiles.
+                        // Remove from queue and adding to already searched Tiles.
                         Coordinates currentTileCoords = currentCoords.remove();
                         visitedCoords.add(currentTileCoords);
 
                         int x = currentTileCoords.getHeight();
                         int y = currentTileCoords.getWidth();
-                        // System.out.println(x+" "+y);
 
-                        //it volt a gond, figyeld meg (most jo kell legyen)
-                        if(visitedCoords.size() >= mapHeight*mapWidth+100){
-//                            break;
+                        if (!visitedCoords.contains(new Coordinates(x-1,y))
+                                && !currentCoords.contains(new Coordinates(x-1,y)) && x >= 1 && y >= 0 && y < this.mapWidth && x < this.mapHeight
+                                && (this.map[x-1][y] instanceof MainZone || this.map[x-1][y] instanceof Pole
+                                || this.map[x-1][y] instanceof ZonePart)) {
+                            currentCoords.add(new Coordinates(x-1, y));
+                        }
+                        if (!visitedCoords.contains(new Coordinates(x, y + 1))
+                                && !currentCoords.contains(new Coordinates(x,y + 1))
+                                && y < mapWidth-1 && y >= 0 && x >= 0 && x < this.mapHeight
+                                && (this.map[x][y+1] instanceof MainZone
+                                || this.map[x][y+1] instanceof Pole
+                                || this.map[x][y+1] instanceof ZonePart)) {
+                            currentCoords.add(new Coordinates(x, y + 1));
+                        }
+                        if (!visitedCoords.contains(new Coordinates(x + 1,y))
+                                && !currentCoords.contains(new Coordinates(x + 1, y))
+                                && x < this.mapHeight - 1 &&  y < this.mapWidth && y >= 0 && x >= 0
+                                && (this.map[x+1][y] instanceof MainZone || this.map[x+1][y] instanceof Pole || this.map[x+1][y] instanceof ZonePart)){
+                            currentCoords.add(new Coordinates(x + 1, y));
+                        }
+                        if (!visitedCoords.contains(new Coordinates(x, y - 1)) && !currentCoords.contains(new Coordinates(x,y - 1)) && y >= 1 && y < mapWidth && x >= 0 && x < mapHeight && (this.map[x][y-1] instanceof MainZone || this.map[x][y-1] instanceof Pole || this.map[x][y-1] instanceof ZonePart)) {
+                            currentCoords.add(new Coordinates(x,y - 1));
                         }
 
-                        if(!visitedCoords.contains(new Coordinates(x-1,y)) && !currentCoords.contains(new Coordinates(x-1,y)) && x>=1 && y>=0 && y<mapWidth && x<mapHeight && (this.map[x-1][y] instanceof MainZone || this.map[x-1][y] instanceof Pole || this.map[x-1][y] instanceof ZonePart)){
-                            currentCoords.add(new Coordinates(x-1,y));
-                        }if(!visitedCoords.contains(new Coordinates(x,y+1)) && !currentCoords.contains(new Coordinates(x,y+1)) && y<mapWidth-1 && y>=0 && x>=0 && x<mapHeight && (this.map[x][y+1] instanceof MainZone || this.map[x][y+1] instanceof Pole || this.map[x][y+1] instanceof ZonePart)){
-                            currentCoords.add(new Coordinates(x,y+1));
-                        }if(!visitedCoords.contains(new Coordinates(x+1,y)) && !currentCoords.contains(new Coordinates(x+1,y)) && x<mapHeight-1 &&  y<mapWidth && y>=0 && x>=0 &&  (this.map[x+1][y] instanceof MainZone || this.map[x+1][y] instanceof Pole || this.map[x+1][y] instanceof ZonePart)){
-                            currentCoords.add(new Coordinates(x+1,y));
-                        }if(!visitedCoords.contains(new Coordinates(x,y-1)) && !currentCoords.contains(new Coordinates(x,y-1)) && y>=1 && y<mapWidth && x>=0 && x<mapHeight && (this.map[x][y-1] instanceof MainZone || this.map[x][y-1] instanceof Pole || this.map[x][y-1] instanceof ZonePart)){
-                            currentCoords.add(new Coordinates(x,y-1));
-                        }
-
-                        if(this.map[x][y] instanceof MainZone){
-                            if(!(((MainZone)this.map[x][y]).isElectricity())){
-                                if(electricityToGive>=((MainZone)this.map[x][y]).getElectricityNeed()){
+                        if (this.map[x][y] instanceof MainZone) {
+                            if (!(((MainZone)this.map[x][y]).isElectricity())) {
+                                if(electricityToGive>=((MainZone)this.map[x][y]).getElectricityNeed()) {
                                     electricityToGive=electricityToGive -((MainZone)this.map[x][y]).getElectricityNeed();
                                     ((MainZone)this.map[x][y]).setElectricity(true);
-                                }//itt ne csinalj semmit. A sorbol majd ugyis kijon.
+                                }
                             }
-                        }else if(this.map[x][y] instanceof ZonePart) {
+                        }else if (this.map[x][y] instanceof ZonePart) {
                             MainZone mainZone = ((ZonePart)this.map[x][y]).getMainBuilding();
-                            if(!(mainZone.isElectricity())){
-                                if(electricityToGive>=mainZone.getElectricityNeed()){
+                            if (!(mainZone.isElectricity())) {
+                                if (electricityToGive>=mainZone.getElectricityNeed()) {
                                     electricityToGive=electricityToGive -mainZone.getElectricityNeed();
                                     mainZone.setElectricity(true);
-                                }//itt ne csinalj semmit. A sorbol majd ugyis kijon.
+                                }
                             }
                         }
-
-
-
-
-
                     }
-
-
-                    // System.out.println(visitedCoords.size());
-                    // System.out.println("Ennyi aram maradt: "+electricityToGive);
-
                 }
             }
         }
@@ -974,8 +949,8 @@ public class City implements java.io.Serializable {
     public void electricityStats() {
         this.electricityNeed = 0;
         this.electricityProduction = 0;
-        for (int i = 0; i < mapHeight; i++) {
-            for (int j = 0; j < mapWidth; j++) {
+        for (int i = 0; i < this.mapHeight; i++) {
+            for (int j = 0; j < this.mapWidth; j++) {
                 if (this.map[i][j] instanceof PowerPlant) {
                     this.electricityProduction = this.electricityProduction + ((PowerPlant) this.map[i][j]).getElectricityProduction();
                 }
@@ -999,81 +974,61 @@ public class City implements java.io.Serializable {
         }
         else if (this.map[coords.getHeight()][coords.getWidth()] instanceof MainZone || this.map[coords.getHeight()][coords.getWidth()] instanceof ZonePart) {
             MainZone mainZone;
-            if(this.map[coords.getHeight()][coords.getWidth()] instanceof MainZone){
+            if (this.map[coords.getHeight()][coords.getWidth()] instanceof MainZone) {
                 mainZone = (MainZone) this.map[coords.getHeight()][coords.getWidth()];
             }
-            else{
+            else {
                 mainZone = ((ZonePart) this.map[coords.getHeight()][coords.getWidth()]).mainBuilding;
             }
 
             if (mainZone instanceof ResidentialZone) {
                 if(((ResidentialZone) mainZone).getLevel() == 1){
                     ((ResidentialZone) mainZone).setLevel(2);
-                    // System.out.println(((ResidentialZone) mainZone).getLevel());
-                    ((ResidentialZone) mainZone).setCapacity(25);
-                    funds = funds - 3000;
+                    mainZone.setCapacity(25);
+                    this.funds = this.funds - 3000;
                 }
                 else if(((ResidentialZone) mainZone).getLevel() == 2){
                     ((ResidentialZone) mainZone).setLevel(3);
-                    ((ResidentialZone) mainZone).setCapacity(50);
-                    funds = funds - 8000;
+                    mainZone.setCapacity(50);
+                    this.funds = this.funds - 8000;
                 }
             }
             if (mainZone instanceof Workplace) {
                 if(mainZone instanceof IndustrialZone || mainZone instanceof ServiceZone){
                     if(((Workplace) mainZone).getLevel() == 1){
                         ((Workplace) mainZone).setLevel(2);
-                        // System.out.println(((Workplace) mainZone).getLevel());
-                        ((Workplace) mainZone).setCapacity(30);
-                        funds = funds - 5000;
+                        mainZone.setCapacity(30);
+                        this.funds = this.funds - 5000;
                     }
                     else if(((Workplace) mainZone).getLevel() == 2){
                         ((Workplace) mainZone).setLevel(3);
                         ((Workplace) mainZone).setCapacity(55);
-                        funds = funds - 10000;
+                        this.funds = this.funds - 10000;
                     }
 
                 }
             }
-            if (mainZone instanceof Infrastructure) {
-
-            }
-
         }
-    }
-
-    //forTesting
-    public void printMap() {
-        for (int i = 0; i < mapHeight; i++) {
-            for (int j = 0; j < mapWidth; j++) {
-                if(this.map[i][j] instanceof MainZone || this.map[i][j] instanceof ZonePart
-                        || this.map[i][j] instanceof Road || this.map[i][j] instanceof Pole){
-                    //if(this.map[i][j] instanceof ResidentialZone){
-                    System.out.print("1");
-                }else{
-                    System.out.print("0");
-                }
-                System.out.print(" ");
-            }
-            System.out.println();
-        }
-        System.out.println();
     }
 
     public Tile[][] getMap() {
-        return map;
+        return this.map;
     }
     public String getName() {
-        return name;
+        return this.name;
     }
     public Date getDate(){
-        return date;
+        return this.date;
     }
 
-    public int getCitizenslength(){return citizens.size();}
+    public int getCitizensLength(){return this.citizens.size();}
 
     public ArrayList<Citizen> getCitizens() {
-        return citizens;
+        return this.citizens;
+    }
+
+    public int getDaysInNegative() {
+        return this.daysInNegative;
     }
 
     //for CI/CD purposes

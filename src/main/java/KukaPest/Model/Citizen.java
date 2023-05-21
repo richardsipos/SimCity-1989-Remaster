@@ -4,8 +4,9 @@ import KukaPest.Model.Helper.EduLevel;
 import KukaPest.Model.Map.ResidentialZone;
 import KukaPest.Model.Map.Workplace;
 
-import java.io.Serializable;
 import java.util.Random;
+
+import static java.lang.Math.*;
 
 public class Citizen implements java.io.Serializable {
     int age;
@@ -17,9 +18,9 @@ public class Citizen implements java.io.Serializable {
     Workplace workPlace;
     City city;
     int TAX_FREQUENCY = 365;
+    int distanceWorkplaceAndHome;
 
-
-    Citizen(int age, ResidentialZone home, Workplace workPlace, City city){
+    Citizen(int age, ResidentialZone home, Workplace workPlace, City city) {
         this.home = home;
         this.workPlace = workPlace;
         this.age = age;
@@ -33,20 +34,32 @@ public class Citizen implements java.io.Serializable {
      */
     public int satisfaction() {
         int total = 50;
-        if (home.isElectricity()){
-            total += home.getSatisfactionBoost();
-        }else{
-            if(home.getSatisfactionBoost()!=0){
-                total += home.getSatisfactionBoost()/2;
+        if (this.home.isElectricity()) {
+            total += Math.min(this.home.getSatisfactionBoost(), 30);
+        } else if (this.home.getSatisfactionBoost() != 0) {
+            total += Math.min(this.home.getSatisfactionBoost() / 2, 30);
+        }
+        if (!this.isPensioner) {
+            if (this.workPlace.isElectricity()) {
+                total += Math.min(this.workPlace.getSatisfactionBoost(), 30);
+            } else if (this.workPlace.getSatisfactionBoost() != 0) {
+                total += Math.min(this.workPlace.getSatisfactionBoost() / 2, 30);
             }
         }
-        if(!isPensioner){
-            if (workPlace.isElectricity()){
-                total += workPlace.getSatisfactionBoost();
-            }else{
-                total += workPlace.getSatisfactionBoost()/2;
-            }
+        if (distanceWorkplaceAndHome <= 8) {
+            total -= 1;
         }
+        else if (distanceWorkplaceAndHome <= 10) {
+            total -= 3;
+        }
+        else if (distanceWorkplaceAndHome <= 15) {
+            total -= 5;
+        }
+        else {
+            total -= 10;
+        }
+
+        total -= this.city.getDaysInNegative() * 0.3;
 
         if (total < 0) total = 0;
         if (total > 100) total = 100;
@@ -57,61 +70,61 @@ public class Citizen implements java.io.Serializable {
      * This method decides whether the given citizen needs to pay taxes or is a pensioner and returns accordingly:
      * @return negative value if citizen gets pension, positive if pays tax
      */
-    public int payTax(){
-        return isPensioner ? (pension / TAX_FREQUENCY * -1) : tax();
+    public int payTax() {
+        return this.isPensioner ? (this.pension / this.TAX_FREQUENCY * -1) : tax();
     }
 
     /**
      * This method calculates the amount of tax this citizen pays
      * @return int, amount of tax
      */
-    private int tax(){
-        if(workPlace == null){
+    private int tax() {
+        if (this.workPlace == null) {
             return 2;
         }
-        else if (workPlace.isElectricity()) {
-            return 7 * education.salaryModifier();
-        }else {
-            return 5 * education.salaryModifier();
+        else if (this.workPlace.isElectricity()) {
+            return 7 * this.education.salaryModifier();
+        } else {
+            return 5 * this.education.salaryModifier();
         }
     }
 
     /**
-     * This method ages th citizen if a year passes, and settles age related matters (tax, pension, death)
+     * This method ages the citizen if a year passes, and settles age related matters (tax, pension, death)
      */
-    public void yearPassed(){
+    public void yearPassed() {
         this.age++;
-        if (age >= 65) {
-            if (!isPensioner){
+        if (this.age >= 65) {
+            if (!this.isPensioner) {
                 // The citizen becomes pensioner
-                isPensioner = true;
-                workPlace.removeCitizen(this);
+                this.isPensioner = true;
+                this.workPlace.removeCitizen(this);
                 this.workPlace = null;
             }
-            else{
+            else {
                 tryToKill();
             }
         }
-        else if (age >= 45){
-            if(pension == 0){
-                this.pension = tax() * TAX_FREQUENCY / 2;
+        else if (this.age >= 45) {
+            if (this.pension == 0) {
+                this.pension = tax() * this.TAX_FREQUENCY / 2;
             }
-            else{
-                int thisYearsTax = tax() * TAX_FREQUENCY / 2;
-                this.pension = (pension + thisYearsTax) / 2;
+            else {
+                int thisYearsTax = tax() * this.TAX_FREQUENCY / 2;
+                this.pension = (this.pension + thisYearsTax) / 2;
             }
         }
     }
 
     /**
-     * This method rolls the dice whther the citizen dice with increasing odds.
+     * This method rolls the dice whether the citizen dice with increasing odds.
      */
     private void tryToKill() {
         int rolledChance = new Random().nextInt(100);
-        if(chanceToDie < rolledChance){
-            chanceToDie += 5;
+        if (this.chanceToDie < rolledChance) {
+            this.chanceToDie += 5;
         }
-        else{
+        else {
             die();
         }
     }
@@ -120,42 +133,70 @@ public class Citizen implements java.io.Serializable {
      * This method handles the death of a citizen and an arrival of a new one
      */
     private void die() {
-        ResidentialZone Rzone = city.hasFreeResidential();
-        Workplace Wzone = city.hasFreeWorkplace();
-        //ha van free residential zone es van industrial zone is akkor letre kell hozzni egy citizent.
-        if(Wzone != null){
+        ResidentialZone Rzone = this.city.hasFreeResidential();
+        Workplace Wzone = this.city.hasFreeWorkplace();
+        if (Wzone != null) {
             this.age = 18;
-            this.home = Rzone == null ? home : Rzone;
+            this.home = (Rzone == null) ? this.home : Rzone;
             this.workPlace = Wzone;
             this.pension = 0;
             this.isPensioner = false;
             this.chanceToDie = 0;
         }
-        else{
-            this.city.citizens.remove(this);
+        else {
+            moveOut();
+        }
+    }
+
+    public void moveOut() {
+        boolean removedFromHome;
+        boolean removedFromWork;
+        removedFromHome = this.home.removeCitizen(this);
+        if (removedFromHome) {
+            removedFromWork = this.workPlace.removeCitizen(this);
+            if (removedFromWork) {
+                this.city.citizens.remove(this);
+            }
         }
     }
 
     public EduLevel getEducation() {
-        return education;
+        return this.education;
     }
 
     public void setEducation(EduLevel education) {
         this.education = education;
     }
 
-    public boolean getPensioner() {return isPensioner;}
-    public int getAge() {return age;}
+    public boolean getPensioner() { return isPensioner; }
+    public int getAge() { return age; }
+
+    public void setDistanceWorkplaceAndHome() {
+        int first, second;
+        first = (int) pow((home.getCoordinates().getHeight() - workPlace.getCoordinates().getHeight()),2);
+        second = (int) pow((home.getCoordinates().getWidth() - workPlace.getCoordinates().getWidth()),2);
+        this.distanceWorkplaceAndHome = (int) sqrt(first + second);
+    }
 
     @Override
     public String toString() {
         return "Citizen{" +
-                "age=" + age +
-                ", isPensioner=" + isPensioner +
-                ", pension=" + pension +
-                ", chanceToDie=" + chanceToDie +
-                ", home=" + home +
-                ", workPlace=" + workPlace +
+                "age=" + this.age +
+                ", isPensioner=" + this.isPensioner +
+                ", pension=" + this.pension +
+                ", chanceToDie=" + this.chanceToDie +
+                ", home=" + this.home +
+                ", workPlace=" + this.workPlace +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj instanceof Citizen c) {
+            return c.age == this.age && c.education == this.education
+                    && c.pension == this.pension;
+        }
+        return false;
     }
 }

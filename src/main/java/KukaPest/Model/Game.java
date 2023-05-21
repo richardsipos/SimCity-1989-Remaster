@@ -2,13 +2,10 @@ package KukaPest.Model;
 
 import KukaPest.Model.Helper.Building;
 import KukaPest.Model.Helper.Coordinates;
-import KukaPest.Model.Map.ResidentialZone;
 import KukaPest.Model.Map.Tile;
 
-import java.io.*;
 import java.util.ArrayList;
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
 
 public class Game implements java.io.Serializable {
     private UUID gameID;
@@ -42,7 +39,7 @@ public class Game implements java.io.Serializable {
     }
     public String getCityName(){
         return city.getName();
-    }
+    }//
     public int getPopulation(){
         return city.getPopulation();
     }
@@ -52,7 +49,7 @@ public class Game implements java.io.Serializable {
     public int[] getLastBalance(){
         return city.getLastBalance();
     }
-    public int getCitizenslength(){return city.getCitizenslength();}
+    public int getCitizenslength(){return city.getCitizensLength();}
     public ArrayList<Citizen> getCitizens() {return city.getCitizens();}
     public City getCity() {
         return city;

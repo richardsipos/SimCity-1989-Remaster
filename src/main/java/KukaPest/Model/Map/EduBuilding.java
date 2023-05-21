@@ -7,7 +7,7 @@ import KukaPest.Model.Helper.EduLevel;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-abstract public class EduBuilding extends Infrastructure implements java.io.Serializable{
+abstract public class EduBuilding extends Infrastructure implements java.io.Serializable {
     private int lastGraduated = 0;
     public EduBuilding(int width, int height, int maxCapacity, int costOfBuilding, Coordinates coordinates, int upKeep, int electricityNeed) {
         super(width, height, maxCapacity,costOfBuilding, coordinates, upKeep, electricityNeed);
@@ -27,9 +27,9 @@ abstract public class EduBuilding extends Infrastructure implements java.io.Seri
     @Override
     public HashMap<String, String> getStats(){
         HashMap<String, String> ret = new HashMap<>();
-        ret.put("Kapacitás", "" + super.getMaxCapacity());
-        ret.put("Utolsó évben végzettek", "" + lastGraduated);
-        ret.put("Fenntartási költség", "" + super.getUpKeep());
+        ret.put("Capacity", "" + super.getMaxCapacity());
+        ret.put("Graduated", "" + lastGraduated);
+        ret.put("Upkeep", "" + super.getUpKeep());
         return ret;
     }
 

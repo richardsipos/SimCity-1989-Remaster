@@ -3,7 +3,7 @@ package KukaPest.Model.Map;
 import KukaPest.Model.Helper.Coordinates;
 import java.util.HashMap;
 
-public abstract class Workplace extends MainZone implements java.io.Serializable{
+public abstract class Workplace extends MainZone implements java.io.Serializable {
     private int level = 1;
     public Workplace(int width, int height, int maxCapacity, int priceOfBuilding, Coordinates coordinates, int upKeep, int electricityNeed) {
         super(width, height, maxCapacity, priceOfBuilding, coordinates, upKeep, electricityNeed);
@@ -14,23 +14,23 @@ public abstract class Workplace extends MainZone implements java.io.Serializable
     }
 
     public int getLevel() {
-        return level;
+        return this.level;
     }
 
     @Override
-    public HashMap<String, String> getStats(){
+    public HashMap<String, String> getStats() {
         HashMap<String, String> ret = new HashMap<>();
-        ret.put("Kapacitás", "" + super.getMaxCapacity());
-        ret.put("Munkások", "" + super.getCurrentCapacity());
-        ret.put("Szint", "" + "" + level);
-        ret.put("Fenntartási költség", "" + super.getUpKeep());
-        ret.put("Elégedettség", "" + super.getSatisfaction());
+        ret.put("Capacity", "" + super.getMaxCapacity());
+        ret.put("Workers", "" + super.getCurrentCapacity());
+        ret.put("Level", "" + "" + this.level);
+        ret.put("Upkeep", "" + super.getUpKeep());
+        ret.put("Satisfaction", "" + super.getSatisfaction());
         return ret;
     }
 
     @Override
     public int getElectricityNeed() {
-        return switch(level){
+        return switch(this.level){
             case 1 -> 20;
             case 2 -> 60;
             case 3 -> 120;

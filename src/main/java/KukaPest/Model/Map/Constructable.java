@@ -1,6 +1,6 @@
 package KukaPest.Model.Map;
 
-abstract public class Constructable extends Tile implements java.io.Serializable{ //abstract
+abstract public class Constructable extends Tile implements java.io.Serializable {
     private int price;
     private int upKeep;
 

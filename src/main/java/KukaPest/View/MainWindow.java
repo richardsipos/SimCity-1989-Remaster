@@ -18,10 +18,6 @@ public class MainWindow extends JFrame{
     private static final int INITIAL_BOARD_Y = 27;
     private BoardGUI BoardPanel;
 
-    public BoardGUI getBoardPanel() {
-        return BoardPanel;
-    }
-
     JLabel populationlabel = new JLabel();
     JProgressBar b;
     JToolBar statBar = new JToolBar();
@@ -35,8 +31,6 @@ public class MainWindow extends JFrame{
     Timer gameTime;
     String cityname;
     ImageIcon credits;
-
-
 
     public MainWindow(String cityName, boolean load){
 
@@ -57,7 +51,7 @@ public class MainWindow extends JFrame{
                 System.out.println("Lakók: " + BoardPanel.getGame().getPopulation() + "\nPézz: " + BoardPanel.getGame().getFunds()+ "\n\n");
                 refreshGameStatLabel();
                 int day = BoardPanel.getGame().getCity().getDate().getDay();
-                String dayString = "";
+                String dayString;
                 if(day < 10){
                     dayString = "0" + day;
                 }
@@ -65,7 +59,7 @@ public class MainWindow extends JFrame{
                     dayString = day + "";
                 }
                 int month = BoardPanel.getGame().getCity().getDate().getMonth();
-                String monthString = "";
+                String monthString;
                 if(month < 10){
                     monthString = "0" + month;
                 }
@@ -102,17 +96,17 @@ public class MainWindow extends JFrame{
         b.setMaximumSize(new Dimension(70,20));
         progresspanel.add(progress);
         progresspanel.add(b);
-        JToolBar menubar = new JToolBar();
         JPanel panel2 = new JPanel();
 
+        Icon pauseicon = new ImageIcon("src/main/java/KukaPest/Assets/speed-pause.png");
         Icon firstspeedicon = new ImageIcon("src/main/java/KukaPest/Assets/speed-icon.png");
         Icon secondspeedicon = new ImageIcon("src/main/java/KukaPest/Assets/speed-3x-icon.png");
         Icon thirdspeedicon = new ImageIcon("src/main/java/KukaPest/Assets/speed-5x-icon.png");
         Icon pausespeedicon = new ImageIcon("src/main/java/KukaPest/Assets/speed-pause-icon.png");
         credits = new ImageIcon("src/main/java/KukaPest/Assets/credits.jpg");
 
-        JButton pausespeed = new JButton(pausespeedicon);
-        pausespeed.setBackground(Color.WHITE);
+        JButton nullspeed = new JButton(pauseicon);
+        nullspeed.setBackground(Color.WHITE);
         JButton firstspeed = new JButton(firstspeedicon);
         firstspeed.setBackground(Color.WHITE);
         JButton secondspeed = new JButton(secondspeedicon);
@@ -120,11 +114,10 @@ public class MainWindow extends JFrame{
         JButton thirdspeed = new JButton(thirdspeedicon);
         thirdspeed.setBackground(Color.WHITE);
 
-        //panel2.add(pausespeed);
-        //panel2.add(firstspeed);
-        //panel2.add(secondspeed);
-        //panel2.add(thirdspeed);
-
+        panel2.add(nullspeed);
+        panel2.add(firstspeed);
+        panel2.add(secondspeed);
+        panel2.add(thirdspeed);
 
         year.setBackground(Color.WHITE);
         year.setBorder(
@@ -134,7 +127,7 @@ public class MainWindow extends JFrame{
                                 , Color.DARK_GRAY), "Date"));
 
         int day = BoardPanel.getGame().getCity().getDate().getDay();
-        String dayString = "";
+        String dayString;
         if(day < 10){
             dayString = "0" + day;
         }
@@ -142,7 +135,7 @@ public class MainWindow extends JFrame{
             dayString = day + "";
         }
         int month = BoardPanel.getGame().getCity().getDate().getMonth();
-        String monthString = "";
+        String monthString;
         if(month < 10){
             monthString = "0" + month;
         }
@@ -178,16 +171,10 @@ public class MainWindow extends JFrame{
 
         citizens.setFont(new Font("Arial", Font.BOLD, 18));
 
-
-
-        //alsó menü gombok létrehozása
-
         JButton build = new JButton("Build");
         JButton destroy = new JButton("Destroy");
         JButton upgrade = new JButton("Upgrade");
         JButton stats = new JButton("Stats");
-
-        //alsó menü gombok beállításai
 
         build.setFont(new Font("Arial", Font.BOLD, 15));
         build.setBackground(Color.WHITE);
@@ -198,10 +185,6 @@ public class MainWindow extends JFrame{
         stats.setFont(new Font("Arial", Font.BOLD, 15));
         stats.setBackground(Color.WHITE);
 
-
-        //add(menubar, BorderLayout.NORTH);
-        //alsó menü létrehozás
-
         JToolBar panel = new JToolBar();
         JPanel buttonpanel = new JPanel();
         buttonpanel.add(build);
@@ -209,7 +192,7 @@ public class MainWindow extends JFrame{
         buttonpanel.add(upgrade);
         buttonpanel.add(stats);
 
-        panel.add(pausespeed);
+        panel.add(nullspeed);
         panel.addSeparator();
         panel.add(firstspeed);
         panel.addSeparator();
@@ -218,10 +201,7 @@ public class MainWindow extends JFrame{
         panel.add(thirdspeed);
         panel.addSeparator();
         panel.addSeparator();
-        panel.addSeparator();
         panel.add(year);
-        panel.addSeparator();
-        panel.addSeparator();
         panel.addSeparator();
 
         panel.addSeparator();
@@ -249,17 +229,10 @@ public class MainWindow extends JFrame{
         panel.setFloatable(false);
         add(panel, BorderLayout.SOUTH);
 
-
-        // container felvétele, hogy a felugró Build menü vertikális legyen
-
         Container box = new Container();
         box.setLayout(new GridLayout(0, 2));
 
-        //vertikális toolbar felvétele
-
         JToolBar buildBar = new JToolBar();
-
-        // a gomb iconok felvétele
 
         Icon iconSchool = new ImageIcon("src/main/java/KukaPest/Assets/school_button.png");
         Icon iconPolice = new ImageIcon("src/main/java/KukaPest/Assets/police_button.png");
@@ -271,9 +244,6 @@ public class MainWindow extends JFrame{
         Icon iconindustrial = new ImageIcon("src/main/java/KukaPest/Assets/industrial_button.png");
         Icon iconpowerPole = new ImageIcon("src/main/java/KukaPest/Assets/power_pole_button.png");
         Icon iconservice = new ImageIcon("src/main/java/KukaPest/Assets/service_button.png");
-
-
-        //a gombok létrehozása és vertikálisan középre igazítása
 
         JButton buildExit = new JButton("<html>Exit from <br/>Build Menu</html>");
         buildExit.setBackground(Color.WHITE);
@@ -309,9 +279,6 @@ public class MainWindow extends JFrame{
         servicebutton.setBackground(Color.WHITE);
         servicebutton.setPreferredSize(new Dimension(125,122));
 
-
-        // hozzáadjuk a gombokat a box-hoz
-
         box.add(buildSchool);
         box.add(buildPolice);
         box.add(buildStadium);
@@ -323,9 +290,6 @@ public class MainWindow extends JFrame{
         box.add(servicebutton);
         box.add(powerpolebutton);
 
-
-        //scroll felvétele, amit a box-hoz veszünk fel és azt adjuk át a toolbarnak
-
         JScrollPane scrollBar=new JScrollPane(box);
         scrollBar.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
@@ -334,32 +298,22 @@ public class MainWindow extends JFrame{
         buildBar.setOrientation(SwingConstants.VERTICAL);
         buildBar.setVisible(true);
 
-
-        //StartBar létrehozása
-
         JToolBar startBar = new JToolBar();
 
         JLabel label = new JLabel("<html>  Welcome to  <br/>"+ cityName +"!  </html>",SwingConstants.CENTER);
         label.setVerticalAlignment(SwingConstants.CENTER);
         label.setFont(new Font("Cooper Black", Font.BOLD, 30));
 
-
         JLabel picLabel = new JLabel(new ImageIcon("src/main/java/KukaPest/Assets/city_gif_2.gif"));
-
 
         startBar.add(label);
         startBar.add(picLabel);
         startBar.setFloatable(false);
 
-
         startBar.setOrientation(SwingConstants.VERTICAL);
         startBar.setVisible(true);
 
-        //DestroBar létrehozása
-
         JToolBar destroyBar = new JToolBar();
-
-        JLabel destroy_l = new JLabel();
 
         JLabel destroylabel = new JLabel("<html>  Destroy! <br><br>  </html>",SwingConstants.CENTER);
         destroylabel.setVerticalAlignment(SwingConstants.CENTER);
@@ -393,10 +347,6 @@ public class MainWindow extends JFrame{
         policedestroy.setFont(new Font("Impact", Font.PLAIN, 17));
         policedestroy.setBorder(BorderFactory.createLineBorder(Color.GRAY,2));
 
-
-        //JLabel destroypic = new JLabel(new ImageIcon("KukaPest/Assets/destroy_.png"));
-
-
         destroyBar.add(destroylabel);
         destroyBar.add(residentaldestroy);
         destroyBar.addSeparator();
@@ -417,14 +367,8 @@ public class MainWindow extends JFrame{
         destroyBar.add(universitydestroy);
         destroyBar.setFloatable(false);
 
-
         destroyBar.setOrientation(SwingConstants.VERTICAL);
         destroyBar.setVisible(true);
-
-
-        //StatusBar létrehozása
-
-
 
         JLabel statlabel = new JLabel("<html>Stats:<br/><br/></html>");
         statlabel.setFont(new Font("Cooper Black", Font.BOLD, 30));
@@ -636,7 +580,6 @@ public class MainWindow extends JFrame{
             }
         });
 
-        // figyeli, hogy a Build menübe kattintottunk-e
         build.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
@@ -658,7 +601,7 @@ public class MainWindow extends JFrame{
                 BoardPanel.destroy = false;
             }
         });
-        // figyeli, hogy a Stats menübe kattintottunk-e
+
         stats.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
@@ -695,10 +638,6 @@ public class MainWindow extends JFrame{
             }
         });
 
-        //a build menüben lévő gombok figyelése, a megfelelő épületre való kattintáskor áttadja a BoardGUI-nak
-        // az épület nevét, ami ennek segítségével kirajzolja a megfelelő képet, az exit-re való kattintáskor beállítjuk
-        //, hogy a BoardGUI.build false-al térjen vissza, így nem fog semmilyen képet kirajzolni és beállítja, hogy a
-        // BoardGUI.buildingname-je is alapállapotba ("") kerüljön
         buildExit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
@@ -785,7 +724,13 @@ public class MainWindow extends JFrame{
                 BoardPanel.selectedBuilding = Building.SERVICE;
             }
         });
+        nullspeed.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
 
+                BoardPanel.getGame().setTimeSpeed(0);
+            }
+        });
         firstspeed.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
@@ -852,12 +797,8 @@ public class MainWindow extends JFrame{
             game = (Game)ois.readObject();
 
             BoardPanel = new BoardGUI(INITIAL_BOARD_X, INITIAL_BOARD_Y, game);
-            //BoardPanel.setMap(((Game) ois.readObject()).getMap());
 
             ois.close();
-            //ois.close();
-            System.out.println("Game loaded");
-            BoardPanel.getGame().getCity().printMap();
 
         }catch(Exception e){
             System.out.println("Serialization Error! Can't load data."

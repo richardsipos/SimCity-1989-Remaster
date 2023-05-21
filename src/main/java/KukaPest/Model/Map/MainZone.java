@@ -6,15 +6,15 @@ import KukaPest.Model.Helper.Coordinates;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-abstract public class MainZone extends Constructable implements java.io.Serializable{
+abstract public class MainZone extends Constructable implements java.io.Serializable {
     private final int width;
     private final int height;
 
     private final Coordinates coordinates;
     private int capacity;
     private int satisfactionBoost;
-    private ArrayList<Citizen> citizens;
-    private int electricityNeed;
+    private final ArrayList<Citizen> citizens;
+    private final int electricityNeed;
     private boolean electricity = false;
 
     public MainZone(int width, int height, int maxCapacity, int priceOfBuilding, Coordinates coordinates, int upKeep,int electricityNeed) {
@@ -33,59 +33,59 @@ abstract public class MainZone extends Constructable implements java.io.Serializ
     }
 
     public boolean isElectricity() {
-        return electricity;
+        return this.electricity;
     }
 
     public int getElectricityNeed() {
-        return electricityNeed;
+        return this.electricityNeed;
     }
 
-    public HashMap<String, String> getStats(){
+    public HashMap<String, String> getStats() {
         HashMap<String, String> ret = new HashMap<>();
-        ret.put("Kapacitás", "" + capacity);
-        ret.put("Elégedettség nővelés", "" + satisfactionBoost);
-        ret.put("Emberek", "" + citizens.size());
-        ret.put("Fenntartási költség", "" + super.getUpKeep());
+        ret.put("Capacity", "" + this.capacity);
+        ret.put("Satisfaction Boost", "" + this.satisfactionBoost);
+        ret.put("People", "" + this.citizens.size());
+        ret.put("Upkeep", "" + super.getUpKeep());
         return ret;
     }
 
     public void addCitizen(Citizen c){
         this.citizens.add(c);
     }
-    public void removeCitizen(Citizen c){
-        this.citizens.remove(c);
+    public boolean removeCitizen(Citizen c){
+        return this.citizens.remove(c);
     }
 
     /**
      * Get/set methods
      */
     public int getWidth() {
-        return width;
+        return this.width;
     }
 
     public int getHeight() {
-        return height;
+        return this.height;
     }
 
     public int getMaxCapacity() {
-        return capacity;
+        return this.capacity;
     }
 
     public int getCurrentCapacity() {
-        return citizens.size();
+        return this.citizens.size();
     }
 
     public int getSatisfactionBoost() {
         return this.satisfactionBoost;
     }
 
-    public int getSatisfaction(){
-        if (citizens.size() == 0) return 0;
+    public int getSatisfaction() {
+        if (this.citizens.size() == 0) return 0;
         int sum = 0;
-        for (Citizen c : citizens) {
+        for (Citizen c : this.citizens) {
             sum += c.satisfaction();
         }
-        return sum / citizens.size();
+        return sum / this.citizens.size();
     }
 
     public void setSatisfactionBoost(int value) {
@@ -95,7 +95,9 @@ abstract public class MainZone extends Constructable implements java.io.Serializ
          this.satisfactionBoost = 0;
     }
 
-    public Coordinates getCoordinates() { return coordinates;}
+    public Coordinates getCoordinates() {
+        return this.coordinates;
+    }
 
     public void setCapacity(int capacity) {
         this.capacity = capacity;
