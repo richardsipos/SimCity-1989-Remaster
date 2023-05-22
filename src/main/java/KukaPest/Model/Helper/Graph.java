@@ -99,7 +99,6 @@ public class Graph implements java.io.Serializable{
         while (queue.size() != 0) {
 
             s = queue.poll();
-            // System.out.print(s + " ");
             if(getNodeRoad(s) == false){
                 continue;
             }
@@ -108,15 +107,11 @@ public class Graph implements java.io.Serializable{
             while (i.hasNext()) {
                 int n = i.next();
                 if (!visited[n]) {
-                    //System.out.println(n + " " + visited[n] + " ");
                     visited[n] = true;
                     queue.add(n);
                 }
             }
         }
-
-        // System.out.println("\n");
-        // System.out.println(numberBuilding);
 
         int visit = 0;
         for(int i = 0; i < visited.length; i++){
@@ -125,17 +120,22 @@ public class Graph implements java.io.Serializable{
             }
         }
         if(visit == numberBuilding){
-            // System.out.println("Rendben");
             return true;
 
         }
         return false;
     }
 
+    /**
+     * This method is a BFS that checks whether the zone with the given coordinates is available
+     * @param s The index of starting node
+     * @param numberBuilding The building searched
+     * @param coords The coordinates of Zone
+     * @return True/false, depending on whether building was found from the starting point
+     */
     public boolean BFS_movein(int s, int numberBuilding, Coordinates coords) {
 
         boolean visited[] = new boolean[nodes];
-        // System.out.println("Node száma: " + nodes);
 
         LinkedList<Integer> queue
                 = new LinkedList<Integer>();
@@ -146,7 +146,6 @@ public class Graph implements java.io.Serializable{
         while (queue.size() != 0) {
 
             s = queue.poll();
-            // System.out.print(s + " ");
             if(getNodeRoad(s) == false){
                 continue;
             }
@@ -155,16 +154,11 @@ public class Graph implements java.io.Serializable{
             while (i.hasNext()) {
                 int n = i.next();
                 if (!visited[n]) {
-                    //System.out.println(n + " " + visited[n] + " ");
                     visited[n] = true;
                     queue.add(n);
                 }
             }
         }
-
-        // System.out.println("\n");
-        // System.out.println(numberBuilding);
-
         int visit = 0;
 
         for(int i = 0; i < visited.length; i++) {
@@ -173,14 +167,12 @@ public class Graph implements java.io.Serializable{
                 if (nodes_array.get(i).getCoordinates().getHeight() == coords.getHeight()
                         && nodes_array.get(i).getCoordinates().getWidth() == coords.getWidth()) {
                     visit = visit + 1;
-                    // System.out.println("OK");
                 }
             }
         }
         if(visit == 1){
             return true;
         }
-
         return false;
     }
 
