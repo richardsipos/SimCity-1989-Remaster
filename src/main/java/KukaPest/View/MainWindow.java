@@ -13,6 +13,8 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import static java.lang.System.exit;
+
 public class MainWindow extends JFrame{
     private static final int INITIAL_BOARD_X = 48;
     private static final int INITIAL_BOARD_Y = 27;
@@ -46,6 +48,7 @@ public class MainWindow extends JFrame{
         gameTime = new Timer(1000,new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e){
+
                 BoardPanel.repaint();
                 BoardPanel.getGame().stepGame();
                 System.out.println("Lakók: " + BoardPanel.getGame().getPopulation() + "\nPézz: " + BoardPanel.getGame().getFunds()+ "\n\n");
@@ -72,6 +75,18 @@ public class MainWindow extends JFrame{
                 b.setValue(BoardPanel.getGame().getCity().satisfaction());
                 citizens.setText("" + BoardPanel.getGame().getCitizenslength() + " people");
                 electricityneed.setText(BoardPanel.getGame().getElectricityProduction()-BoardPanel.getGame().getElectricityNeed()+ "");
+                if(BoardPanel.getGame().gameOver()){
+
+                    JOptionPane.showMessageDialog(null,
+                            "" + BoardPanel.getGame().getCity().getDate().getYear() + ". " + monthString
+                                    + ". " +  dayString +"\n" + BoardPanel.getGame().getFunds() + " $\n" +
+                                    BoardPanel.getGame().getCitizenslength() + " people\n"
+                            ,
+                            "Game Over",
+                            JOptionPane.PLAIN_MESSAGE);
+
+                    exit(1);
+                }
                 repaint();
 
             }
@@ -555,7 +570,7 @@ public class MainWindow extends JFrame{
         exitMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                System.exit(0);
+                exit(0);
             }
         });
 
@@ -805,7 +820,7 @@ public class MainWindow extends JFrame{
             System.out.println("Serialization Error! Can't load data."
                     + e.getClass() + ":" + e.getMessage());
             JOptionPane.showMessageDialog(this, "No save with this name!");
-            System.exit(1);
+            exit(1);
         }
     }
 

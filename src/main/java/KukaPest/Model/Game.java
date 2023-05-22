@@ -71,4 +71,11 @@ public class Game implements java.io.Serializable {
     public ResidentialZone getPoweredResZone() { return city.getPoweredResZone();}
 
     public int getTimeSpeed() {return timeSpeed;}
+
+    public boolean gameOver(){
+        if(city.getDaysInNegative() > 365){
+            return true;
+        }
+        return false;
+    }
 }
