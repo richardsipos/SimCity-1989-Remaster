@@ -65,7 +65,7 @@ public class BoardGUI extends JPanel implements MouseListener, MouseMotionListen
         background = new ImageIcon("src/main/java/KukaPest/Assets/gatyakukarestart.jpg").getImage();
         grass = new ImageIcon("src/main/java/KukaPest/Assets/grass2.png").getImage();
         dirt = new ImageIcon("src/main/java/KukaPest/Assets/dirt2.png").getImage();
-        water = new ImageIcon("src/main/java/KukaPest/Assets/water_2.png").getImage();
+        water = new ImageIcon("src/main/java/KukaPest/Assets/water2.png").getImage();
         road = new ImageIcon("src/main/java/KukaPest/Assets/road.png").getImage();
         uni = new ImageIcon("src/main/java/KukaPest/Assets/university_2.png").getImage();
         res_zone = new ImageIcon("src/main/java/KukaPest/Assets/residental.png").getImage();
